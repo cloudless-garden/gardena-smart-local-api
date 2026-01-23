@@ -2268,7 +2268,7 @@ models:
     name: Sensor
     type: Sensor
     protocol: lemonbeat
-    lemonbeat_commands:
+    commands:
       measure_soil_moisture: 2
       measure_soil_temperature: 3
       measure_light: 4
@@ -2508,7 +2508,7 @@ models:
     name: Water Control
     type: Water Control
     protocol: lemonbeat
-    lemonbeat_commands:
+    commands:
       close_all_valves: 22
       reset_all_valve_errors: 36
       led_all_off: 33
@@ -2777,7 +2777,7 @@ models:
     name: Sensor II
     type: Sensor
     protocol: lemonbeat
-    lemonbeat_commands:
+    commands:
       measure_soil_moisture: 2
       measure_ambient_temperature: 5
       measure_battery: 6

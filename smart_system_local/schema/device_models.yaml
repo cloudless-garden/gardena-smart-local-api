@@ -1,0 +1,4929 @@
+---
+types:
+  vb: bool
+  vs: str
+  vi: int
+  vo: str
+  vf: float
+  vt: int
+  ai: list[int]
+  as: list[str]
+models:
+  '469':
+    name: Irrigation Control eco
+    type: Irrigation Control eco
+    protocol: lwm2m
+    objects:
+      actuator:
+        object_id: 28180
+        object_urn: urn:oma:lwm2m:x:28180:0.4
+        object_version: '0.4'
+        mandatory: false
+        multi_instance: true
+        resources:
+          available:
+            type: vb
+            access: r
+            description: Indicate whether this actuator is available (e.g. valve connected)
+          current:
+            type: vi
+            access: r
+            unit: mA
+            description: Current in mA (optional)
+          default_duration_seconds:
+            type: vi
+            access: rw
+            unit: s
+            description: Duration of action started with a physical button. Setting to 0 disables the start on button press.
+          error:
+            type: vi
+            access: r
+            description: Device and/or actuator specific error
+          master:
+            type: vi
+            access: rw
+            description: '0:NONE when not linked to master channel. 1:LINKED if linked to master channel.'
+          name:
+            type: vs
+            access: rw
+            description: Name to be used for homekit?
+          paused_until:
+            type: vt
+            access: rw
+            unit: s
+            description: Scheduled actions paused until seconds from unix epoch
+          state:
+            type: vi
+            access: r
+            description: '0:INACTIVE 1:STARTING 2:ACTIVE 3:STOPPING'
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:x:28171
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Recent successful communication
+      connectivity_monitoring:
+        resources:
+          cell_id:
+            type: vi
+            access: null
+          lac:
+            type: vi
+            access: null
+          link_quality:
+            type: vi
+            access: null
+          network_bearer:
+            type: vi
+            access: null
+          radio_signal_strength:
+            type: vi
+            access: null
+          signalsnr:
+            type: vi
+            access: null
+          smcc:
+            type: vi
+            access: null
+          smnc:
+            type: vi
+            access: null
+      device:
+        resources:
+          available_power_sources:
+            type: ai
+            access: null
+          current_time:
+            type: vt
+            access: null
+          device_type:
+            type: vs
+            access: null
+          error_code:
+            type: ai
+            access: null
+          firmware_version:
+            type: vs
+            access: null
+          hardware_version:
+            type: vs
+            access: null
+          manufacturer:
+            type: vs
+            access: null
+          model_number:
+            type: vs
+            access: null
+          power_source_current:
+            type: ai
+            access: null
+          power_source_voltage:
+            type: ai
+            access: null
+          serial_number:
+            type: vs
+            access: null
+          software_version:
+            type: vs
+            access: null
+          supported_binding_and_modes:
+            type: vs
+            access: null
+          timezone:
+            type: vs
+            access: null
+          utc_offset:
+            type: vs
+            access: null
+      firmware_update:
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: null
+          package_uri:
+            type: vs
+            access: null
+          pkg_name:
+            type: vs
+            access: null
+          pkg_version:
+            type: vs
+            access: null
+          state:
+            type: vi
+            access: null
+          update_result:
+            type: vi
+            access: null
+      irrigation_control:
+        resources:
+          error:
+            type: vi
+            access: null
+      master_channel:
+        resources:
+          active:
+            type: vb
+            access: null
+          available:
+            type: vb
+            access: null
+          error:
+            type: vi
+            access: null
+          pressure_release_time:
+            type: vi
+            access: null
+      schedule:
+        resources:
+          actuator:
+            type: vi
+            access: null
+          end_offset_from:
+            type: vi
+            access: null
+          end_offset_seconds:
+            type: vi
+            access: null
+          pre_offset:
+            type: vi
+            access: null
+          repetition_type:
+            type: vi
+            access: null
+          repetition_value:
+            type: vi
+            access: null
+          start_offset_from:
+            type: vi
+            access: null
+          start_offset_seconds:
+            type: vi
+            access: null
+        multi_instance: true
+      sg_common:
+        resources:
+          fatal_error_log:
+            type: vo
+            access: null
+          name:
+            type: vs
+            access: null
+          reboot_reason:
+            type: vi
+            access: null
+      timeslot:
+        resources:
+          actuator:
+            type: vi
+            access: null
+          adjusted_stop:
+            type: vt
+            access: null
+          adjustment_source:
+            type: vi
+            access: null
+          initial_source:
+            type: vi
+            access: null
+          pre_offset:
+            type: vi
+            access: null
+          start:
+            type: vt
+            access: null
+          state:
+            type: vi
+            access: null
+        multi_instance: true
+  '488':
+    name: Robotic Lawnmower (CBT11)
+    type: Mower CBT11
+    protocol: lwm2m
+    objects:
+      battery:
+        object_id: 31418
+        object_urn: urn:oma:lwm2m:x:31418:0.1
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          charge_level:
+            type: vi
+            access: r
+            unit: '%'
+            description: Battery charge level
+          current:
+            type: vi
+            access: r
+            unit: mA
+            description: Battery current
+          is_charging:
+            type: vb
+            access: r
+            description: Battery is charging
+          remaining_charging_time:
+            type: vi
+            access: r
+            unit: s
+            description: Remaining charging time
+          temperature:
+            type: vi
+            access: r
+            unit: °C
+            description: Battery temperature
+          voltage:
+            type: vi
+            access: r
+            unit: mV
+            description: Battery voltage
+      ble:
+        object_id: 31429
+        object_urn: urn:oma:lwm2m:x:31429:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          all_bonds_erased__event:
+            type: vb
+            access: r
+            description: Representation of erase all paired event
+          local_bd_address:
+            type: vo
+            access: r
+            description: BLE (mac) address as byte array (6 bytes)
+          number_connected:
+            type: vi
+            access: r
+            description: Number of connected devices
+          pairable:
+            type: vb
+            access: r
+            description: State if device is pairable or not
+      calendar:
+        object_id: 31402
+        object_urn: urn:oma:lwm2m:x:31402:0.1
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          max_number_of_tasks:
+            type: vi
+            access: r
+            description: Maximum number of tasks
+          max_number_of_tasks_per_day:
+            type: vi
+            access: r
+            description: Maximum number of tasks per day
+      calendar__tasks:
+        multi_instance: true
+        resources:
+          duration:
+            type: vi
+            access: rw
+            unit: minutes
+            description: Task duration
+          mission_id:
+            type: vi
+            access: rw
+            description: Mission identifier
+          start:
+            type: vi
+            access: rw
+            unit: minutes
+            description: Start time in minutes from midnight
+          use_on_friday:
+            type: vb
+            access: rw
+            description: Execute task on Friday
+          use_on_monday:
+            type: vb
+            access: rw
+            description: Execute task on Monday
+          use_on_saturday:
+            type: vb
+            access: rw
+            description: Execute task on Saturday
+          use_on_sunday:
+            type: vb
+            access: rw
+            description: Execute task on Sunday
+          use_on_thursday:
+            type: vb
+            access: rw
+            description: Execute task on Thursday
+          use_on_tuesday:
+            type: vb
+            access: rw
+            description: Execute task on Tuesday
+          use_on_wednesday:
+            type: vb
+            access: rw
+            description: Execute task on Wednesday
+      calendar_area_composite__tasks_with_area_id:
+        multi_instance: true
+        resources:
+          area_id:
+            type: vs
+            access: rw
+            description: Area identifier
+          area_type:
+            type: vi
+            access: rw
+            description: Area type
+          duration:
+            type: vi
+            access: rw
+            unit: minutes
+            description: Task duration
+          start:
+            type: vi
+            access: rw
+            unit: minutes
+            description: Start time in minutes from midnight
+          use_on_friday:
+            type: vb
+            access: rw
+            description: Execute task on Friday
+          use_on_monday:
+            type: vb
+            access: rw
+            description: Execute task on Monday
+          use_on_saturday:
+            type: vb
+            access: rw
+            description: Execute task on Saturday
+          use_on_sunday:
+            type: vb
+            access: rw
+            description: Execute task on Sunday
+          use_on_thursday:
+            type: vb
+            access: rw
+            description: Execute task on Thursday
+          use_on_tuesday:
+            type: vb
+            access: rw
+            description: Execute task on Tuesday
+          use_on_wednesday:
+            type: vb
+            access: rw
+            description: Execute task on Wednesday
+      charging_station:
+        object_id: 31411
+        object_urn: urn:oma:lwm2m:x:31411:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          mower_in_charging_station:
+            type: vb
+            access: r
+            description: States if mower is inside charging station
+          pairing_failed__event:
+            type: vb
+            access: r
+            description: Representation of pairing failed event
+          pairing_successful__event:
+            type: vb
+            access: r
+            description: Representation of pairing successful event
+      connection_status:
+        resources:
+          online:
+            type: vb
+            access: null
+      connectivity_monitoring:
+        resources:
+          cell_id:
+            type: vi
+            access: null
+          lac:
+            type: vi
+            access: null
+          link_quality:
+            type: vi
+            access: null
+          network_bearer:
+            type: vi
+            access: null
+          radio_signal_strength:
+            type: vi
+            access: null
+          signalsnr:
+            type: vi
+            access: null
+          smcc:
+            type: vi
+            access: null
+          smnc:
+            type: vi
+            access: null
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3:1.1
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          available_power_sources:
+            type: ai
+            access: r
+            description: Available power sources
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            description: Battery level
+          battery_status:
+            type: vi
+            access: r
+            description: Battery status
+          current_time:
+            type: vt
+            access: rw
+            description: Current UNIX time
+          device_type:
+            type: vs
+            access: r
+            description: Device type
+          error_code:
+            type: ai
+            access: r
+            description: Error codes
+          firmware_version:
+            type: vs
+            access: r
+            description: Firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported binding and modes
+          timezone:
+            type: vs
+            access: rw
+            description: Timezone
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset
+      edge_cut:
+        object_id: 31431
+        object_urn: urn:oma:lwm2m:x:31431:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          available:
+            type: vb
+            access: r
+            description: If the EdgeCut functionality is available
+          enabled:
+            type: vb
+            access: rw
+            description: If the EdgeCut functionality is enabled
+          enabled_at_collision:
+            type: vb
+            access: rw
+            description: If the EdgeCut functionality is enabled when a collision occurs
+      epos_service:
+        resources:
+          available:
+            type: vb
+            access: null
+          connection_status:
+            type: vi
+            access: null
+          enabled:
+            type: vb
+            access: null
+          has_origin:
+            type: vb
+            access: null
+          is_correction_data_invalid:
+            type: vb
+            access: null
+          is_missing_correction_data:
+            type: vb
+            access: null
+          is_origin_settable:
+            type: vb
+            access: null
+          is_origin_valid:
+            type: vb
+            access: null
+          service_status:
+            type: vi
+            access: null
+          signal_quality:
+            type: vi
+            access: null
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5:1.1
+        object_version: '1.1'
+        mandatory: false
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: rw
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_name:
+            type: vs
+            access: r
+            description: Package name
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          severity:
+            type: vi
+            access: r
+            description: Update severity
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 11
+            description: Result of firmware update
+      fota:
+        resources:
+          auto_fota_enabled:
+            type: vb
+            access: null
+          available:
+            type: vb
+            access: null
+          connection_stats__connects:
+            type: vi
+            access: null
+          connection_stats__disconnects:
+            type: vi
+            access: null
+          connection_stats__disconnects_by_user:
+            type: vi
+            access: null
+          connection_stats__down_time:
+            type: vi
+            access: null
+          connection_stats__up_time:
+            type: vi
+            access: null
+          connection_status:
+            type: vi
+            access: null
+          enabled:
+            type: vb
+            access: null
+          host__host_name:
+            type: vs
+            access: null
+          host__port:
+            type: vi
+            access: null
+          last_update_check_timestamp:
+            type: vt
+            access: null
+          progress:
+            type: vi
+            access: null
+          state:
+            type: vi
+            access: null
+          update_version:
+            type: vs
+            access: null
+      gps_navigation:
+        resources:
+          available:
+            type: vb
+            access: null
+          enabled:
+            type: vb
+            access: null
+          status:
+            type: vi
+            access: null
+      lwm2m_server:
+        object_id: 1
+        object_urn: urn:oma:lwm2m:oma:1:1.1
+        object_version: '1.1'
+        mandatory: true
+        multi_instance: true
+        resources:
+          binding:
+            type: vs
+            access: rw
+            description: Binding mode
+          bootstrap_on_registration_failure:
+            type: vb
+            access: rw
+            description: Bootstrap on registration failure
+          lifetime:
+            type: vi
+            access: rw
+            unit: s
+            description: Lifetime of the registration
+          notification_storing_when_disabled_or_offline:
+            type: vb
+            access: rw
+            description: Notification storing when disabled or offline
+          short_server_id:
+            type: vi
+            access: r
+            min: 1
+            max: 65534
+            description: Short Server ID
+      mower_app:
+        resources:
+          activity:
+            type: vi
+            access: null
+          error:
+            type: vi
+            access: null
+          inactive_reason:
+            type: vi
+            access: null
+          is_error_confirmable:
+            type: vb
+            access: null
+          mission:
+            type: vi
+            access: null
+          mode:
+            type: vi
+            access: null
+          mowing_area_id:
+            type: vs
+            access: null
+          state:
+            type: vi
+            access: null
+      mower_insights:
+        resources:
+          battery_capacity:
+            type: vi
+            access: null
+          battery_current:
+            type: vi
+            access: null
+          battery_nr_of_charging_cycles:
+            type: vi
+            access: null
+          battery_temperature:
+            type: vi
+            access: null
+          battery_voltage:
+            type: vi
+            access: null
+          orientation_pitch:
+            type: vi
+            access: null
+          orientation_roll:
+            type: vi
+            access: null
+      obstacle_avoidance:
+        resources:
+          available:
+            type: vb
+            access: null
+          enabled:
+            type: vb
+            access: null
+          use_at_boundary:
+            type: vb
+            access: null
+      planner:
+        resources:
+          next_start_time:
+            type: vt
+            access: null
+          override__action:
+            type: vi
+            access: null
+          override__duration:
+            type: vi
+            access: null
+          override__mission_id:
+            type: vi
+            access: null
+          override__start_time:
+            type: vt
+            access: null
+          restriction_reason:
+            type: vi
+            access: null
+      planner__external_restrictions:
+        resources:
+          auto_expires:
+            type: vt
+            access: null
+          reason:
+            type: vi
+            access: null
+          release_time:
+            type: vt
+            access: null
+        multi_instance: true
+      sg_common:
+        resources:
+          duty_cycle_tracking_critical_air_time:
+            type: vb
+            access: null
+          duty_cycle_tracking_status:
+            type: vi
+            access: null
+          exclusion_requested:
+            type: vb
+            access: null
+          fatal_error_log:
+            type: vo
+            access: null
+          name:
+            type: vs
+            access: null
+          sun_data:
+            type: vo
+            access: null
+      site_map:
+        resources:
+          available:
+            type: vb
+            access: null
+          generated_map:
+            type: vo
+            access: null
+          generated_map_available:
+            type: vb
+            access: null
+          site_map:
+            type: vo
+            access: null
+          site_map_available:
+            type: vb
+            access: null
+          site_map_updated__event_crc32:
+            type: vi
+            access: null
+          user_validated_checksum:
+            type: vo
+            access: null
+          zone_map:
+            type: vo
+            access: null
+          zone_map_available:
+            type: vb
+            access: null
+          zone_map_updated__event_crc32:
+            type: vi
+            access: null
+      smart_system_mower_api:
+        resources:
+          check_operator_pin_result__event_pin_valid:
+            type: vb
+            access: null
+          current_site_id:
+            type: vi
+            access: null
+          drive_past_wire:
+            type: vi
+            access: null
+          eco_mode:
+            type: vb
+            access: null
+          frost_sensor__available:
+            type: vb
+            access: null
+          frost_sensor__enabled:
+            type: vb
+            access: null
+          lona_map_status__data_collection_started_timestamp:
+            type: vt
+            access: null
+          lona_map_status__maps_updated_timestamp:
+            type: vt
+            access: null
+          lona_map_status__progress:
+            type: vi
+            access: null
+          lona_map_status__state:
+            type: vi
+            access: null
+          lona_settings__available:
+            type: vb
+            access: null
+          lona_settings__enabled:
+            type: vb
+            access: null
+          mobile_loop__available:
+            type: vb
+            access: null
+          mobile_loop__enabled:
+            type: vb
+            access: null
+          operator_pin_updated__event_updated_pin:
+            type: vi
+            access: null
+          position__accuracy:
+            type: vi
+            access: null
+          position__heading:
+            type: vi
+            access: null
+          position__heading_accuracy:
+            type: vi
+            access: null
+          position__latitude:
+            type: vi
+            access: null
+          position__longitude:
+            type: vi
+            access: null
+          position_disclosure:
+            type: vb
+            access: null
+          sensor_control__available:
+            type: vb
+            access: null
+          sensor_control__enabled:
+            type: vb
+            access: null
+          sensor_control__sensitivity:
+            type: vi
+            access: null
+          starting_distance:
+            type: vi
+            access: null
+      smart_system_mower_api__starting_points:
+        resources:
+          distance:
+            type: vi
+            access: null
+          enabled:
+            type: vb
+            access: null
+          passage_cutting_enabled:
+            type: vb
+            access: null
+          proportion:
+            type: vi
+            access: null
+          wire:
+            type: vi
+            access: null
+        multi_instance: true
+      spot_cutting:
+        resources:
+          available:
+            type: vb
+            access: null
+          enabled:
+            type: vb
+            access: null
+          sensitivity:
+            type: vi
+            access: null
+          status:
+            type: vi
+            access: null
+      statistics:
+        resources:
+          cutting_blade_usage_time:
+            type: vi
+            access: null
+          number_of_charging_cycles:
+            type: vi
+            access: null
+          number_of_collisions:
+            type: vi
+            access: null
+          total_charging_time:
+            type: vi
+            access: null
+          total_cutting_time:
+            type: vi
+            access: null
+          total_running_time:
+            type: vi
+            access: null
+          total_searching_time:
+            type: vi
+            access: null
+      system:
+        object_id: 31403
+        object_urn: urn:oma:lwm2m:x:31403:2.0
+        object_version: '2.0'
+        mandatory: false
+        resources:
+          apply_config_done__event:
+            type: vb
+            access: r
+            description: Apply config done event
+          apply_config_error__event:
+            type: vb
+            access: r
+            description: Apply config error event
+          config_version_string:
+            type: vs
+            access: r
+            description: Configuration version string
+          device_group:
+            type: vi
+            access: r
+            description: Device group
+          forced_sw_update_required:
+            type: vb
+            access: r
+            description: Forced software update required
+          local_hmi_available:
+            type: vb
+            access: r
+            description: Local HMI available
+          model__device_type:
+            type: vi
+            access: r
+            description: Model device type
+          model__device_variant:
+            type: vi
+            access: r
+            description: Model device variant
+          serial_number:
+            type: vi
+            access: r
+            description: Serial number
+          startup_sequence_required:
+            type: vb
+            access: r
+            description: Startup sequence required
+          sw_package_version_string:
+            type: vs
+            access: r
+            description: Software package version string
+          sw_update_required:
+            type: vb
+            access: r
+            description: Software update required
+      system_power:
+        resources:
+          mode:
+            type: vi
+            access: null
+      system_restart:
+        resources:
+          restart_reason:
+            type: vi
+            access: null
+      systematic_missions__tasks:
+        resources:
+          area_id:
+            type: vs
+            access: null
+        multi_instance: true
+      wait_for_permission_to_mow:
+        resources:
+          enabled:
+            type: vb
+            access: null
+          is_waiting_for_permission_to_mow:
+            type: vb
+            access: null
+          timeout_before_mowing_without_permission:
+            type: vi
+            access: null
+  '2812':
+    name: Water Control single
+    type: Water Control
+    protocol: lwm2m
+    objects:
+      actuator:
+        object_id: 28180
+        object_urn: urn:oma:lwm2m:x:28180:0.4
+        object_version: '0.4'
+        mandatory: false
+        resources:
+          available:
+            type: vb
+            access: r
+            description: Indicate whether this actuator is available
+          default_duration_seconds:
+            type: vi
+            access: rw
+            unit: s
+            description: Duration of action started with a physical button
+          error:
+            type: vi
+            access: r
+            description: Device and/or actuator specific error
+          name:
+            type: vs
+            access: rw
+            description: Name to be used for homekit
+          paused_until:
+            type: vt
+            access: rw
+            unit: s
+            description: Scheduled actions paused until seconds from unix epoch
+          state:
+            type: vi
+            access: r
+            description: '0:INACTIVE 1:STARTING 2:ACTIVE 3:STOPPING'
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:x:28171
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Recent successful communication
+      connectivity_monitoring:
+        resources:
+          cell_id:
+            type: vi
+            access: null
+          lac:
+            type: vi
+            access: null
+          link_quality:
+            type: vi
+            access: null
+          network_bearer:
+            type: vi
+            access: null
+          radio_signal_strength:
+            type: vi
+            access: null
+          signalsnr:
+            type: vi
+            access: null
+          smcc:
+            type: vi
+            access: null
+          smnc:
+            type: vi
+            access: null
+      device:
+        resources:
+          available_power_sources:
+            type: ai
+            access: null
+          battery_level:
+            type: vi
+            access: null
+          battery_status:
+            type: vi
+            access: null
+          current_time:
+            type: vt
+            access: null
+          device_type:
+            type: vs
+            access: null
+          error_code:
+            type: ai
+            access: null
+          firmware_version:
+            type: vs
+            access: null
+          hardware_version:
+            type: vs
+            access: null
+          manufacturer:
+            type: vs
+            access: null
+          model_number:
+            type: vs
+            access: null
+          power_source_voltage:
+            type: ai
+            access: null
+          serial_number:
+            type: vs
+            access: null
+          software_version:
+            type: vs
+            access: null
+          supported_binding_and_modes:
+            type: vs
+            access: null
+          timezone:
+            type: vs
+            access: null
+          utc_offset:
+            type: vs
+            access: null
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5:1.1
+        object_version: '1.1'
+        mandatory: false
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: rw
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_name:
+            type: vs
+            access: r
+            description: Package name
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 11
+            description: Result of firmware update
+      schedule:
+        object_id: 28181
+        object_urn: urn:oma:lwm2m:x:28181:0.2
+        object_version: '0.2'
+        mandatory: false
+        resources:
+          actuator:
+            type: vi
+            access: rw
+            description: Actuator ID
+          end_offset_from:
+            type: vi
+            access: rw
+            description: Schedule end offset from
+          end_offset_seconds:
+            type: vi
+            access: rw
+            unit: Seconds
+            description: Seconds after/before end offset
+          pre_offset:
+            type: vi
+            access: rw
+            description: Magic cookie used by backend
+          repetition_type:
+            type: vi
+            access: rw
+            description: Repetition cycle type
+          repetition_value:
+            type: vi
+            access: rw
+            description: Repetition value bitmask
+          start_offset_from:
+            type: vi
+            access: rw
+            description: 'Schedule start offset from: 0=MIDNIGHT, 1=SUNRISE, 2=SUNSET'
+          start_offset_seconds:
+            type: vi
+            access: rw
+            unit: Seconds
+            description: Seconds after/before start offset
+      sg_common:
+        object_id: 28183
+        object_urn: urn:oma:lwm2m:x:28183:0.6
+        object_version: '0.6'
+        mandatory: false
+        resources:
+          name:
+            type: vs
+            access: rw
+            description: Name used for homekit
+      temperature:
+        object_id: 3303
+        object_urn: urn:oma:lwm2m:ext:3303
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          sensor_value:
+            type: vf
+            access: r
+            description: Last or Current Measured Value from the Sensor
+      timeslot:
+        object_id: 28182
+        object_urn: urn:oma:lwm2m:x:28182:0.2
+        object_version: '0.2'
+        mandatory: false
+        multi_instance: true
+        resources:
+          actuator:
+            type: vi
+            access: r
+            description: Corresponding actuator id (zero-indexed)
+          adjusted_stop:
+            type: vt
+            access: r
+            description: Best known stop time
+          adjustment_source:
+            type: vi
+            access: r
+            description: How adjusted_stop was set
+          initial_source:
+            type: vi
+            access: r
+            description: The reason why this timeslot was created
+          pre_offset:
+            type: vi
+            access: r
+            description: Magic cookie used by backend
+          start:
+            type: vt
+            access: r
+            description: Intended start time in seconds since UNIX epoch
+          state:
+            type: vi
+            access: r
+            description: TSS state
+      wake_on_radio:
+        object_id: 28184
+        object_urn: urn:oma:lwm2m:x:28184:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          wakeup_channel:
+            type: vi
+            access: r
+            min: 1
+            max: 30
+            description: Wakeup channel selected by the device during inclusion
+      water_control:
+        object_id: 28151
+        object_urn: urn:oma:lwm2m:x:28151:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          error:
+            type: vi
+            access: r
+            description: 'Device error: 0=NONE, 2=POWER_SUPPLY, 6=TIME_SYNC_REJECTED'
+  '2814':
+    name: Water Control duo
+    type: Water Control
+    protocol: lwm2m
+    objects:
+      actuator:
+        object_id: 28180
+        object_urn: urn:oma:lwm2m:x:28180:0.4
+        object_version: '0.4'
+        mandatory: false
+        multi_instance: true
+        resources:
+          available:
+            type: vb
+            access: r
+            description: Indicate whether this actuator is available
+          default_duration_seconds:
+            type: vi
+            access: rw
+            unit: s
+            description: Duration of action started with a physical button
+          error:
+            type: vi
+            access: r
+            description: Device and/or actuator specific error
+          name:
+            type: vs
+            access: rw
+            description: Name to be used for homekit
+          paused_until:
+            type: vt
+            access: rw
+            unit: s
+            description: Scheduled actions paused until seconds from unix epoch
+          state:
+            type: vi
+            access: r
+            description: '0:INACTIVE 1:STARTING 2:ACTIVE 3:STOPPING'
+      connection_status:
+        resources:
+          online:
+            type: vb
+            access: null
+      connectivity_monitoring:
+        resources:
+          cell_id:
+            type: vi
+            access: null
+          lac:
+            type: vi
+            access: null
+          link_quality:
+            type: vi
+            access: null
+          network_bearer:
+            type: vi
+            access: null
+          radio_signal_strength:
+            type: vi
+            access: null
+          signalsnr:
+            type: vi
+            access: null
+          smcc:
+            type: vi
+            access: null
+          smnc:
+            type: vi
+            access: null
+      device:
+        resources:
+          available_power_sources:
+            type: ai
+            access: null
+          battery_level:
+            type: vi
+            access: null
+          battery_status:
+            type: vi
+            access: null
+          current_time:
+            type: vt
+            access: null
+          device_type:
+            type: vs
+            access: null
+          error_code:
+            type: ai
+            access: null
+          firmware_version:
+            type: vs
+            access: null
+          hardware_version:
+            type: vs
+            access: null
+          manufacturer:
+            type: vs
+            access: null
+          model_number:
+            type: vs
+            access: null
+          power_source_voltage:
+            type: ai
+            access: null
+          serial_number:
+            type: vs
+            access: null
+          software_version:
+            type: vs
+            access: null
+          supported_binding_and_modes:
+            type: vs
+            access: null
+          timezone:
+            type: vs
+            access: null
+          utc_offset:
+            type: vs
+            access: null
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5:1.1
+        object_version: '1.1'
+        mandatory: false
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: rw
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_name:
+            type: vs
+            access: r
+            description: Package name
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 11
+            description: Result of firmware update
+      schedule:
+        object_id: 28181
+        object_urn: urn:oma:lwm2m:x:28181:0.2
+        object_version: '0.2'
+        mandatory: false
+        multi_instance: true
+        resources:
+          actuator:
+            type: vi
+            access: rw
+            description: Actuator ID
+          end_offset_from:
+            type: vi
+            access: rw
+            description: Schedule end offset from
+          end_offset_seconds:
+            type: vi
+            access: rw
+            unit: Seconds
+            description: Seconds after/before end offset
+          pre_offset:
+            type: vi
+            access: rw
+            description: Magic cookie used by backend
+          repetition_type:
+            type: vi
+            access: rw
+            description: Repetition cycle type
+          repetition_value:
+            type: vi
+            access: rw
+            description: Repetition value bitmask
+          start_offset_from:
+            type: vi
+            access: rw
+            description: 'Schedule start offset from: 0=MIDNIGHT, 1=SUNRISE, 2=SUNSET'
+          start_offset_seconds:
+            type: vi
+            access: rw
+            unit: Seconds
+            description: Seconds after/before start offset
+      sg_common:
+        object_id: 28183
+        object_urn: urn:oma:lwm2m:x:28183:0.6
+        object_version: '0.6'
+        mandatory: false
+        resources:
+          fatal_error_log:
+            type: vo
+            access: rw
+            description: Contains callstack dump, reset reason, etc
+          name:
+            type: vs
+            access: rw
+            description: Name used for homekit
+          reboot_reason:
+            type: vi
+            access: r
+            description: 'Reboot reason: 0=NONE, 1=POWERUP, 2=WATCHDOG, 3=HARDFAULT, etc'
+          sun_data:
+            type: vo
+            access: rw
+            description: Sun data for sunrise/sunset calculations
+      temperature:
+        object_id: 3303
+        object_urn: urn:oma:lwm2m:ext:3303
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          sensor_value:
+            type: vf
+            access: r
+            description: Last or Current Measured Value from the Sensor
+      timeslot:
+        object_id: 28182
+        object_urn: urn:oma:lwm2m:x:28182:0.2
+        object_version: '0.2'
+        mandatory: false
+        multi_instance: true
+        resources:
+          actuator:
+            type: vi
+            access: r
+            description: Corresponding actuator id (zero-indexed)
+          adjusted_stop:
+            type: vt
+            access: r
+            description: Best known stop time
+          adjustment_source:
+            type: vi
+            access: r
+            description: How adjusted_stop was set
+          initial_source:
+            type: vi
+            access: r
+            description: The reason why this timeslot was created
+          pre_offset:
+            type: vi
+            access: r
+            description: Magic cookie used by backend
+          start:
+            type: vt
+            access: r
+            description: Intended start time in seconds since UNIX epoch
+          state:
+            type: vi
+            access: r
+            description: TSS state
+      wake_on_radio:
+        object_id: 28184
+        object_urn: urn:oma:lwm2m:x:28184:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          wakeup_channel:
+            type: vi
+            access: r
+            min: 1
+            max: 30
+            description: Wakeup channel selected by the device during inclusion
+      water_control:
+        object_id: 28151
+        object_urn: urn:oma:lwm2m:x:28151:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          error:
+            type: vi
+            access: r
+            description: 'Device error: 0=NONE, 2=POWER_SUPPLY, 6=TIME_SYNC_REJECTED'
+  '2826':
+    name: Water Control pipeline
+    type: Water Control
+    protocol: lwm2m
+    objects:
+      actuator:
+        object_id: 28180
+        object_urn: urn:oma:lwm2m:x:28180:0.4
+        object_version: '0.4'
+        mandatory: false
+        resources:
+          available:
+            type: vb
+            access: r
+            description: Indicate whether this actuator is available
+          default_duration_seconds:
+            type: vi
+            access: rw
+            unit: s
+            description: Duration of action started with a physical button
+          error:
+            type: vi
+            access: r
+            description: Device and/or actuator specific error
+          name:
+            type: vs
+            access: rw
+            description: Name to be used for homekit
+          paused_until:
+            type: vt
+            access: rw
+            unit: s
+            description: Scheduled actions paused until seconds from unix epoch
+          state:
+            type: vi
+            access: r
+            description: '0:INACTIVE 1:STARTING 2:ACTIVE 3:STOPPING'
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:x:28171
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Recent successful communication
+      connectivity_monitoring:
+        object_id: 4
+        object_urn: urn:oma:lwm2m:oma:4:1.2
+        object_version: '1.2'
+        mandatory: false
+        resources:
+          cell_id:
+            type: vi
+            access: r
+            description: Cell ID
+          lac:
+            type: vi
+            access: r
+            description: Location Area Code
+          link_quality:
+            type: vi
+            access: r
+            description: Link quality
+          network_bearer:
+            type: vi
+            access: r
+            description: Network bearer type
+          radio_signal_strength:
+            type: vi
+            access: r
+            description: Radio signal strength
+          signalsnr:
+            type: vi
+            access: r
+            description: Signal to noise ratio
+          smcc:
+            type: vi
+            access: r
+            description: Serving Mobile Country Code
+          smnc:
+            type: vi
+            access: r
+            description: Serving Mobile Network Code
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3:1.1
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          available_power_sources:
+            type: ai
+            access: r
+            description: Available power sources
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            description: Battery level
+          battery_status:
+            type: vi
+            access: r
+            description: Battery status
+          current_time:
+            type: vt
+            access: rw
+            description: Current UNIX time
+          device_type:
+            type: vs
+            access: r
+            description: Device type
+          error_code:
+            type: ai
+            access: r
+            description: Error codes
+          firmware_version:
+            type: vs
+            access: r
+            description: Firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number
+          power_source_voltage:
+            type: ai
+            access: r
+            description: Power source voltage
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported binding and modes
+          timezone:
+            type: vs
+            access: rw
+            description: Timezone
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5:1.1
+        object_version: '1.1'
+        mandatory: false
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: rw
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_name:
+            type: vs
+            access: r
+            description: Package name
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 11
+            description: Result of firmware update
+      schedule:
+        object_id: 28181
+        object_urn: urn:oma:lwm2m:x:28181:0.2
+        object_version: '0.2'
+        mandatory: false
+        multi_instance: true
+        resources:
+          actuator:
+            type: vi
+            access: rw
+            description: Actuator ID
+          end_offset_from:
+            type: vi
+            access: rw
+            description: Schedule end offset from
+          end_offset_seconds:
+            type: vi
+            access: rw
+            unit: Seconds
+            description: Seconds after/before end offset
+          pre_offset:
+            type: vi
+            access: rw
+            description: Magic cookie used by backend
+          repetition_type:
+            type: vi
+            access: rw
+            description: Repetition cycle type
+          repetition_value:
+            type: vi
+            access: rw
+            description: Repetition value bitmask
+          start_offset_from:
+            type: vi
+            access: rw
+            description: 'Schedule start offset from: 0=MIDNIGHT, 1=SUNRISE, 2=SUNSET'
+          start_offset_seconds:
+            type: vi
+            access: rw
+            unit: Seconds
+            description: Seconds after/before start offset
+      sg_common:
+        object_id: 28183
+        object_urn: urn:oma:lwm2m:x:28183:0.6
+        object_version: '0.6'
+        mandatory: false
+        resources:
+          fatal_error_log:
+            type: vo
+            access: rw
+            description: Contains callstack dump, reset reason, etc
+          name:
+            type: vs
+            access: rw
+            description: Name used for homekit
+          reboot_reason:
+            type: vi
+            access: r
+            description: 'Reboot reason: 0=NONE, 1=POWERUP, 2=WATCHDOG, 3=HARDFAULT, etc'
+          sun_data:
+            type: vo
+            access: rw
+            description: Sun data for sunrise/sunset calculations
+      temperature:
+        object_id: 3303
+        object_urn: urn:oma:lwm2m:ext:3303
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          sensor_value:
+            type: vf
+            access: r
+            description: Last or Current Measured Value from the Sensor
+      timeslot:
+        object_id: 28182
+        object_urn: urn:oma:lwm2m:x:28182:0.2
+        object_version: '0.2'
+        mandatory: false
+        multi_instance: true
+        resources:
+          actuator:
+            type: vi
+            access: r
+            description: Corresponding actuator id (zero-indexed)
+          adjusted_stop:
+            type: vt
+            access: r
+            description: Best known stop time
+          adjustment_source:
+            type: vi
+            access: r
+            description: How adjusted_stop was set
+          initial_source:
+            type: vi
+            access: r
+            description: The reason why this timeslot was created
+          pre_offset:
+            type: vi
+            access: r
+            description: Magic cookie used by backend
+          start:
+            type: vt
+            access: r
+            description: Intended start time in seconds since UNIX epoch
+          state:
+            type: vi
+            access: r
+            description: TSS state
+      wake_on_radio:
+        object_id: 28184
+        object_urn: urn:oma:lwm2m:x:28184:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          wakeup_channel:
+            type: vi
+            access: r
+            min: 1
+            max: 30
+            description: Wakeup channel selected by the device during inclusion
+      water_control:
+        object_id: 28151
+        object_urn: urn:oma:lwm2m:x:28151:1.0
+        object_version: '1.0'
+        mandatory: false
+        resources:
+          error:
+            type: vi
+            access: r
+            description: 'Device error: 0=NONE, 2=POWER_SUPPLY, 6=TIME_SYNC_REJECTED'
+  '6146':
+    name: Robotic Lawnmower (CBT2)
+    type: Robotics Lawnmower
+    protocol: lemonbeat
+    commands:
+      reboot: 31
+      ntp_force_sync: 32
+      led_all_off: 33
+      led_all_green_on: 34
+      led_all_red_on: 35
+      emc_test_start: 29
+      emc_test_stop: 30
+      power_off: 26
+      factory_reset_start_inclusion_mode: 43
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Battery level (100% is full)
+          board_internal_communication_status:
+            type: vi
+            access: null
+          charging_cycles:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Number of completed charging cycles
+          collisions:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Total number of collisions
+          comboard_version:
+            type: vs
+            access: null
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          cutting_time:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Time in hours that the cutting disc has been active
+          device_type:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Device type identifier
+          device_variant:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Device variant identifier
+          internal_connection_state:
+            type: vi
+            access: null
+          internal_temperature:
+            type: vi
+            access: null
+          last_error_code:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Last reported error code from the mower
+          mainboard_version:
+            type: vs
+            access: r
+            report_on_update: true
+            description: 'Mainboard version (format: XX.XX)'
+          manual_operation:
+            type: vi
+            access: r
+            report_on_update: true
+            description: 'Manual mode status (requires physical access)'
+          mmi_version:
+            type: vs
+            access: r
+            report_on_update: true
+            description: 'MMI application version (format: XX.XX)'
+          mower_timer:
+            type: vi
+            access: rw
+            unit: s
+            min: -16777215
+            max: 16777216
+            report_on_update: true
+            description: 'Manual mowing timer (write >0=start, 0=stop, read >0=running, -16777215=schedule running)'
+          override_end_time:
+            type:
+              - vi
+              - vo
+            access: null
+          rechargable_battery_lifecycle:
+            type: vi
+            access: null
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          running_time:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Time in hours that the wheel motors have been active
+          schedule_config:
+            type: vo
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 14 schedules, 7 bytes each)
+          serial_number:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Mower serial number
+          settings_control:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Write settings (hex encoded custom buffer)
+          settings_report:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Read settings (hex encoded custom buffer)
+          source_for_next_start:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Source/reason for timestamp_next_start (no_source, daily_limit, week_timer, countdown, charging, auto_timer, frost)
+          start_delay_ms:
+            type: vi
+            access: null
+          start_override_time:
+            type: vi
+            access: null
+          starting_points:
+            type: vo
+            access: rw
+            report_on_update: true
+            description: Parameters for three starting points in mower binary format
+          status:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Mower status (off, wait_for_safety, pause, running_mowing_timer, mowing, learning_wire, going_home, charging, error, software_update, wait_leaving_cs, leaving_cs, wait_for_new_task, startup)
+          supported_starting_points:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            report_on_update: true
+            description: Number of supported starting points
+          supported_wires:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            report_on_update: true
+            description: Bit mask for supported wire features
+          timestamp_last_error_code:
+            type: vo
+            access: r
+            report_on_update: true
+            description: 'Timestamp of last error code (seconds since 1970-01-01, local time)'
+          timestamp_next_start:
+            type:
+              - vi
+              - vo
+            access: r
+            report_on_update: true
+            description: Estimated time of next automatic start (seconds since 1970-01-01, local time, 0=start now)
+          week_timer:
+            type: vo
+            access: null
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '18845':
+    name: Sensor
+    type: Sensor
+    protocol: lemonbeat
+    lemonbeat_commands:
+      measure_soil_moisture: 2
+      measure_soil_temperature: 3
+      measure_light: 4
+      measure_ambient_temperature: 5
+      measure_battery: 6
+      measure_rf_link: 7
+      reboot: 31
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          ambient_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            report_on_update: true
+            report_interval: 3600
+            description: Ambient temperature (not currently used)
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Battery level (100% is full)
+          chilled_temperature:
+            type: vi
+            access: null
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          cooldown_time:
+            type: vi
+            access: null
+          disposable_battery_lifecycle:
+            type: vi
+            access: null
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, eeprom, brown_out)
+          fatal_error_log:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Fatal error log
+          frost_warning:
+            type: vi
+            access: r
+            min: 0
+            max: 1
+            report_on_update: true
+            report_interval: 3600
+            description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
+          heated_temperature:
+            type: vi
+            access: null
+          heating_timestamp:
+            type: vo
+            access: null
+          light:
+            type: vi
+            access: r
+            unit: lx
+            min: 0
+            max: 200000
+            report_on_update: true
+            report_interval: 3600
+            description: Light intensity in lux
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          soil_humidity:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            report_interval: 14400
+            description: Soil moisture value (mean weighted)
+          soil_humidity_raw_value:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            report_interval: 14400
+            description: Soil moisture value as measured
+          soil_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            report_on_update: true
+            report_interval: 3600
+            description: Ground temperature
+          threshold:
+            type: vi
+            access: null
+          voltage_log:
+            type: vo
+            access: null
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '18869':
+    name: Water Control
+    type: Water Control
+    protocol: lemonbeat
+    lemonbeat_commands:
+      close_all_valves: 22
+      reset_all_valve_errors: 36
+      led_all_off: 33
+      led_all_green_on: 34
+      led_all_red_on: 35
+      reboot: 31
+      ntp_force_sync: 32
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          ambient_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            report_on_update: true
+            report_interval: 3600
+            description: Ambient temperature (not currently used)
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            report_interval: 86400
+            description: Battery level measured when switching the valve
+          be_decision_time:
+            type: vi
+            access: rw
+            unit: s
+            min: 1
+            max: 3600
+            persistent: true
+            report_on_update: true
+            description: Timeout for smart decision from backend (max 1h, default 8 minutes)
+          button_config_time:
+            type: vi
+            access: rw
+            unit: s
+            min: 0
+            max: 36000
+            persistent: true
+            report_on_update: true
+            description: Valve open time after button press (default 30 minutes)
+          button_manual_override_time:
+            type: vi
+            access: null
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          disposable_battery_lifecycle:
+            type: vi
+            access: null
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, eeprom, brown_out)
+          fatal_error_log:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Fatal error log (error identifier, file, line, stack)
+          frost_warning:
+            type: vi
+            access: r
+            min: 0
+            max: 1
+            report_on_update: true
+            report_interval: 3600
+            description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
+          manual_override:
+            type: vi
+            access: null
+          manual_override_time:
+            type: vi
+            access: null
+          private_command:
+            type: vi
+            access: null
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          schedule_config:
+            type: vo
+            access: rw
+            encoding: hex
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 36 schedules, 7 bytes each)
+          schedule_state:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Schedule state (3 bytes per schedule, 108 bytes total)
+          schedule_state_control_shorten:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Shorten schedule duration (3 bytes per schedule)
+          schedule_state_control_skip:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Skip schedule (1 byte per schedule, 36 bytes total)
+          valve_error_1:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve error status (none, valve_broken, frost_prevents_starting, low_battery_prevents_starting, valve_power_supply_failed)
+          valve_open:
+            type: vi
+            access: null
+          valve_open_max_time:
+            type: vi
+            access: null
+          watering_timer_1:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer (write >0=start manual, <0=start scheduled, 0=stop; read 0=not running, >0=manual running, <0=scheduled running)
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '19040':
+    name: Sensor II
+    type: Sensor
+    protocol: lemonbeat
+    lemonbeat_commands:
+      measure_soil_moisture: 2
+      measure_ambient_temperature: 5
+      measure_battery: 6
+      measure_rf_link: 7
+      reboot: 31
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          ambient_temperature:
+            type: vi
+            access: null
+          automodel_definition:
+            type: vo
+            access: rw
+            encoding: hex
+            uninitialized: '0'
+            report_on_update: true
+            description: Soil auto-recognition internal state (saved/restored after firmware upgrade)
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Battery level (100% is full)
+          battery_voltage:
+            type: vi
+            access: null
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Sensor error status (none, eeprom)
+          experimental_model_state:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            uninitialized: '32768'
+            report_on_update: true
+            description: Experimental model internal state
+          fatal_error_log:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Fatal error log
+          frost_warning:
+            type: vi
+            access: r
+            min: 0
+            max: 1
+            report_on_update: true
+            report_interval: 3600
+            uninitialized: 'NaN'
+            description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
+          max:
+            type: vi
+            access: null
+          measurement_interval:
+            type: vi
+            access: rw
+            unit: s
+            min: 10
+            max: 86400
+            persistent: true
+            uninitialized: '3600'
+            report_on_update: true
+            description: Time interval between periodic measurements when model is final
+          min:
+            type: vi
+            access: null
+          model_definition:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Model definition with up to 7 intermediate linear interpolation points
+          model_determination_mode:
+            type: vi
+            access: rw
+            persistent: true
+            uninitialized: '0'
+            report_on_update: true
+            description: Soil recognition logic mode (default or experimental)
+          model_determination_status:
+            type: vi
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: Model determination status (default_model, determination_running, preliminary_model, final_model, determination_failed, power_up, location_change)
+          raw_counts:
+            type: vi
+            access: r
+            unit: Counts
+            min: 0
+            max: 10000
+            uninitialized: 'NaN'
+            report_on_update: true
+            description: Raw counter values
+          raw_counts_2:
+            type: vi
+            access: null
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            uninitialized: 'NaN'
+            report_on_update: true
+            description: RF link quality percentage
+          soil_moisture:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            uninitialized: 'NaN'
+            report_on_update: true
+            report_interval: 3600
+            description: Soil moisture percentage
+          soil_moisture_experimental_model:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            uninitialized: 'NaN'
+            report_on_update: true
+            report_interval: 900
+            description: Soil moisture from experimental model
+          soil_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            uninitialized: 'NaN'
+            report_on_update: true
+            report_interval: 3600
+            description: Near ground or soil temperature
+          soil_type_determination_result_1:
+            type: vo
+            access: r
+            encoding: hex
+            uninitialized: '0'
+            report_on_update: true
+            description: First 100 measurements as raw counts (8h 20min)
+          soil_type_determination_result_2:
+            type: vo
+            access: r
+            encoding: hex
+            uninitialized: '0'
+            report_on_update: true
+            description: Next 100 measurements as raw counts (8h 20min)
+          soil_type_determination_result_3:
+            type: vo
+            access: r
+            encoding: hex
+            uninitialized: '0'
+            report_on_update: true
+            description: Last 88 measurements as raw counts (7h 20min)
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '21869':
+    name: Gateway (HCGW)
+    type: Gateway
+    protocol: lwm2m
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      connectivity_monitoring:
+        object_id: 4
+        object_urn: urn:oma:lwm2m:oma:4
+        object_version: '1.2'
+        mandatory: false
+        resources:
+          available_network_bearer:
+            type: ai
+            access: r
+            multi_instance: true
+            description: List of available network bearers
+          ip_addresses:
+            type: as
+            access: r
+            multi_instance: true
+            description: IP addresses assigned to the device
+          network_bearer:
+            type: vi
+            access: r
+            min: 0
+            max: 50
+            description: 'Network bearer: 0=Cellular GSM, 1=Cellular TD-SCDMA, 2=Cellular WCDMA, 3=Cellular CDMA, 4=Cellular LTE-TDD, 5=Cellular LTE-FDD, 6-20=Reserved, 21=WLAN, 22=Bluetooth, 23=802.15.4, 24-40=Reserved, 41=Ethernet, 42=DSL, 43=PLC, 44-49=Reserved, 50=Not used'
+          radio_signal_strength:
+            type: vi
+            access: r
+            unit: dBm
+            description: Radio signal strength in dBm
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          timezone:
+            type: vs
+            access: rw
+            description: Timezone configuration
+      homekit_accessory:
+        resources:
+          paired:
+            type: vb
+            access: null
+          setup_payload:
+            type: vs
+            access: null
+      includable_device:
+        resources:
+          identifier:
+            type: vs
+            access: null
+          inclusion_completed:
+            type: vb
+            access: null
+          inclusion_error:
+            type: vi
+            access: null
+          inclusion_started:
+            type: vb
+            access: null
+          protocol:
+            type: vi
+            access: null
+        multi_instance: true
+      maintenance_access:
+        resources:
+          status:
+            type: vi
+            access: null
+      support_bundle:
+        resources:
+          consent:
+            type: vb
+            access: null
+          state:
+            type: vi
+            access: null
+      telemetry:
+        resources:
+          consent:
+            type: vb
+            access: null
+      wlan_control:
+        resources:
+          scan_active:
+            type: vb
+            access: null
+      wlan_ssid:
+        resources:
+          key_mgmt:
+            type: vs
+            access: null
+          signal_level:
+            type: vf
+            access: null
+        multi_instance: true
+  '22538':
+    name: Automatic Home and Garden Pump
+    type: Automatic Home and Garden Pump
+    protocol: lemonbeat
+    commands:
+      power_off: 26
+      reset_flow_resettable: 27
+      reset_outlet_temperature_min_max: 28
+      reboot: 31
+      ntp_force_sync: 32
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          be_decision_time:
+            type: vi
+            access: rw
+            unit: s
+            min: 1
+            max: 3600
+            persistent: true
+            report_on_update: true
+            description: Timeout for smart decision from backend (max 1h, default 8 minutes)
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          dripping_alert:
+            type: vi
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: Dripping alert timeout (60Min=factory default, 2Min, off)
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, eeprom, unexpected_setting_change)
+          error1_count:
+            type: vi
+            access: null
+          error2_count:
+            type: vi
+            access: null
+          error3_count:
+            type: vi
+            access: null
+          error4_count:
+            type: vi
+            access: null
+          fatal_error_log:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Fatal error log (error identifier, file, line, stack)
+          flow_rate:
+            type: vi
+            access: r
+            unit: L/h
+            min: 100
+            max: 13615
+            report_on_update: true
+            description: Flow rate (not accurate, reports on 76 L/h delta)
+          flow_since_last_reset:
+            type: vi
+            access: r
+            unit: m³
+            min: 0
+            max: 16777215
+            report_on_update: true
+            description: Water volume transported since last reset
+          flow_total:
+            type: vi
+            access: r
+            unit: m³
+            min: 0
+            max: 16777215
+            report_on_update: true
+            description: Total water volume transported
+          frost_warning:
+            type: vi
+            access: r
+            min: 0
+            max: 1
+            report_on_update: true
+            report_interval: 1
+            description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
+          manual_watering_timer:
+            type: vi
+            access: null
+          operating_days:
+            type: vi
+            access: null
+          operating_mode:
+            type: vi
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: Operating mode (scheduled, automatic) - factory default is automatic
+          outlet_pressure:
+            type: vf
+            access: r
+            unit: Bar
+            min: 0
+            max: 10
+            report_on_update: true
+            description: Outlet pressure in Bar
+          outlet_pressure_max:
+            type: vf
+            access: r
+            unit: Bar
+            min: 0
+            max: 10
+            report_on_update: true
+            description: Maximum outlet pressure (critical for warranty)
+          outlet_temperature:
+            type: vi
+            access: r
+            unit: °C
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Outlet temperature
+          outlet_temperature_max:
+            type: vi
+            access: r
+            unit: °C
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Maximum outlet temperature (critical for warranty)
+          outlet_temperature_min:
+            type: vi
+            access: r
+            unit: °C
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Minimum outlet temperature
+          private_command:
+            type: vi
+            access: null
+          pump_mode:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Pump mode (off, auto) - auto pumps if preconditions satisfied
+          pump_on_off:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Motor state (motor_disabled, motor_enabled)
+          pump_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Pump state (just_starting, water_in_body, no_water_in_body, flow_after_5s, no_flow_after_5s)
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          schedule_config:
+            type: vo
+            access: rw
+            encoding: hex
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 36 schedules, 7 bytes each)
+          schedule_state:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Schedule state (3 bytes per schedule, 108 bytes total)
+          schedule_state_control_shorten:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Shorten schedule duration (3 bytes per schedule)
+          schedule_state_control_skip:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Skip schedule (1 byte per schedule, 36 bytes total)
+          scheduled_watering_state:
+            type: vi
+            access: null
+          service_command_setting:
+            type: vi
+            access: null
+          turn_on_pressure:
+            type: vf
+            access: rw
+            unit: Bar
+            min: 2.0
+            max: 2.8
+            persistent: true
+            description: Lower pressure limit for auto mode (upper limit is product specific)
+          valve_error_1:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve error status (none, pump_not_filled, clean_gasket, clean_fine_mesh, small_leakage)
+          watering_timer_1:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer (write >0=start manual, <0=start scheduled, 0=stop; read 0=not running, >0=manual running, <0=scheduled running)
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '29694':
+    name: Robotic Lawnmower (CBTG)
+    type: Robotics Lawnmower
+    protocol: lemonbeat
+    commands:
+      reboot: 31
+      ntp_force_sync: 32
+      led_all_off: 33
+      led_all_green_on: 34
+      led_all_red_on: 35
+      emc_test_start: 29
+      emc_test_stop: 30
+      power_off: 26
+      factory_reset_start_inclusion_mode: 43
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Battery level (100% is full)
+          charging_cycles:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Number of completed charging cycles
+          collisions:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Total number of collisions
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          connection_status:
+            type: vi
+            access: null
+          cutting_time:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Time in hours that the cutting disc has been active
+          device_type:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Device type identifier
+          device_variant:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Device variant identifier
+          internal_connection_state:
+            type: vi
+            access: null
+          last_error_code:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Last reported error code from the mower
+          mainboard_version:
+            type: vs
+            access: r
+            report_on_update: true
+            description: 'Mainboard version (format: XX.XX)'
+          manual_operation:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Manual mode status (requires physical access)
+          mmi_version:
+            type: vs
+            access: r
+            report_on_update: true
+            description: 'MMI application version (format: XX.XX)'
+          mower_timer:
+            type: vi
+            access: rw
+            unit: s
+            min: -16777215
+            max: 16777216
+            report_on_update: true
+            description: Manual mowing timer (write >0=start, 0=stop, read >0=running, -16777215=schedule running)
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          running_time:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Time in hours that the wheel motors have been active
+          schedule_config:
+            type: vo
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 14 schedules, 7 bytes each)
+          serial_number:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Mower serial number
+          settings_control:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Write settings (hex encoded custom buffer)
+          settings_report:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Read settings (hex encoded custom buffer)
+          source_for_next_start:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Source/reason for timestamp_next_start (no_source, daily_limit, week_timer, countdown, charging, auto_timer, frost)
+          start_delay_ms:
+            type: vi
+            access: null
+          starting_points:
+            type: vo
+            access: rw
+            report_on_update: true
+            description: Parameters for three starting points in mower binary format
+          status:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Mower status (off, wait_for_safety, pause, running_mowing_timer, mowing, learning_wire, going_home, charging, error, software_update, wait_leaving_cs, leaving_cs, wait_for_new_task, startup)
+          supported_starting_points:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            report_on_update: true
+            description: Number of supported starting points
+          supported_wires:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            report_on_update: true
+            description: Bit mask for supported wire features
+          timestamp_last_error_code:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Timestamp of last error code (seconds since 1970-01-01, local time)
+          timestamp_next_start:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Estimated time of next automatic start (seconds since 1970-01-01, local time, 0=start now)
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '31653':
+    name: Irrigation Control
+    type: Irrigation Control
+    protocol: lemonbeat
+    commands:
+      close_all_valves: 22
+      reset_all_valve_errors: 36
+      led_all_off: 33
+      led_all_green_on: 34
+      led_all_red_on: 35
+      reboot: 31
+      ntp_force_sync: 32
+      hap_identify: 37
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused for channel 1 (Format: YYYYMMDDHHmm, local time)'
+          action_paused_until_2:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Timestamp until the schedule is paused for channel 2
+          action_paused_until_3:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Timestamp until the schedule is paused for channel 3
+          action_paused_until_4:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Timestamp until the schedule is paused for channel 4
+          action_paused_until_5:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Timestamp until the schedule is paused for channel 5
+          action_paused_until_6:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Timestamp until the schedule is paused for channel 6
+          be_decision_time:
+            type: vi
+            access: rw
+            unit: s
+            min: 1
+            max: 3600
+            persistent: true
+            report_on_update: true
+            description: Timeout for smart decision from backend (max 1h, default 8 minutes)
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, voltage_drop, power_supply, secondary_mcu, eeprom)
+          fatal_error_log:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Fatal error log (error identifier, file, line, stack)
+          master_valve_active:
+            type: vi
+            access: r
+            description: Master valve active status (not_active, active)
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          schedule_config:
+            type: vo
+            access: rw
+            encoding: hex
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 36 schedules, 7 bytes each)
+          schedule_state:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Schedule state (3 bytes per schedule, 108 bytes total)
+          schedule_state_control_shorten:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Shorten schedule duration (3 bytes per schedule)
+          schedule_state_control_skip:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Skip schedule (1 byte per schedule, 36 bytes total)
+          stm8_fw_version:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: 'STM8 firmware version (format: XXYYZZDD)'
+          valve_error_0:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Master valve error status
+          valve_error_1:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve 1 error status (none, exceeded_valves_limit, valve_not_connected, exceeded_current, exceeded_total_current, master_valve, duration_too_short)
+          valve_error_2:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve 2 error status
+          valve_error_3:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve 3 error status
+          valve_error_4:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve 4 error status
+          valve_error_5:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve 5 error status
+          valve_error_6:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve 6 error status
+          valve_name_1:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Valve 1 name (UTF-8 encoded, 64 bytes)
+          valve_name_2:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Valve 2 name (UTF-8 encoded, 64 bytes)
+          valve_name_3:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Valve 3 name (UTF-8 encoded, 64 bytes)
+          valve_name_4:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Valve 4 name (UTF-8 encoded, 64 bytes)
+          valve_name_5:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Valve 5 name (UTF-8 encoded, 64 bytes)
+          valve_name_6:
+            type: vo
+            access: rw
+            encoding: hex
+            description: Valve 6 name (UTF-8 encoded, 64 bytes)
+          valves_connected:
+            type: vi
+            access: r
+            min: 0
+            max: 127
+            report_on_update: true
+            description: Connected valves bitfield (Bit_0=master, Bit_n=channel_n)
+          valves_master_config:
+            type:
+              - vf
+              - vi
+            access: rw
+            min: 0
+            max: 126
+            persistent: true
+            report_on_update: true
+            description: Master valve configuration bitfield (Bit_n=channel needs master)
+          watering_timer_1:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer for channel 1
+          watering_timer_2:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer for channel 2
+          watering_timer_3:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer for channel 3
+          watering_timer_4:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer for channel 4
+          watering_timer_5:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer for channel 5
+          watering_timer_6:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer for channel 6
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '35279':
+    name: Power
+    type: Power Adapter
+    protocol: lemonbeat
+    commands:
+      power_off: 26
+      reboot: 31
+      ntp_force_sync: 32
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          be_decision_time:
+            type: vi
+            access: rw
+            unit: s
+            min: 1
+            max: 3600
+            persistent: true
+            report_on_update: true
+            description: Timeout for smart decision from backend (max 1h, default 8 minutes)
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, timer_cancelled, eeprom)
+          fatal_error_log:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Fatal error log (error identifier, file, line, stack)
+          power_timer:
+            type: vi
+            access: rw
+            unit: s
+            min: -16777215
+            max: 16777216
+            report_on_update: true
+            description: Power timer (write >0=high prio, <0=low prio, 0=stop; read >0=high running, <0=low running, 2^24=infinite on)
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          schedule_config:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Schedule configuration (read-only, up to 36 schedules)
+          schedule_state:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Schedule state (3 bytes per schedule, 108 bytes total)
+          schedule_state_control_shorten:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Shorten schedule duration (3 bytes per schedule)
+          schedule_state_control_skip:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Skip schedule (1 byte per schedule, 36 bytes total)
+          sun_data:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Sun data for sunrise/sunset calculations (2-byte header + 84 3-byte blocks)
+          sun_schedule_config:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Sun-based schedule configuration (up to 36 schedules, 7 bytes each)
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
+  '46350':
+    name: Gateway (LCGW)
+    type: Gateway
+    protocol: lwm2m
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      connectivity_monitoring:
+        object_id: 4
+        object_urn: urn:oma:lwm2m:oma:4
+        object_version: '1.2'
+        mandatory: false
+        resources:
+          available_network_bearer:
+            type: ai
+            access: r
+            multi_instance: true
+            description: List of available network bearers
+          ip_addresses:
+            type: as
+            access: r
+            multi_instance: true
+            description: IP addresses assigned to the device
+          network_bearer:
+            type: vi
+            access: r
+            min: 0
+            max: 50
+            description: 'Network bearer: 0=Cellular GSM, 1=Cellular TD-SCDMA, 2=Cellular WCDMA, 3=Cellular CDMA, 4=Cellular LTE-TDD, 5=Cellular LTE-FDD, 6-20=Reserved, 21=WLAN, 22=Bluetooth, 23=802.15.4, 24-40=Reserved, 41=Ethernet, 42=DSL, 43=PLC, 44-49=Reserved, 50=Not used'
+          radio_signal_strength:
+            type: vi
+            access: r
+            unit: dBm
+            description: Radio signal strength in dBm
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          timezone:
+            type: vs
+            access: rw
+            description: Timezone configuration
+      homekit_accessory:
+        resources:
+          paired:
+            type: vb
+            access: null
+      includable_device:
+        resources:
+          identifier:
+            type: vs
+            access: null
+          inclusion_completed:
+            type: vb
+            access: null
+          inclusion_error:
+            type: vi
+            access: null
+          inclusion_started:
+            type: vb
+            access: null
+          protocol:
+            type: vi
+            access: null
+        multi_instance: true
+      maintenance_access:
+        resources:
+          status:
+            type: vi
+            access: null
+      support_bundle:
+        resources:
+          consent:
+            type: vb
+            access: null
+          state:
+            type: vi
+            access: null
+      telemetry:
+        resources:
+          consent:
+            type: vb
+            access: null
+      wlan_control:
+        resources:
+          scan_active:
+            type: vb
+            access: null
+      wlan_ssid:
+        resources:
+          key_mgmt:
+            type: vs
+            access: null
+          signal_level:
+            type: vf
+            access: null
+        multi_instance: true
+  '53988':
+    name: Robotic Lawnmower (CBTL)
+    type: Robotics Lawnmower
+    protocol: lemonbeat
+    commands:
+      reboot: 31
+      ntp_force_sync: 32
+      led_all_off: 33
+      led_all_green_on: 34
+      led_all_red_on: 35
+      emc_test_start: 29
+      emc_test_stop: 30
+      power_off: 26
+      factory_reset_start_inclusion_mode: 43
+      wipe_map: 44
+      wipe_zones: 45
+      deactivate_map: 46
+      deactivate_zones: 47
+      board_reset: 48
+      wipe_map_and_zones: 49
+      trigger_guide_wire_length_measurement: 51
+      force_report: 50
+    objects:
+      connection_status:
+        object_id: 28171
+        object_urn: urn:oma:lwm2m:ext:28171
+        object_version: '0.2'
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      data_download:
+        resources:
+          checksum:
+            type: vi
+            access: null
+          content_tag:
+            type: vi
+            access: null
+          slot:
+            type: vi
+            access: null
+          status:
+            type: vi
+            access: null
+      device:
+        object_id: 3
+        object_urn: urn:oma:lwm2m:oma:3
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        object_id: 5
+        object_urn: urn:oma:lwm2m:oma:5
+        object_version: '1.1'
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Battery level (100% is full)
+          charging_cycles:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Number of completed charging cycles
+          collisions:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Total number of collisions
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          cutting_time:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Time in hours that the cutting disc has been active
+          data_download:
+            type: vo
+            access: null
+          data_download_int:
+            type: vo
+            access: null
+          device_type:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Device type identifier
+          device_variant:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Device variant identifier
+          guide_wire_length:
+            type: vi
+            access: r
+            unit: m
+            min: 0
+            max: 1000
+            uninitialized: '0'
+            report_on_update: true
+            description: Guide wire length in meters
+          internal_connection_state:
+            type: vi
+            access: null
+          last_error_code:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Last reported error code from the mower
+          lona:
+            type: vo
+            access: null
+          lona_control:
+            type:
+              - vi
+              - vo
+            access: rw
+            persistent: true
+            encoding: hex
+            uninitialized: empty
+            report_on_update: true
+            description: LONA control flags (8 bytes, bit flags for LONA features)
+          lona_mcu_boot_fw_version:
+            type: vo
+            access: null
+          lona_mcu_fw_version:
+            type: vo
+            access: null
+          lona_status:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: LONA status (12 bytes, includes error code, zone tag, map tag, session ID)
+          mainboard_version:
+            type: vs
+            access: r
+            report_on_update: true
+            description: 'Mainboard version (format: XX.XX)'
+          manual_operation:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Manual mode status (requires physical access)
+          mmi_version:
+            type: vs
+            access: r
+            report_on_update: true
+            description: 'MMI application version (format: XX.XX)'
+          mower_timer:
+            type: vi
+            access: null
+          mower_timer_with_distance:
+            type: vo
+            access: null
+          position:
+            type: vo
+            access: r
+            encoding: hex
+            uninitialized: empty
+            report_on_update: true
+            description: GNSS position and compass data (26 bytes, includes lat/lon, accuracy, heading)
+          position_timer:
+            type: vi
+            access: rw
+            unit: s
+            min: 0
+            max: 3600
+            report_on_update: true
+            description: Duration for repeated position reporting (write >0 to start, 0 to stop)
+          position_update_interval:
+            type: vi
+            access: rw
+            unit: ms
+            min: 1
+            max: 3600000
+            persistent: true
+            report_on_update: true
+            description: Time interval for position reporting
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          running_time:
+            type: vi
+            access: r
+            min: 0
+            max: 65535
+            report_on_update: true
+            description: Time in hours that the wheel motors have been active
+          schedule_config:
+            type: vo
+            access: rw
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 14 schedules, 7 bytes each)
+          serial_number:
+            type: vs
+            access: r
+            report_on_update: true
+            description: Mower serial number
+          settings_control:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: Write settings (hex encoded custom buffer)
+          settings_report:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Read settings (hex encoded custom buffer)
+          source_for_next_start:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Source/reason for timestamp_next_start (no_source, daily_limit, week_timer, countdown, charging, auto_timer, frost)
+          start_delay_ms:
+            type: vi
+            access: null
+          starting_points:
+            type: vo
+            access: rw
+            report_on_update: true
+            description: Parameters for three starting points in mower binary format
+          status:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Mower status (off, wait_for_safety, pause, running_mowing_timer, mowing, learning_wire, going_home, charging, error, software_update, wait_leaving_cs, leaving_cs, wait_for_new_task, startup)
+          supported_starting_points:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            report_on_update: true
+            description: Number of supported starting points
+          supported_wires:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            report_on_update: true
+            description: Bit mask for supported wire features
+          timestamp_last_error_code:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Timestamp of last error code (seconds since 1970-01-01, local time)
+          timestamp_next_start:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Estimated time of next automatic start (seconds since 1970-01-01, local time, 0=start now)
+      lemonbeat_status_message:
+        object_id: 28173
+        object_urn: urn:oma:lwm2m:ext:28173
+        object_version: '0.1'
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type

@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Device Models Schema",
+  "type": "object",
+  "required": ["types", "models"],
+  "additionalProperties": false,
+  "properties": {
+    "types": {
+      "type": "object",
+      "description": "Resource type definitions",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "models": {
+      "type": "object",
+      "description": "Device model definitions keyed by model number",
+      "additionalProperties": {
+        "$ref": "#/$defs/model"
+      }
+    }
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "required": ["name", "type", "objects"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable model name"
+        },
+        "type": {
+          "type": "string",
+          "description": "Device type (e.g., Mower, Water Control, Sensor)"
+        },
+        "protocol": {
+          "type": "string",
+          "description": "Communication protocol (lwm2m or lemonbeat)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        },
+        "objects": {
+          "type": "object",
+          "description": "IPSO objects supported by this model",
+          "additionalProperties": {
+            "$ref": "#/$defs/object"
+          }
+        },
+        "commands": {
+          "type": "object",
+          "description": "Command code to action name mapping",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "propertyNames": {
+            "pattern": "^[0-9]+$"
+          }
+        }
+      }
+    },
+    "object": {
+      "type": "object",
+      "required": ["resources"],
+      "additionalProperties": false,
+      "properties": {
+        "object_id": {
+          "type": "integer",
+          "description": "LWM2M Object ID"
+        },
+        "object_urn": {
+          "type": "string",
+          "description": "LWM2M URN with version (e.g., 'urn:oma:lwm2m:x:28180:0.4')"
+        },
+        "object_version": {
+          "type": "string",
+          "description": "Object version (e.g., '0.4', '3.0')"
+        },
+        "mandatory": {
+          "type": "boolean",
+          "description": "Whether object is mandatory for the device"
+        },
+        "multi_instance": {
+          "type": "boolean",
+          "description": "Whether multiple instances of this object can exist"
+        },
+        "resources": {
+          "type": "object",
+          "description": "Resources within this object",
+          "additionalProperties": {
+            "$ref": "#/$defs/resource"
+          }
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "required": ["type", "access"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["vb", "vs", "vi", "vo", "vf", "vt", "ai", "as"]
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["vb", "vs", "vi", "vo", "vf", "vt", "ai", "as"]
+              },
+              "minItems": 1,
+              "description": "Multiple types (needs clarification)"
+            }
+          ]
+        },
+        "access": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "enum": ["r", "w", "x", "rw", "rx", "wx", "rwx"]}
+          ],
+          "description": "Unix-style permissions (rwx format): r=read, w=write, x=execute (null = needs review)"
+        },
+        "unit": {
+          "type": "string",
+          "description": "Physical unit (e.g., '%', 'C', 's', 'mA', 'mV')"
+        },
+        "min": {
+          "type": "number",
+          "description": "Minimum value constraint"
+        },
+        "max": {
+          "type": "number",
+          "description": "Maximum value constraint"
+        },
+        "persistent": {
+          "type": "boolean",
+          "description": "Whether value persists across reboots"
+        },
+        "report_on_update": {
+          "type": "boolean",
+          "description": "Triggers update notifications when value changes"
+        },
+        "report_interval": {
+          "type": "integer",
+          "description": "Periodic reporting interval in seconds",
+          "minimum": 0
+        },
+        "uninitialized": {
+          "oneOf": [
+            {"type": "string"},
+            {"type": "number"}
+          ],
+          "description": "Default or uninitialized value (e.g., 'NaN', '0', 'empty')"
+        },
+        "encoding": {
+          "type": "string",
+          "description": "Data format specification and encoding details"
+        },
+        "multi_instance": {
+          "type": "boolean",
+          "description": "Whether multiple instances of this resource can exist"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description"
+        }
+      }
+    }
+  }
+}

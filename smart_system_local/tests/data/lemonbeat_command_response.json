@@ -1,0 +1,11 @@
+[
+  {
+    "entity": {
+      "device": "3034F8EE901267400000B333",
+      "path": "lemonbeat/0/command"
+    },
+    "metadata": { "sequence": 44, "source": "lemonbeatd" },
+    "payload": null,
+    "success": true
+  }
+]

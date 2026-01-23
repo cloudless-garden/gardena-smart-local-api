@@ -1,4 +1,5 @@
 """Dynamic device builder for creating devices from YAML model definitions."""
+
 import uuid
 from functools import cached_property
 from typing import Any
@@ -31,7 +32,9 @@ class DynamicDevice(BaseDevice):
         payload = raw_message.get("payload") or raw_message
 
         if len(payload) != 1:
-            raise ValueError(f"Expected exactly one device in payload, got {len(payload)}")
+            raise ValueError(
+                f"Expected exactly one device in payload, got {len(payload)}"
+            )
 
         device_id, device_data = next(iter(payload.items()))
 
@@ -45,6 +48,32 @@ class DynamicDevice(BaseDevice):
             raise ValueError(f"Unknown model number: {model_number}")
 
         return cls(id=device_id, raw=device_data, model_definition=model_definition)
+
+    @staticmethod
+    def discover() -> list[dict[str, Any]]:
+        """Create a device discovery command for the Smart System Local API.
+
+        Returns:
+            A dictionary containing the discovery command structure to retrieve
+            all devices from the lemonbeatd service.
+
+        Example:
+            >>> DeviceFactory.discover()
+            {
+                "request-id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                "op": "read",
+                "entity": {"service": "lemonbeatd", "path": "devices"},
+                "payload": {}
+            }
+        """
+        return [
+            {
+                "request-id": str(uuid.uuid4()),
+                "op": "read",
+                "entity": {"service": "lemonbeatd", "path": "devices"},
+                "payload": {},
+            }
+        ]
 
     @staticmethod
     def _extract_model_number(device_data: dict[str, Any]) -> str | None:
@@ -69,12 +98,12 @@ class DynamicDevice(BaseDevice):
                             object_name, object_instance_id, object_data
                         )
             else:
-                result[object_name]["0"] = DynamicObject(
-                    object_name, "0", object_data
-                )
+                result[object_name]["0"] = DynamicObject(object_name, "0", object_data)
         return result
 
-    def get_object(self, object_name: str, instance_id: str = "0") -> DynamicObject | None:
+    def get_object(
+        self, object_name: str, instance_id: str = "0"
+    ) -> DynamicObject | None:
         """Get a dynamic object by name and instance ID.
 
         Args:

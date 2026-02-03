@@ -18,6 +18,15 @@ class ResponseMetadata(BaseModel):
     request_id: str | None = None
 
 
+class Request(BaseModel):
+    """Request to Smart System Local API."""
+
+    entity: Entity
+    op: str
+    payload: dict | None = None
+    request_id: str | None = None
+
+
 class Response(BaseModel):
     """Response from a Smart System Local command execution."""
 

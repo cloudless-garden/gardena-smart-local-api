@@ -1,10 +1,13 @@
 """Base device classes and utilities for Smart System Local devices."""
+
 import uuid
 from datetime import datetime
 from enum import Enum, IntEnum
 from typing import Any
 
 from pydantic import BaseModel, Field
+
+from .messages import Entity, Request
 
 
 def merge_enums(name: str, *enums: type[Enum]) -> type[Enum]:
@@ -20,7 +23,7 @@ def merge_enums(name: str, *enums: type[Enum]) -> type[Enum]:
 
 class DeviceCommand(IntEnum):
     """Base class for all device command enums.
-    
+
     All device-specific Command enums should inherit from this class
     to ensure type safety when using the build_command method.
     """
@@ -28,7 +31,7 @@ class DeviceCommand(IntEnum):
 
 class IpsoPath(Enum):
     """Base class for all device value path enums.
-    
+
     Each value is a tuple of (path_parts...) defining where the value
     is located in the device's raw data structure. Can be used for
     both getting and setting values.
@@ -51,7 +54,16 @@ class ValueField(BaseModel):
     @property
     def value(self) -> bool | str | int | float | list[int] | list[str] | None:
         """Extract the actual value from the field."""
-        for v in (self.vb, self.vs, self.vi, self.vf, self.vo, self.ai, self.vt, self.as_):
+        for v in (
+            self.vb,
+            self.vs,
+            self.vi,
+            self.vf,
+            self.vo,
+            self.ai,
+            self.vt,
+            self.as_,
+        ):
             if v is not None:
                 return v
         return None
@@ -85,11 +97,13 @@ class BaseDevice(BaseModel):
         """
         # If single argument and it's an IpsoPath, extract its value tuple
         path_parts: tuple[str, ...]
-        if len(path) == 1 and hasattr(path[0], 'value'):
+        if len(path) == 1 and hasattr(path[0], "value"):
             path_parts = path[0].value  # type: ignore[attr-defined]
         else:
-            path_parts = tuple(str(p) if isinstance(p, str) else str(p.value) for p in path)
-        
+            path_parts = tuple(
+                str(p) if isinstance(p, str) else str(p.value) for p in path
+            )
+
         # Navigate through nested dict and extract value from ValueField
         obj: Any = self.raw
         for key in path_parts:
@@ -154,7 +168,7 @@ class BaseDevice(BaseModel):
         """Current error code."""
         return self.get_value("lemonbeat", "0", "error")
 
-    def build_command(self, command: DeviceCommand) -> dict[str, Any]:
+    def build_command(self, command: DeviceCommand) -> Request:
         """Build a Lemonbeat command JSON structure.
 
         Args:
@@ -167,23 +181,24 @@ class BaseDevice(BaseModel):
         Example:
             >>> # Using a command from a dynamically built Command enum
             >>> device.build_command(device.Command.PARK_UNTIL_NEXT_TASK)
-            {
-                "request-id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
-                "op": "write",
-                "entity": {"device": "device_id", "path": "lemonbeat/0/command"},
-                "payload": {"vi": 3},
-                "metadata": {}
-            }
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="write",
+                entity=Entity(device="device_id", path="lemonbeat/0/command"),
+                payload={"vi": 3},
+                metadata={}
+            )
         """
-        return {
-            "request-id": str(uuid.uuid4()),
-            "op": "write",
-            "entity": {"device": self.id, "path": "lemonbeat/0/command"},
-            "payload": {"vi": command.value},
-            "metadata": {},
-        }
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="write",
+            entity=Entity(device=self.id, path="lemonbeat/0/command"),
+            payload={"vi": command.value},
+        )
 
-    def write_value(self, path: "IpsoPath", value: int | str | bool | float) -> dict[str, Any]:
+    def write_value(
+        self, path: "IpsoPath", value: int | str | bool | float
+    ) -> Request:
         """Build a value write JSON structure.
 
         Args:
@@ -197,13 +212,13 @@ class BaseDevice(BaseModel):
         Example:
             >>> # Using a value from a dynamically built Value enum
             >>> device.write_value(device.Value.POWER_TIMER, 3600)
-            {
-                "request-id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
-                "op": "write",
-                "entity": {"device": "device_id", "path": "lemonbeat/0/power_timer"},
-                "payload": {"vi": 3600},
-                "metadata": {}
-            }
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="write",
+                entity=Entity(device="device_id", path="lemonbeat/0/power_timer"),
+                payload={"vi": 3600},
+                metadata={}
+            )
         """
         # Determine the appropriate payload key based on value type
         if isinstance(value, bool):
@@ -219,16 +234,15 @@ class BaseDevice(BaseModel):
 
         # Build the path from the enum tuple
         path_str = "/".join(path.value)
-        
-        return {
-            "request-id": str(uuid.uuid4()),
-            "op": "write",
-            "entity": {"device": self.id, "path": path_str},
-            "payload": payload,
-            "metadata": {},
-        }
 
-    def read_value(self, path: "IpsoPath") -> dict[str, Any]:
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="write",
+            entity=Entity(device=self.id, path=path_str),
+            payload=payload,
+        )
+
+    def read_value(self, path: "IpsoPath") -> Request:
         """Build a value read request JSON structure.
 
         Args:
@@ -241,19 +255,18 @@ class BaseDevice(BaseModel):
         Example:
             >>> # Using a value from a dynamically built Value enum
             >>> device.read_value(device.Value.POWER_TIMER)
-            {
-                "request-id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
-                "op": "read",
-                "entity": {"device": "device_id", "path": "lemonbeat/0/power_timer"},
-                "metadata": {}
-            }
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="read",
+                entity=Entity(device="device_id", path="lemonbeat/0/power_timer"),
+                metadata={}
+            )
         """
         # Build the path from the enum tuple
         path_str = "/".join(path.value)
-        
-        return {
-            "request-id": str(uuid.uuid4()),
-            "op": "read",
-            "entity": {"device": self.id, "path": path_str},
-            "metadata": {},
-        }
+
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="read",
+            entity=Entity(device=self.id, path=path_str),
+        )

@@ -79,9 +79,9 @@ class ModelLoader:
         """Get resource type definitions."""
         return self._types
 
-    def get_model(self, model_number: str) -> ModelDefinition | None:
+    def get_model(self, model_number: str | int) -> ModelDefinition | None:
         """Get a model definition by model number."""
-        return self._models.get(model_number)
+        return self._models.get(str(model_number))
 
     def get_model_by_type(self, device_type: str) -> list[ModelDefinition]:
         """Get all models matching a device type."""
@@ -103,4 +103,3 @@ async def get_model_loader(yaml_path: Path | str = DEFAULT_PATH) -> ModelLoader:
         _loader_cache[path] = loader
 
     return _loader_cache[path]
-

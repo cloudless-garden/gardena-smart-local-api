@@ -4,7 +4,7 @@ This module contains device base classes and factory for creating devices.
 """
 
 from .base import BaseDevice, DeviceCommand, IpsoPath, ValueField
-from .messages import Response
+from .messages import Event, Request, Response
 
 __all__ = [
     # Types
@@ -14,5 +14,7 @@ __all__ = [
     "BaseDevice",
     "ValueField",
     # Message classes
+    "Event",
+    "Request",
     "Response",
 ]

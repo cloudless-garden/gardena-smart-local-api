@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class Entity(BaseModel):
     """Entity information in Smart System Local responses."""
 
-    path: str
+    path: str = ""
     service: str | None = None
     device: str | None = None
 
@@ -15,7 +15,6 @@ class ResponseMetadata(BaseModel):
     sequence: int | None = None
     source: str | None = None
     error_source: str | None = None
-    request_id: str | None = None
 
 
 class Request(BaseModel):
@@ -27,14 +26,23 @@ class Request(BaseModel):
     request_id: str | None = None
 
 
-class Response(BaseModel):
-    """Response from a Smart System Local command execution."""
+class Event(BaseModel):
+    """Event received from Smart System Local API."""
 
     entity: Entity | None = None
     metadata: ResponseMetadata | None = None
+    op: str | None = None
     payload: dict | None = None
+
+
+class Response(BaseModel):
+    """Response from a Smart System Local command execution."""
+
+    request_id: str
     success: bool | None = None
-    request_id: str | None = None
+    entity: Entity | None = None
+    metadata: ResponseMetadata | None = None
+    payload: dict | None = None
 
     @property
     def device_id(self) -> str | None:

@@ -262,9 +262,13 @@ dependencies = [
     { name = "pyyaml" },
 ]
 
+[package.optional-dependencies]
+websocket = [
+    { name = "aiohttp" },
+]
+
 [package.dev-dependencies]
 dev = [
-    { name = "aiohttp" },
     { name = "ruff" },
     { name = "ty" },
 ]
@@ -276,13 +280,14 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "aiofile", specifier = ">=3.9.0" },
+    { name = "aiohttp", marker = "extra == 'websocket'", specifier = ">=3.13.3" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pyyaml", specifier = ">=6.0" },
 ]
+provides-extras = ["websocket"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "aiohttp", specifier = ">=3.13.3" },
     { name = "ruff", specifier = ">=0.14.13" },
     { name = "ty", specifier = ">=0.0.12" },
 ]

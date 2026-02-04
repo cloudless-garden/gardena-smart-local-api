@@ -2,50 +2,40 @@
 """Interactive CLI for testing Smart System Local WebSocket gateway."""
 import argparse
 import asyncio
-import base64
 import json
-import ssl
 import uuid
-
-import aiohttp
 
 from smart_system_local.devices import Response
 from smart_system_local.devices.dynamic import DynamicDevice
+from smart_system_local.devices.messages import Entity, Request
+from smart_system_local.websocket_helper import WebSocketHelper
 
 
-def display_response(cmd_resp: Response) -> None:
-    """Display a formatted CommandResponse."""
-    status_icon = "✅" if cmd_resp.success else "❌"
-    print(f"  {status_icon} Success: {cmd_resp.success}")
+def display_response(response: Response) -> None:
+    """Display a formatted Response."""
+    status_icon = "✅" if response.success else "❌"
+    print(f"  {status_icon} Success: {response.success}")
 
-    if cmd_resp.device_id:
-        print(f"  📍 Device: {cmd_resp.device_id}")
+    if response.device_id:
+        print(f"  📍 Device: {response.device_id}")
 
-    if cmd_resp.command_path:
-        print(f"  📂 Path: {cmd_resp.command_path}")
+    if response.command_path:
+        print(f"  📂 Path: {response.command_path}")
 
-    if cmd_resp.sequence is not None:
-        print(f"  🔢 Sequence: {cmd_resp.sequence}")
+    if response.sequence is not None:
+        print(f"  🔢 Sequence: {response.sequence}")
 
-    if cmd_resp.source:
-        print(f"  🔗 Source: {cmd_resp.source}")
+    if response.source:
+        print(f"  🔗 Source: {response.source}")
 
-    if cmd_resp.error_source:
-        print(f"  ⚠️  Error Source: {cmd_resp.error_source}")
+    if response.error_source:
+        print(f"  ⚠️  Error Source: {response.error_source}")
 
-    if cmd_resp.payload:
-        print(f"  📦 Payload: {cmd_resp.payload}")
-
-
-def create_ssl_context() -> ssl.SSLContext:
-    """Create an insecure SSL context for self-signed certificates."""
-    context = ssl.create_default_context()
-    context.check_hostname = False
-    context.verify_mode = ssl.CERT_NONE
-    return context
+    if response.payload:
+        print(f"  📦 Payload: {response.payload}")
 
 
-async def handle_commands(ws: aiohttp.ClientWebSocketResponse, selected_device):
+async def handle_commands(helper: WebSocketHelper, selected_device):
     """Handle command execution for a device."""
     if not hasattr(selected_device, 'Command') or selected_device.Command is None:
         print("\n⚠️  No commands available for this device")
@@ -81,33 +71,21 @@ async def handle_commands(ws: aiohttp.ClientWebSocketResponse, selected_device):
             print(f"\n📤 Executing: {cmd_enum.name} (Command ID: {cmd_enum.value})")
 
             command_json = selected_device.build_command(cmd_enum)
+            
+            # Convert to Request model
+            request = Request(**command_json)
 
             print(f"📝 Command JSON: {json.dumps(command_json, indent=2)}")
 
-            await ws.send_str(json.dumps([command_json]))
+            response = await helper.send(request, wait_for_reply=True, timeout=5.0)
             print("✅ Command sent!")
 
-            print("⏳ Waiting for response...")
-            msg = await asyncio.wait_for(ws.receive(), timeout=5.0)
-
-            if msg.type == aiohttp.WSMsgType.TEXT:
-                response_data = json.loads(msg.data)
-
-                print("\n📥 Response:")
-                if response_data:
-                    if isinstance(response_data, list):
-                        for item in response_data:
-                            cmd_resp = Response(**item)
-                            display_response(cmd_resp)
-                    elif isinstance(response_data, dict):
-                        cmd_resp = Response(**response_data)
-                        display_response(cmd_resp)
-                    else:
-                        print(json.dumps(response_data, indent=2))
-                else:
-                    print("No response data")
-            elif msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
-                print(f"⚠️  WebSocket closed or error: {msg}")
+            print("\n📥 Response:")
+            if response and response.payload:
+                cmd_resp = Response(**response.payload)
+                display_response(cmd_resp)
+            else:
+                print("No response data")
 
         except asyncio.TimeoutError:
             print("⚠️  Response timeout!")
@@ -115,7 +93,7 @@ async def handle_commands(ws: aiohttp.ClientWebSocketResponse, selected_device):
             print(f"❌ Error: {e}")
 
 
-async def handle_read_value(ws: aiohttp.ClientWebSocketResponse, selected_device):
+async def handle_read_value(helper: WebSocketHelper, selected_device):
     """Handle reading a value from a device."""
     object_names = selected_device.objects
 
@@ -178,44 +156,26 @@ async def handle_read_value(ws: aiohttp.ClientWebSocketResponse, selected_device
         path = f"{obj_key}/{selected_res['instance']}/{selected_res['resource']}"
 
         # FIXME: implement in Device class
-        read_json = {
-            "request-id": str(uuid.uuid4()),
-            "op": "read",
-            "entity": {
-                "device": selected_device.id,
-                "path": path,
-                # TODO
-                "service": "lemonbeatd"
-            },
-            "payload": {},
-            "metadata": {}
-        }
-        print(f"📝 Read JSON: {json.dumps(read_json, indent=2)}")
+        request = Request(
+            request_id=str(uuid.uuid4()),
+            op="read",
+            entity=Entity(
+                device=selected_device.id,
+                path=path,
+                service="lemonbeatd"
+            ),
+            payload={}
+        )
+        print(f"📝 Read JSON: {json.dumps(request.model_dump(exclude_none=True), indent=2)}")
 
-        await ws.send_str(json.dumps([read_json]))
+        response = await helper.send(request, wait_for_reply=True, timeout=5.0)
         print("✅ Read request sent!")
 
-        print("⏳ Waiting for response...")
-        msg = await asyncio.wait_for(ws.receive(), timeout=5.0)
-
-        if msg.type == aiohttp.WSMsgType.TEXT:
-            response_data = json.loads(msg.data)
-
-            print("\n📥 Response:")
-            if response_data:
-                if isinstance(response_data, list):
-                    for item in response_data:
-                        cmd_resp = Response(**item)
-                        display_response(cmd_resp)
-                elif isinstance(response_data, dict):
-                    cmd_resp = Response(**response_data)
-                    display_response(cmd_resp)
-                else:
-                    print(json.dumps(response_data, indent=2))
-            else:
-                print("No response data")
-        elif msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
-            print(f"⚠️  WebSocket closed or error: {msg}")
+        print("\n📥 Response:")
+        if response:
+            display_response(response)
+        else:
+            print("No response data")
 
     except asyncio.TimeoutError:
         print("⚠️  Response timeout!")
@@ -223,7 +183,7 @@ async def handle_read_value(ws: aiohttp.ClientWebSocketResponse, selected_device
         print(f"❌ Error: {e}")
 
 
-async def handle_update_value(ws: aiohttp.ClientWebSocketResponse, selected_device):
+async def handle_update_value(helper: WebSocketHelper, selected_device):
     """Handle updating a value on a device."""
     object_names = selected_device.objects
 
@@ -295,32 +255,20 @@ async def handle_update_value(ws: aiohttp.ClientWebSocketResponse, selected_devi
             selected_res['resource'],
             new_value
         )
+        
+        # Convert to Request model
+        request = Request(**update_json)
         print(f"📝 Update JSON: {json.dumps(update_json, indent=2)}")
 
-        await ws.send_str(json.dumps([update_json]))
+        response = await helper.send(request, wait_for_reply=True, timeout=5.0)
         print("✅ Update request sent!")
 
-        print("⏳ Waiting for response...")
-        msg = await asyncio.wait_for(ws.receive(), timeout=5.0)
-
-        if msg.type == aiohttp.WSMsgType.TEXT:
-            response_data = json.loads(msg.data)
-
-            print("\n📥 Response:")
-            if response_data:
-                if isinstance(response_data, list):
-                    for item in response_data:
-                        cmd_resp = Response(**item)
-                        display_response(cmd_resp)
-                elif isinstance(response_data, dict):
-                    cmd_resp = Response(**response_data)
-                    display_response(cmd_resp)
-                else:
-                    print(json.dumps(response_data, indent=2))
-            else:
-                print("No response data")
-        elif msg.type in (aiohttp.WSMsgType.CLOSED, aiohttp.WSMsgType.ERROR):
-            print(f"⚠️  WebSocket closed or error: {msg}")
+        print("\n📥 Response:")
+        if response and response.payload:
+            cmd_resp = Response(**response.payload)
+            display_response(cmd_resp)
+        else:
+            print("No response data")
 
     except asyncio.TimeoutError:
         print("⚠️  Response timeout!")
@@ -348,130 +296,120 @@ async def main():
 
     args = parser.parse_args()
 
-    uri = f"wss://{args.ip}:{args.port}/"
-
-    auth_string = f"{args.user}:{args.password}"
-    auth_bytes = auth_string.encode("utf-8")
-    auth_b64 = base64.b64encode(auth_bytes).decode("ascii")
-    headers = {"Authorization": f"Basic {auth_b64}"}
-
     print(f"\n🔌 Connecting to {args.ip}:{args.port}...")
 
-    ssl_context = create_ssl_context()
-
     try:
-        connector = aiohttp.TCPConnector(ssl=ssl_context)
-        async with aiohttp.ClientSession(connector=connector) as session:
-            async with session.ws_connect(uri, headers=headers) as ws:
-                print("✅ Connected!\n")
+        helper = await WebSocketHelper.from_config(
+            host=args.ip,
+            port=args.port,
+            path="/",
+            use_ssl=True,
+            verify_ssl=False,
+            username=args.user,
+            password=args.password,
+        )
+        await helper.connect()
+        print("✅ Connected!\n")
 
-                discover_cmd = DynamicDevice.discover()
-                print("📡 Sending discover command...")
-                await ws.send_str(json.dumps(discover_cmd))
+        discover_cmd = DynamicDevice.discover()
+        print("📡 Sending discover command...")
+        
+        response = await helper.send([Request(**cmd) for cmd in discover_cmd], wait_for_reply=True)
 
-                msg = await ws.receive()
-                if msg.type != aiohttp.WSMsgType.TEXT:
-                    print(f"❌ Unexpected message type: {msg.type}")
-                    return
+        devices = []
+        if response and (payload := response.payload) and len(payload) > 0:
+            print(f"🔍 Found {len(payload)} device entries in payload\n")
 
-                response = json.loads(msg.data)
+            for device_id, device_data in payload.items():
+                device = await DynamicDevice.from_raw({device_id: device_data})
+                devices.append(device)
 
-                devices = []
-                if response and isinstance(response, list) and len(response) > 0:
-                    payload = response[0].get("payload", {})
+        if not devices:
+            print("❌ No devices found!")
+            return
 
-                    print(f"🔍 Found {len(payload)} device entries in payload\n")
+        print(f"📋 Found {len(devices)} device(s):\n")
+        for idx, device in enumerate(devices, start=1):
+            online_status = "🟢 ONLINE" if device.is_online else "🔴 OFFLINE"
+            device_type = device.device_type_name
+            device_name = device.device_name
+            print(f"  [{idx}] {online_status} - {device_name} ({device_type}) (ID: {device.id})")
 
-                    for device_id, device_data in payload.items():
-                        device = await DynamicDevice.from_raw({device_id: device_data})
-                        devices.append(device)
+        while True:
+            print("\n" + "=" * 60)
+            device_input = input(
+                "\n🎯 Select device number (or 'q' to quit): "
+            ).strip()
 
-                if not devices:
-                    print("❌ No devices found!")
-                    print(f"Response keys: {list(response[0].keys()) if response else 'No response'}")
-                    return
+            if device_input.lower() == "q":
+                print("👋 Goodbye!")
+                break
 
-                print(f"📋 Found {len(devices)} device(s):\n")
-                for idx, device in enumerate(devices, start=1):
-                    online_status = "🟢 ONLINE" if device.is_online else "🔴 OFFLINE"
-                    device_type = device.device_type_name
-                    device_name = device.device_name
-                    print(f"  [{idx}] {online_status} - {device_name} ({device_type}) (ID: {device.id})")
+            try:
+                device_idx = int(device_input)
+                if device_idx < 1 or device_idx > len(devices):
+                    print(f"❌ Invalid device number. Choose 1-{len(devices)}")
+                    continue
+            except ValueError:
+                print("❌ Please enter a valid number or 'q'")
+                continue
 
-                while True:
-                    print("\n" + "=" * 60)
-                    device_input = input(
-                        "\n🎯 Select device number (or 'q' to quit): "
-                    ).strip()
+            selected_device = devices[device_idx - 1]
 
-                    if device_input.lower() == "q":
-                        print("👋 Goodbye!")
-                        break
+            print("\n📊 Device Data:")
+            print(f"  ID: {selected_device.id}")
+            print(f"  Online: {selected_device.is_online}")
+            print(f"  Model: {selected_device.device_name}")
+            print(f"  Type: {selected_device.device_type_name}")
 
-                    try:
-                        device_idx = int(device_input)
-                        if device_idx < 1 or device_idx > len(devices):
-                            print(f"❌ Invalid device number. Choose 1-{len(devices)}")
-                            continue
-                    except ValueError:
-                        print("❌ Please enter a valid number or 'q'")
-                        continue
+            object_names = selected_device.objects
+            if object_names:
+                print("\n📊 Device Objects:")
+                for obj_name in object_names:
+                    instances = selected_device.list_instances(obj_name)
+                    for instance_id in instances:
+                        obj = selected_device.get_object(obj_name, instance_id)
+                        if obj:
+                            print(f"\n  {obj_name} [{instance_id}]:")
+                            for resource_name, resource in obj.resources.items():
+                                value = resource.get_value(selected_device.raw)
+                                access = []
+                                if resource.is_readable:
+                                    access.append('R')
+                                if resource.is_writable:
+                                    access.append('W')
+                                access_str = '/'.join(access) if access else '?'
+                                print(f"    {resource_name} ({access_str}): {value}")
 
-                    selected_device = devices[device_idx - 1]
+            while True:
+                print("\n" + "=" * 60)
+                print("📋 Actions:")
+                print("  [1] Send Command")
+                print("  [2] Read Value")
+                print("  [3] Update Value")
+                print("  [b] Back to device selection")
 
-                    print("\n📊 Device Data:")
-                    print(f"  ID: {selected_device.id}")
-                    print(f"  Online: {selected_device.is_online}")
-                    print(f"  Model: {selected_device.device_name}")
-                    print(f"  Type: {selected_device.device_type_name}")
+                action = input("\n➤ Select action: ").strip()
 
-                    object_names = selected_device.objects
-                    if object_names:
-                        print("\n📊 Device Objects:")
-                        for obj_name in object_names:
-                            instances = selected_device.list_instances(obj_name)
-                            for instance_id in instances:
-                                obj = selected_device.get_object(obj_name, instance_id)
-                                if obj:
-                                    print(f"\n  {obj_name} [{instance_id}]:")
-                                    for resource_name, resource in obj.resources.items():
-                                        value = resource.get_value(selected_device.raw)
-                                        access = []
-                                        if resource.is_readable:
-                                            access.append('R')
-                                        if resource.is_writable:
-                                            access.append('W')
-                                        access_str = '/'.join(access) if access else '?'
-                                        print(f"    {resource_name} ({access_str}): {value}")
+                if action.lower() == "b":
+                    break
 
-                    while True:
-                        print("\n" + "=" * 60)
-                        print("📋 Actions:")
-                        print("  [1] Send Command")
-                        print("  [2] Read Value")
-                        print("  [3] Update Value")
-                        print("  [b] Back to device selection")
+                if action == "1":
+                    await handle_commands(helper, selected_device)
+                elif action == "2":
+                    await handle_read_value(helper, selected_device)
+                elif action == "3":
+                    await handle_update_value(helper, selected_device)
+                else:
+                    print("❌ Invalid action")
 
-                        action = input("\n➤ Select action: ").strip()
-
-                        if action.lower() == "b":
-                            break
-
-                        if action == "1":
-                            await handle_commands(ws, selected_device)
-                        elif action == "2":
-                            await handle_read_value(ws, selected_device)
-                        elif action == "3":
-                            await handle_update_value(ws, selected_device)
-                        else:
-                            print("❌ Invalid action")
-
-    except aiohttp.ClientError as e:
-        print(f"❌ Connection error: {e}")
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback
         traceback.print_exc()
+    finally:
+        if 'helper' in locals():
+            await helper.close()
 
 
 if __name__ == "__main__":

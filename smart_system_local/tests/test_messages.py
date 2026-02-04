@@ -1,4 +1,5 @@
 """Tests for dynamic device system."""
+
 import json
 import pytest
 from pathlib import Path

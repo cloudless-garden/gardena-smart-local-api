@@ -94,6 +94,7 @@ class ModelLoader:
 
 _loader_cache: dict[Path, ModelLoader] = {}
 
+
 async def get_model_loader(yaml_path: Path | str = DEFAULT_PATH) -> ModelLoader:
     path = Path(yaml_path).resolve()
 

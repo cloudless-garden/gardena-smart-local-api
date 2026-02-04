@@ -1,26 +1,14 @@
 """Dynamic device builder for creating devices from YAML model definitions."""
 
 import uuid
-from enum import IntEnum
 from functools import cached_property
-from typing import Any, TYPE_CHECKING
+from typing import Any
 
 from pydantic import BaseModel, Field
 
 from ..messages import Entity, Request
 from ...model_loader import ModelDefinition, get_model_loader
-from .resources import DynamicObject
-
-if TYPE_CHECKING:
-    from .resources import ValueField
-
-
-class DeviceCommand(IntEnum):
-    """Base class for all device command enums.
-
-    All device-specific Command enums should inherit from this class
-    to ensure type safety when using the build_command method.
-    """
+from .resources import DynamicObject, ValueField
 
 
 class DynamicDevice(BaseModel):
@@ -173,11 +161,11 @@ class DynamicDevice(BaseModel):
         """Current error code."""
         return self.get_value("lemonbeat", "0", "error")
 
-    def build_command(self, command: int | DeviceCommand) -> Request:
+    def build_command(self, command: int) -> Request:
         """Build a Lemonbeat command JSON structure.
 
         Args:
-            command: Command code as int or DeviceCommand IntEnum value.
+            command: Command code as int.
 
         Returns:
             Request ready to be sent to the Lemonbeat API.
@@ -191,17 +179,14 @@ class DynamicDevice(BaseModel):
                 payload={"vi": 3}
             )
         """
-        cmd_value = command.value if isinstance(command, DeviceCommand) else command
         return Request(
             request_id=str(uuid.uuid4()),
             op="write",
             entity=Entity(device=self.id, path="lemonbeat/0/command"),
-            payload={"vi": cmd_value},
+            payload={"vi": command},
         )
 
-    def write_value(
-        self, path_str: str, value: int | str | bool | float
-    ) -> Request:
+    def write_value(self, path_str: str, value: int | str | bool | float) -> Request:
         """Build a value write JSON structure.
 
         Args:

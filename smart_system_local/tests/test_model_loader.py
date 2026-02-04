@@ -19,7 +19,7 @@ async def test_model_loader_loads_models():
     """Test that models are loaded from YAML."""
     loader = await get_model_loader()
     models = loader.list_models()
-    
+
     assert len(models) > 0
     assert all(isinstance(m, ModelDefinition) for m in models)
 
@@ -28,7 +28,7 @@ async def test_model_loader_loads_models():
 async def test_model_loader_get_model_by_number():
     """Test getting a model by model number."""
     loader = await get_model_loader()
-    
+
     # Model 469 should be Irrigation Control eco
     model = loader.get_model("469")
     assert model is not None
@@ -41,7 +41,7 @@ async def test_model_loader_get_model_by_number():
 async def test_model_loader_get_model_by_type():
     """Test getting models by device type."""
     loader = await get_model_loader()
-    
+
     mowers = loader.get_model_by_type("Mower CBT11")
     assert len(mowers) > 0
     assert all(m.type == "Mower CBT11" for m in mowers)
@@ -52,7 +52,7 @@ async def test_model_definition_structure():
     """Test that model definition has expected structure."""
     loader = await get_model_loader()
     model = loader.get_model("469")
-    
+
     assert model is not None
     assert hasattr(model, "objects")
     assert "actuator" in model.objects
@@ -65,7 +65,7 @@ async def test_model_loader_caching():
     """Test that model loader caches results."""
     loader1 = await get_model_loader()
     loader2 = await get_model_loader()
-    
+
     # Should return the same instance
     assert loader1 is loader2
 
@@ -75,7 +75,7 @@ async def test_model_types():
     """Test that type definitions are loaded."""
     loader = await get_model_loader()
     types = loader.types
-    
+
     assert "vb" in types
     assert types["vb"] == "bool"
     assert "vs" in types

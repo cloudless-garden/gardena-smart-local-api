@@ -22,10 +22,10 @@ class EventLogger:
         self.file_handle = None
 
         if self.log_file:
-            self.file_handle = open(self.log_file, 'a', encoding='utf-8')
-            self._log_to_file(f"\n{'='*80}\n")
+            self.file_handle = open(self.log_file, "a", encoding="utf-8")
+            self._log_to_file(f"\n{'=' * 80}\n")
             self._log_to_file(f"Session started at {datetime.now().isoformat()}\n")
-            self._log_to_file(f"{'='*80}\n\n")
+            self._log_to_file(f"{'=' * 80}\n\n")
 
     def _log_to_file(self, message: str) -> None:
         """Write a message to the log file."""
@@ -38,9 +38,9 @@ class EventLogger:
         self.event_count += 1
         timestamp = datetime.now().isoformat()
 
-        print(f"\n{'='*80}")
+        print(f"\n{'=' * 80}")
         print(f"📨 Event #{self.event_count} at {timestamp}")
-        print(f"{'='*80}")
+        print(f"{'=' * 80}")
 
         try:
             for item in event_data:
@@ -48,12 +48,13 @@ class EventLogger:
         except Exception as e:
             print(f"⚠️  Failed to parse event: {e}")
             import traceback
+
             traceback.print_exc()
 
         if self.file_handle:
-            self._log_to_file(f"\n{'='*80}\n")
+            self._log_to_file(f"\n{'=' * 80}\n")
             self._log_to_file(f"Event #{self.event_count} at {timestamp}\n")
-            self._log_to_file(f"{'='*80}\n")
+            self._log_to_file(f"{'=' * 80}\n")
             # Convert Pydantic objects to dicts for JSON serialization
             data_as_dicts = [item.model_dump() for item in event_data]
             self._log_to_file(json.dumps(data_as_dicts, indent=2))
@@ -66,7 +67,7 @@ class EventLogger:
             event_dict = event.model_dump()
 
             if isinstance(event, Response):
-                if 'op' in event_dict:
+                if "op" in event_dict:
                     print(f"  🔧 Operation: {event_dict['op']}")
 
                 status_icon = "✅" if event.success else "❌"
@@ -104,7 +105,7 @@ class EventLogger:
             if event.payload:
                 print("  📦 Payload:")
                 payload_str = json.dumps(event.payload, indent=4)
-                for line in payload_str.split('\n'):
+                for line in payload_str.split("\n"):
                     print(f"    {line}")
         except Exception as e:
             print(f"⚠️  Parse error: {e}")
@@ -113,10 +114,10 @@ class EventLogger:
     def close(self) -> None:
         """Close the log file if open."""
         if self.file_handle:
-            self._log_to_file(f"\n{'='*80}\n")
+            self._log_to_file(f"\n{'=' * 80}\n")
             self._log_to_file(f"Session ended at {datetime.now().isoformat()}\n")
             self._log_to_file(f"Total events received: {self.event_count}\n")
-            self._log_to_file(f"{'='*80}\n")
+            self._log_to_file(f"{'=' * 80}\n")
             self.file_handle.close()
 
 
@@ -137,6 +138,7 @@ async def listen_to_events(helper: WebSocketHelper, logger: EventLogger) -> None
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback
+
         traceback.print_exc()
 
 
@@ -145,21 +147,17 @@ def main():
     parser = argparse.ArgumentParser(
         description="Listen to Gardena Smart System Gateway WebSocket events"
     )
-    parser.add_argument(
-        "--user", "-u", default="_", help="Username (default: _)"
-    )
-    parser.add_argument(
-        "--password", "-p", required=True, help="Gateway password"
-    )
-    parser.add_argument(
-        "--ip", "-i", required=True, help="Gateway IP address"
-    )
+    parser.add_argument("--user", "-u", default="_", help="Username (default: _)")
+    parser.add_argument("--password", "-p", required=True, help="Gateway password")
+    parser.add_argument("--ip", "-i", required=True, help="Gateway IP address")
     parser.add_argument(
         "--port", "-P", type=int, default=8443, help="Gateway port (default: 8443)"
     )
     parser.add_argument(
-        "--log-file", "-l", type=Path,
-        help="Optional file to log all events (appends to existing file)"
+        "--log-file",
+        "-l",
+        type=Path,
+        help="Optional file to log all events (appends to existing file)",
     )
 
     args = parser.parse_args()
@@ -170,7 +168,7 @@ def main():
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    
+
     helper = None
 
     def signal_handler(sig, frame):

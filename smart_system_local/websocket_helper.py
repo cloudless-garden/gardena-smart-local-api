@@ -144,7 +144,9 @@ class WebSocketHelper:
                         ws_msg = WebSocketMessage(data=data, raw=msg.data)
 
                         # Check if this is a response to a pending request (only Response objects)
-                        responses = [item for item in ws_msg.data if isinstance(item, Response)]
+                        responses = [
+                            item for item in ws_msg.data if isinstance(item, Response)
+                        ]
                         if responses and await self._handle_response(responses):
                             # Response was handled, don't queue it
                             continue
@@ -155,7 +157,9 @@ class WebSocketHelper:
                     except json.JSONDecodeError:
                         logger.warning(f"Non-JSON message, discarding: {msg.data}")
                     except Exception as e:
-                        logger.warning(f"Invalid message structure, discarding: {msg.data} - {e}")
+                        logger.warning(
+                            f"Invalid message structure, discarding: {msg.data} - {e}"
+                        )
 
                 elif msg.type == aiohttp.WSMsgType.ERROR:
                     break
@@ -216,7 +220,7 @@ class WebSocketHelper:
 
         # Convert to list if single request
         requests = request if isinstance(request, list) else [request]
-        
+
         # Handle request ID for wait_for_reply
         request_id = None
         if wait_for_reply:

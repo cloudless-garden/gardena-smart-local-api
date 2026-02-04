@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Interactive CLI for testing Smart System Local WebSocket gateway."""
+
 import argparse
 import asyncio
 import json
@@ -37,7 +38,7 @@ def display_response(response: Response) -> None:
 
 async def handle_commands(helper: WebSocketHelper, selected_device):
     """Handle command execution for a device."""
-    if not hasattr(selected_device, 'Command') or selected_device.Command is None:
+    if not hasattr(selected_device, "Command") or selected_device.Command is None:
         print("\n⚠️  No commands available for this device")
         return
 
@@ -48,9 +49,7 @@ async def handle_commands(helper: WebSocketHelper, selected_device):
         print(f"  [{idx}] {cmd.name} (value: {cmd.value})")
 
     while True:
-        cmd_input = input(
-            "\n⚡ Select command number (or 'b' for back): "
-        ).strip()
+        cmd_input = input("\n⚡ Select command number (or 'b' for back): ").strip()
 
         if cmd_input.lower() == "b":
             break
@@ -58,9 +57,7 @@ async def handle_commands(helper: WebSocketHelper, selected_device):
         try:
             cmd_idx = int(cmd_input)
             if cmd_idx < 0 or cmd_idx >= len(command_enums):
-                print(
-                    f"❌ Invalid command number. Choose 0-{len(command_enums)-1}"
-                )
+                print(f"❌ Invalid command number. Choose 0-{len(command_enums) - 1}")
                 continue
         except ValueError:
             print("❌ Please enter a valid number or 'b'")
@@ -71,7 +68,7 @@ async def handle_commands(helper: WebSocketHelper, selected_device):
             print(f"\n📤 Executing: {cmd_enum.name} (Command ID: {cmd_enum.value})")
 
             command_json = selected_device.build_command(cmd_enum)
-            
+
             # Convert to Request model
             request = Request(**command_json)
 
@@ -109,12 +106,14 @@ async def handle_read_value(helper: WebSocketHelper, selected_device):
             if obj:
                 for resource_name, resource in obj.resources.items():
                     if resource.is_readable:
-                        readable_resources.append({
-                            'object': obj_name,
-                            'instance': instance_id,
-                            'resource': resource_name,
-                            'value': resource.get_value(selected_device.raw)
-                        })
+                        readable_resources.append(
+                            {
+                                "object": obj_name,
+                                "instance": instance_id,
+                                "resource": resource_name,
+                                "value": resource.get_value(selected_device.raw),
+                            }
+                        )
 
     if not readable_resources:
         print("\n⚠️  No readable values available for this device")
@@ -122,7 +121,7 @@ async def handle_read_value(helper: WebSocketHelper, selected_device):
 
     print("\n📖 Available Values:")
     for idx, res in enumerate(readable_resources):
-        value = res['value']
+        value = res["value"]
         print(f"  [{idx}] {res['object']}.{res['instance']}.{res['resource']}: {value}")
 
     value_input = input("\n📖 Select value number (or 'b' for back): ").strip()
@@ -133,7 +132,7 @@ async def handle_read_value(helper: WebSocketHelper, selected_device):
     try:
         value_idx = int(value_input)
         if value_idx < 0 or value_idx >= len(readable_resources):
-            print(f"❌ Invalid value number. Choose 0-{len(readable_resources)-1}")
+            print(f"❌ Invalid value number. Choose 0-{len(readable_resources) - 1}")
             return
     except ValueError:
         print("❌ Please enter a valid number or 'b'")
@@ -142,16 +141,21 @@ async def handle_read_value(helper: WebSocketHelper, selected_device):
     selected_res = readable_resources[value_idx]
 
     try:
-        print(f"\n📖 Reading: {selected_res['object']}.{selected_res['instance']}.{selected_res['resource']}")
+        print(
+            f"\n📖 Reading: {selected_res['object']}.{selected_res['instance']}.{selected_res['resource']}"
+        )
 
         obj_key = None
         for key in selected_device.raw.keys():
-            if key.endswith(':' + selected_res['object']) or key == selected_res['object']:
+            if (
+                key.endswith(":" + selected_res["object"])
+                or key == selected_res["object"]
+            ):
                 obj_key = key
                 break
 
         if not obj_key:
-            obj_key = selected_res['object']
+            obj_key = selected_res["object"]
 
         path = f"{obj_key}/{selected_res['instance']}/{selected_res['resource']}"
 
@@ -159,14 +163,12 @@ async def handle_read_value(helper: WebSocketHelper, selected_device):
         request = Request(
             request_id=str(uuid.uuid4()),
             op="read",
-            entity=Entity(
-                device=selected_device.id,
-                path=path,
-                service="lemonbeatd"
-            ),
-            payload={}
+            entity=Entity(device=selected_device.id, path=path, service="lemonbeatd"),
+            payload={},
         )
-        print(f"📝 Read JSON: {json.dumps(request.model_dump(exclude_none=True), indent=2)}")
+        print(
+            f"📝 Read JSON: {json.dumps(request.model_dump(exclude_none=True), indent=2)}"
+        )
 
         response = await helper.send(request, wait_for_reply=True, timeout=5.0)
         print("✅ Read request sent!")
@@ -199,12 +201,14 @@ async def handle_update_value(helper: WebSocketHelper, selected_device):
             if obj:
                 for resource_name, resource in obj.resources.items():
                     if resource.is_writable:
-                        writable_resources.append({
-                            'object': obj_name,
-                            'instance': instance_id,
-                            'resource': resource_name,
-                            'value': resource.get_value(selected_device.raw)
-                        })
+                        writable_resources.append(
+                            {
+                                "object": obj_name,
+                                "instance": instance_id,
+                                "resource": resource_name,
+                                "value": resource.get_value(selected_device.raw),
+                            }
+                        )
 
     if not writable_resources:
         print("\n⚠️  No writable values available for this device")
@@ -212,10 +216,12 @@ async def handle_update_value(helper: WebSocketHelper, selected_device):
 
     print("\n✏️  Writable Values:")
     for idx, res in enumerate(writable_resources):
-        value = res['value']
+        value = res["value"]
         print(f"  [{idx}] {res['object']}.{res['instance']}.{res['resource']}: {value}")
 
-    value_input = input("\n✏️  Select value number to update (or 'b' for back): ").strip()
+    value_input = input(
+        "\n✏️  Select value number to update (or 'b' for back): "
+    ).strip()
 
     if value_input.lower() == "b":
         return
@@ -223,7 +229,7 @@ async def handle_update_value(helper: WebSocketHelper, selected_device):
     try:
         value_idx = int(value_input)
         if value_idx < 0 or value_idx >= len(writable_resources):
-            print(f"❌ Invalid value number. Choose 0-{len(writable_resources)-1}")
+            print(f"❌ Invalid value number. Choose 0-{len(writable_resources) - 1}")
             return
     except ValueError:
         print("❌ Please enter a valid number or 'b'")
@@ -237,7 +243,9 @@ async def handle_update_value(helper: WebSocketHelper, selected_device):
     try:
         if new_value_input.lower() in ("true", "false"):
             new_value = new_value_input.lower() == "true"
-        elif new_value_input.isdigit() or (new_value_input.startswith("-") and new_value_input[1:].isdigit()):
+        elif new_value_input.isdigit() or (
+            new_value_input.startswith("-") and new_value_input[1:].isdigit()
+        ):
             new_value = int(new_value_input)
         elif "." in new_value_input:
             new_value = float(new_value_input)
@@ -247,15 +255,17 @@ async def handle_update_value(helper: WebSocketHelper, selected_device):
         new_value = new_value_input
 
     try:
-        print(f"\n✏️  Updating {selected_res['object']}.{selected_res['resource']} to: {new_value} (type: {type(new_value).__name__})")
+        print(
+            f"\n✏️  Updating {selected_res['object']}.{selected_res['resource']} to: {new_value} (type: {type(new_value).__name__})"
+        )
 
         update_json = selected_device.set_resource(
-            selected_res['object'],
-            selected_res['instance'],
-            selected_res['resource'],
-            new_value
+            selected_res["object"],
+            selected_res["instance"],
+            selected_res["resource"],
+            new_value,
         )
-        
+
         # Convert to Request model
         request = Request(**update_json)
         print(f"📝 Update JSON: {json.dumps(update_json, indent=2)}")
@@ -281,15 +291,9 @@ async def main():
     parser = argparse.ArgumentParser(
         description="Interactive Lemonbeat Gateway WebSocket CLI"
     )
-    parser.add_argument(
-        "--user", "-u", default="_", help="Username (default: _)"
-    )
-    parser.add_argument(
-        "--password", "-p", required=True, help="Gateway password"
-    )
-    parser.add_argument(
-        "--ip", "-i", required=True, help="Gateway IP address"
-    )
+    parser.add_argument("--user", "-u", default="_", help="Username (default: _)")
+    parser.add_argument("--password", "-p", required=True, help="Gateway password")
+    parser.add_argument("--ip", "-i", required=True, help="Gateway IP address")
     parser.add_argument(
         "--port", "-P", type=int, default=8443, help="Gateway port (default: 8443)"
     )
@@ -313,7 +317,7 @@ async def main():
 
         discover_cmd = DynamicDevice.discover()
         print("📡 Sending discover command...")
-        
+
         response = await helper.send(discover_cmd, wait_for_reply=True)
 
         devices = []
@@ -333,13 +337,13 @@ async def main():
             online_status = "🟢 ONLINE" if device.is_online else "🔴 OFFLINE"
             device_type = device.device_type_name
             device_name = device.device_name
-            print(f"  [{idx}] {online_status} - {device_name} ({device_type}) (ID: {device.id})")
+            print(
+                f"  [{idx}] {online_status} - {device_name} ({device_type}) (ID: {device.id})"
+            )
 
         while True:
             print("\n" + "=" * 60)
-            device_input = input(
-                "\n🎯 Select device number (or 'q' to quit): "
-            ).strip()
+            device_input = input("\n🎯 Select device number (or 'q' to quit): ").strip()
 
             if device_input.lower() == "q":
                 print("👋 Goodbye!")
@@ -375,10 +379,10 @@ async def main():
                                 value = resource.get_value(selected_device.raw)
                                 access = []
                                 if resource.is_readable:
-                                    access.append('R')
+                                    access.append("R")
                                 if resource.is_writable:
-                                    access.append('W')
-                                access_str = '/'.join(access) if access else '?'
+                                    access.append("W")
+                                access_str = "/".join(access) if access else "?"
                                 print(f"    {resource_name} ({access_str}): {value}")
 
             while True:
@@ -406,9 +410,10 @@ async def main():
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback
+
         traceback.print_exc()
     finally:
-        if 'helper' in locals():
+        if "helper" in locals():
             await helper.close()
 
 

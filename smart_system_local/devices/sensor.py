@@ -1,4 +1,5 @@
 """High-level API for Gardena Sensor devices."""
+
 from smart_system_local.model_loader import LemonbeatModelDefinition
 
 from .dynamic.device_builder import DynamicDevice
@@ -169,7 +170,9 @@ class Sensor:
         """
         cmd = self._model.commands.get("measure_soil_moisture")
         if cmd is None:
-            raise ValueError("Command 'measure_soil_moisture' not available for this device")
+            raise ValueError(
+                "Command 'measure_soil_moisture' not available for this device"
+            )
         return self._device.build_command(cmd)
 
     def measure_soil_temperature(self) -> Request:
@@ -180,7 +183,9 @@ class Sensor:
         """
         cmd = self._model.commands.get("measure_soil_temperature")
         if cmd is None:
-            raise ValueError("Command 'measure_soil_temperature' not available for this device")
+            raise ValueError(
+                "Command 'measure_soil_temperature' not available for this device"
+            )
         return self._device.build_command(cmd)
 
     def measure_light(self) -> Request:
@@ -202,7 +207,9 @@ class Sensor:
         """
         cmd = self._model.commands.get("measure_ambient_temperature")
         if cmd is None:
-            raise ValueError("Command 'measure_ambient_temperature' not available for this device")
+            raise ValueError(
+                "Command 'measure_ambient_temperature' not available for this device"
+            )
         return self._device.build_command(cmd)
 
     def measure_battery(self) -> Request:

@@ -1,19 +1,33 @@
 """Dynamic device builder for creating devices from YAML model definitions."""
 
 import uuid
+from enum import IntEnum
 from functools import cached_property
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 
-from ..base import BaseDevice
+from ..messages import Entity, Request
 from ...model_loader import ModelDefinition, get_model_loader
 from .resources import DynamicObject
 
+if TYPE_CHECKING:
+    from .resources import ValueField
 
-class DynamicDevice(BaseDevice):
+
+class DeviceCommand(IntEnum):
+    """Base class for all device command enums.
+
+    All device-specific Command enums should inherit from this class
+    to ensure type safety when using the build_command method.
+    """
+
+
+class DynamicDevice(BaseModel):
     """Dynamically generated device based on YAML model definition."""
 
+    id: str
+    raw: dict[str, Any] = Field(repr=False)
     model_definition: ModelDefinition = Field()
 
     @classmethod
@@ -50,30 +64,25 @@ class DynamicDevice(BaseDevice):
         return cls(id=device_id, raw=device_data, model_definition=model_definition)
 
     @staticmethod
-    def discover() -> list[dict[str, Any]]:
+    def discover() -> Request:
         """Create a device discovery command for the Smart System Local API.
 
         Returns:
-            A dictionary containing the discovery command structure to retrieve
-            all devices from the lemonbeatd service.
+            Request to retrieve all devices from the lemonbeatd service.
 
         Example:
-            >>> DeviceFactory.discover()
-            {
-                "request-id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
-                "op": "read",
-                "entity": {"service": "lemonbeatd", "path": "devices"},
-                "payload": {}
-            }
+            >>> DynamicDevice.discover()
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="read",
+                entity=Entity(service="lemonbeatd", path="devices")
+            )
         """
-        return [
-            {
-                "request-id": str(uuid.uuid4()),
-                "op": "read",
-                "entity": {"service": "lemonbeatd", "path": "devices"},
-                "payload": {},
-            }
-        ]
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="read",
+            entity=Entity(service="lemonbeatd", path="devices"),
+        )
 
     @staticmethod
     def _extract_model_number(device_data: dict[str, Any]) -> str | None:
@@ -82,6 +91,176 @@ class DynamicDevice(BaseDevice):
             return device_data["device"]["0"]["model_number"]["vs"]
         except (KeyError, TypeError):
             return None
+
+    def get_value(self, *path: str) -> Any | None:
+        """Get a device value using path components.
+
+        Args:
+            path: Individual path components as strings.
+
+        Returns:
+            The value from the device's raw data, or None if not found.
+
+        Example:
+            >>> device.get_value("lemonbeat", "0", "light")
+            850
+        """
+        from .resources import ValueField
+
+        # Navigate through nested dict and extract value from ValueField
+        obj: Any = self.raw
+        for key in path:
+            if not isinstance(obj, dict):
+                return None
+            obj = obj.get(key)
+        if isinstance(obj, dict):
+            return ValueField(**obj).value
+        return obj
+
+    def get_field(self, *path: str) -> "ValueField | None":
+        """Navigate through nested dict and return ValueField object."""
+        from .resources import ValueField
+
+        obj = self.raw
+        for key in path:
+            if not isinstance(obj, dict):
+                return None
+            obj = obj.get(key)
+        return ValueField(**obj) if isinstance(obj, dict) else None
+
+    @property
+    def is_online(self) -> bool:
+        """Check if device is currently online."""
+        return self.get_value("connection_status", "0", "online") or False
+
+    @property
+    def device_type(self) -> str | None:
+        """Device type identifier."""
+        return self.get_value("device", "0", "device_type")
+
+    @property
+    def model_number(self) -> str | None:
+        """Model number of the device."""
+        return self.get_value("device", "0", "model_number")
+
+    @property
+    def serial_number(self) -> str | None:
+        """Serial number of the device."""
+        return self.get_value("device", "0", "serial_number")
+
+    @property
+    def firmware_version(self) -> str | None:
+        """Firmware version of the device."""
+        return self.get_value("device", "0", "firmware_version")
+
+    @property
+    def software_version(self) -> str | None:
+        """Software version of the device."""
+        return self.get_value("lemonbeat", "0", "software_version")
+
+    @property
+    def manufacturer(self) -> str | None:
+        """Manufacturer of the device."""
+        return self.get_value("device", "0", "manufacturer")
+
+    @property
+    def rf_link_quality(self) -> int | None:
+        """RF link quality indicator."""
+        return self.get_value("lemonbeat", "0", "rf_link_quality")
+
+    @property
+    def error(self) -> int | None:
+        """Current error code."""
+        return self.get_value("lemonbeat", "0", "error")
+
+    def build_command(self, command: int | DeviceCommand) -> Request:
+        """Build a Lemonbeat command JSON structure.
+
+        Args:
+            command: Command code as int or DeviceCommand IntEnum value.
+
+        Returns:
+            Request ready to be sent to the Lemonbeat API.
+
+        Example:
+            >>> device.build_command(3)
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="write",
+                entity=Entity(device="device_id", path="lemonbeat/0/command"),
+                payload={"vi": 3}
+            )
+        """
+        cmd_value = command.value if isinstance(command, DeviceCommand) else command
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="write",
+            entity=Entity(device=self.id, path="lemonbeat/0/command"),
+            payload={"vi": cmd_value},
+        )
+
+    def write_value(
+        self, path_str: str, value: int | str | bool | float
+    ) -> Request:
+        """Build a value write JSON structure.
+
+        Args:
+            path_str: Path string (e.g., "lemonbeat/0/power_timer").
+            value: The value to set (int, str, bool, or float).
+
+        Returns:
+            Request ready to be sent to the Lemonbeat API.
+
+        Example:
+            >>> device.write_value("lemonbeat/0/power_timer", 3600)
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="write",
+                entity=Entity(device="device_id", path="lemonbeat/0/power_timer"),
+                payload={"vi": 3600}
+            )
+        """
+        # Determine the appropriate payload key based on value type
+        if isinstance(value, bool):
+            payload = {"vb": value}
+        elif isinstance(value, int):
+            payload = {"vi": value}
+        elif isinstance(value, float):
+            payload = {"vf": value}
+        elif isinstance(value, str):
+            payload = {"vs": value}
+        else:
+            raise TypeError(f"Unsupported value type: {type(value)}")
+
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="write",
+            entity=Entity(device=self.id, path=path_str),
+            payload=payload,
+        )
+
+    def read_value(self, path_str: str) -> Request:
+        """Build a value read request JSON structure.
+
+        Args:
+            path_str: Path string (e.g., "lemonbeat/0/power_timer").
+
+        Returns:
+            Request ready to be sent to the Lemonbeat API.
+
+        Example:
+            >>> device.read_value("lemonbeat/0/power_timer")
+            Request(
+                request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
+                op="read",
+                entity=Entity(device="device_id", path="lemonbeat/0/power_timer")
+            )
+        """
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="read",
+            entity=Entity(device=self.id, path=path_str),
+        )
 
     @cached_property
     def objects(self) -> dict[str, dict[str, DynamicObject]]:
@@ -137,7 +316,7 @@ class DynamicDevice(BaseDevice):
         instance_id: str | int,
         resource_name: str,
         value: Any,
-    ) -> dict[str, Any]:
+    ) -> Request:
         """Build a write request to set a resource value.
 
         Args:
@@ -147,7 +326,7 @@ class DynamicDevice(BaseDevice):
             value: Value to set
 
         Returns:
-            Dictionary containing the write request structure
+            Request to set the resource value
 
         Raises:
             ValueError: If resource is not writable or not found
@@ -186,13 +365,12 @@ class DynamicDevice(BaseDevice):
 
         path = f"{object_name}/{instance_id}/{resource_name}"
 
-        return {
-            "request-id": str(uuid.uuid4()),
-            "op": "write",
-            "entity": {"device": self.id, "path": path},
-            "payload": payload,
-            "metadata": {},
-        }
+        return Request(
+            request_id=str(uuid.uuid4()),
+            op="write",
+            entity=Entity(device=self.id, path=path, service="lemonbeatd"),
+            payload=payload,
+        )
 
     def list_instances(self, object_name: str) -> list[str]:
         """Get list of all instance IDs for an object.

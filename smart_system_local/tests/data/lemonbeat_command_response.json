@@ -4,8 +4,8 @@
       "device": "3034F8EE901267400000B333",
       "path": "lemonbeat/0/command"
     },
-    "metadata": { "sequence": 44, "source": "lemonbeatd" },
-    "payload": null,
+    "metadata": { "source": "lemonbeatd", "sequence": 3504 },
+    "request_id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
     "success": true
   }
 ]

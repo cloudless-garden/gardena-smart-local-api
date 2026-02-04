@@ -314,7 +314,7 @@ async def main():
         discover_cmd = DynamicDevice.discover()
         print("📡 Sending discover command...")
         
-        response = await helper.send([Request(**cmd) for cmd in discover_cmd], wait_for_reply=True)
+        response = await helper.send(discover_cmd, wait_for_reply=True)
 
         devices = []
         if response and (payload := response.payload) and len(payload) > 0:

@@ -1,8 +1,45 @@
 """Dynamic IPSO object and resource system."""
 
+from datetime import datetime
 from typing import Any
 
-from ..base import ValueField
+from pydantic import BaseModel, Field
+
+
+class ValueField(BaseModel):
+    """Represents a value field in Smart System Local device data with timestamp."""
+
+    vb: bool | None = None
+    vs: str | None = None
+    vi: int | None = None
+    vo: str | None = None
+    ai: list[int] | None = None
+    vf: float | None = None
+    vt: int | None = None
+    ts: int | None = None
+    as_: list[str] | None = Field(None, alias="as")
+
+    @property
+    def value(self) -> bool | str | int | float | list[int] | list[str] | None:
+        """Extract the actual value from the field."""
+        for v in (
+            self.vb,
+            self.vs,
+            self.vi,
+            self.vf,
+            self.vo,
+            self.ai,
+            self.vt,
+            self.as_,
+        ):
+            if v is not None:
+                return v
+        return None
+
+    @property
+    def timestamp(self) -> datetime | None:
+        """Convert timestamp to datetime object."""
+        return datetime.fromtimestamp(self.ts) if self.ts else None
 
 
 class DynamicResource:

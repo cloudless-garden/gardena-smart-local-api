@@ -155,10 +155,11 @@ async def test_dynamic_device_set_resource():
     # This should work - creating a write request (not actually writing)
     write_request = device.set_resource("actuator", 0, "paused_until", 1234567890)
     
-    assert write_request["op"] == "write"
-    assert write_request["entity"]["device"] == device_id
-    assert "actuator/0/paused_until" in write_request["entity"]["path"]
-    assert write_request["payload"]["vi"] == 1234567890
+    assert write_request.op == "write"
+    assert write_request.entity.device == device_id
+    assert "actuator/0/paused_until" in write_request.entity.path
+    assert write_request.payload is not None
+    assert write_request.payload["vi"] == 1234567890
 
 
 @pytest.mark.asyncio

@@ -3,18 +3,20 @@
 This module contains device base classes and factory for creating devices.
 """
 
-from .base import BaseDevice, DeviceCommand, IpsoPath, ValueField
+from .dynamic import DeviceCommand, DynamicDevice, ValueField
 from .messages import Event, Request, Response
+from .sensor import Sensor
 
 __all__ = [
     # Types
     "DeviceCommand",
-    "IpsoPath",
     # Base classes
-    "BaseDevice",
+    "DynamicDevice",
     "ValueField",
     # Message classes
     "Event",
     "Request",
     "Response",
+    # High-level device classes
+    "Sensor",
 ]

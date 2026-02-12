@@ -1,12 +1,10 @@
 """High-level API for Gardena Sensor devices."""
 
-from smart_system_local.model_loader import LemonbeatModelDefinition
-
-from .dynamic.device_builder import DynamicDevice
+from .base import LemonbeatDevice
 from .messages import Request
 
 
-class Sensor:
+class Sensor(LemonbeatDevice):
     """High-level API for Gardena Sensor device (model 18845).
 
     This class wraps a DynamicDevice and provides convenient access to
@@ -40,7 +38,9 @@ class Sensor:
         >>> await websocket.send(request)
     """
 
-    def __init__(self, device: DynamicDevice):
+    MODEL_NUMBERS = ("18845",)
+
+    def __init__(self, device):
         """Initialize Sensor with a DynamicDevice.
 
         Args:
@@ -49,27 +49,12 @@ class Sensor:
         Raises:
             ValueError: If device is not a Lemonbeat protocol device or not a Sensor model
         """
-        if not isinstance(device.model_definition, LemonbeatModelDefinition):
+        super().__init__(device)
+        if self.model_number not in self.MODEL_NUMBERS:
             raise ValueError(
-                f"Sensor requires a Lemonbeat device, got {device.model_definition.protocol}"
+                f"Sensor requires model {', '.join(self.MODEL_NUMBERS)}, "
+                f"got {self.model_number}"
             )
-        if device.model_definition.model_number != "18845":
-            raise ValueError(
-                f"Sensor requires model 18845, got {device.model_definition.model_number}"
-            )
-        self._device = device
-        # workaround ty checker limitation
-        self._model: LemonbeatModelDefinition = device.model_definition
-
-    @property
-    def id(self) -> str:
-        """Device ID."""
-        return self._device.id
-
-    @property
-    def is_online(self) -> bool:
-        """Check if device is currently online."""
-        return self._device.is_online
 
     # Sensor Values
 
@@ -118,43 +103,6 @@ class Sensor:
         """Error status (none, eeprom, brown_out)."""
         return self._device.get_value("lemonbeat", "0", "error")
 
-    # Diagnostic Information
-
-    @property
-    def device_type(self) -> str | None:
-        """Type of the device."""
-        return self._device.device_type
-
-    @property
-    def firmware_version(self) -> str | None:
-        """Current firmware version."""
-        return self._device.firmware_version
-
-    @property
-    def hardware_version(self) -> str | None:
-        """Hardware version."""
-        return self._device.get_value("device", "0", "hardware_version")
-
-    @property
-    def manufacturer(self) -> str | None:
-        """Manufacturer name."""
-        return self._device.manufacturer
-
-    @property
-    def model_number(self) -> str | None:
-        """Model number or identifier."""
-        return self._device.model_number
-
-    @property
-    def serial_number(self) -> str | None:
-        """Serial number."""
-        return self._device.serial_number
-
-    @property
-    def software_version(self) -> str | None:
-        """Current software version."""
-        return self._device.software_version
-
     @property
     def utc_offset(self) -> str | None:
         """UTC offset currently in effect for device."""
@@ -168,12 +116,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to trigger the measurement
         """
-        cmd = self._model.commands.get("measure_soil_moisture")
-        if cmd is None:
-            raise ValueError(
-                "Command 'measure_soil_moisture' not available for this device"
-            )
-        return self._device.build_command(cmd)
+        return self.build_command("measure_soil_moisture")
 
     def measure_soil_temperature(self) -> Request:
         """Trigger a soil temperature measurement.
@@ -181,12 +124,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to trigger the measurement
         """
-        cmd = self._model.commands.get("measure_soil_temperature")
-        if cmd is None:
-            raise ValueError(
-                "Command 'measure_soil_temperature' not available for this device"
-            )
-        return self._device.build_command(cmd)
+        return self.build_command("measure_soil_temperature")
 
     def measure_light(self) -> Request:
         """Trigger a light intensity measurement.
@@ -194,10 +132,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to trigger the measurement
         """
-        cmd = self._model.commands.get("measure_light")
-        if cmd is None:
-            raise ValueError("Command 'measure_light' not available for this device")
-        return self._device.build_command(cmd)
+        return self.build_command("measure_light")
 
     def measure_ambient_temperature(self) -> Request:
         """Trigger an ambient temperature measurement.
@@ -205,12 +140,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to trigger the measurement
         """
-        cmd = self._model.commands.get("measure_ambient_temperature")
-        if cmd is None:
-            raise ValueError(
-                "Command 'measure_ambient_temperature' not available for this device"
-            )
-        return self._device.build_command(cmd)
+        return self.build_command("measure_ambient_temperature")
 
     def measure_battery(self) -> Request:
         """Trigger a battery level measurement.
@@ -218,10 +148,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to trigger the measurement
         """
-        cmd = self._model.commands.get("measure_battery")
-        if cmd is None:
-            raise ValueError("Command 'measure_battery' not available for this device")
-        return self._device.build_command(cmd)
+        return self.build_command("measure_battery")
 
     def measure_rf_link(self) -> Request:
         """Trigger an RF link quality measurement.
@@ -229,10 +156,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to trigger the measurement
         """
-        cmd = self._model.commands.get("measure_rf_link")
-        if cmd is None:
-            raise ValueError("Command 'measure_rf_link' not available for this device")
-        return self._device.build_command(cmd)
+        return self.build_command("measure_rf_link")
 
     def measure_all(self) -> list[Request]:
         """Trigger all sensor measurements.
@@ -240,14 +164,15 @@ class Sensor:
         Returns:
             List of Requests to send via WebSocket to trigger all measurements
         """
-        return [
-            self.measure_soil_moisture(),
-            self.measure_soil_temperature(),
-            self.measure_light(),
-            self.measure_ambient_temperature(),
-            self.measure_battery(),
-            self.measure_rf_link(),
+        commands = [
+            "measure_soil_moisture",
+            "measure_soil_temperature",
+            "measure_light",
+            "measure_ambient_temperature",
+            "measure_battery",
+            "measure_rf_link",
         ]
+        return [self.build_command(cmd) for cmd in commands if cmd in self._model.commands]
 
     def force_report(self) -> Request:
         """Force the device to report all current values.
@@ -255,10 +180,7 @@ class Sensor:
         Returns:
             Request to send via WebSocket to force reporting
         """
-        cmd = self._model.commands.get("force_report")
-        if cmd is None:
-            raise ValueError("Command 'force_report' not available for this device")
-        return self._device.build_command(cmd)
+        return self.build_command("force_report")
 
     def reboot(self) -> Request:
         """Reboot the device.
@@ -266,20 +188,4 @@ class Sensor:
         Returns:
             Request to send via WebSocket to reboot the device
         """
-        cmd = self._model.commands.get("reboot")
-        if cmd is None:
-            raise ValueError("Command 'reboot' not available for this device")
-        return self._device.build_command(cmd)
-
-    @property
-    def raw(self) -> dict:
-        """Access the underlying raw device data."""
-        return self._device.raw
-
-    def __repr__(self) -> str:
-        """Return string representation of the sensor."""
-        return (
-            f"Sensor(id={self.id!r}, "
-            f"model={self.model_number}, "
-            f"online={self.is_online})"
-        )
+        return self.build_command("reboot")

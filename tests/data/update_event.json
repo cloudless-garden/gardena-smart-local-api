@@ -1,0 +1,11 @@
+[
+  {
+    "entity": { "device": "3034F8EE90126D400001737D", "path": "lemonbeat/0" },
+    "metadata": { "source": "lemonbeatd", "sequence": 1 },
+    "op": "update",
+    "payload": {
+      "battery_level": { "ts": 1772008398, "vi": 65 },
+      "_urn": "urn:oma:lwm2m:x:31000"
+    }
+  }
+]

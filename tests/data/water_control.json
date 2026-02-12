@@ -1,0 +1,74 @@
+[
+  {
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "metadata": { "sequence": 3500, "source": "lemonbeatd" },
+    "payload": {
+      "3034F8EE90126D400001737D": {
+        "connection_status": {
+          "0": { "online": { "ts": 1761915305, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1769328850, "vs": "Water Control" },
+            "error_code": { "ai": [0], "ts": 1769328850 },
+            "firmware_version": { "ts": 1769328850, "vs": "4.0.0-1.6.1" },
+            "hardware_version": { "ts": 1769328850, "vs": "0.3.5" },
+            "manufacturer": { "ts": 1769328850, "vs": "Gardena" },
+            "model_number": { "ts": 1769328850, "vs": "18869" },
+            "serial_number": { "ts": 1769328850, "vs": "00095101" },
+            "software_version": { "ts": 1769328850, "vs": "2.5.0" },
+            "supported_binding_and_modes": { "ts": 1769328850, "vs": "U" },
+            "utc_offset": { "ts": 1768845002, "vs": "UTC+01:00" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": { "vi": 1 },
+            "package_uri": { "vs": "" },
+            "pkg_version": { "vs": "" },
+            "state": { "vi": 0 },
+            "update_result": { "vi": 1 }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "lemonbeat": {
+          "0": {
+            "action_paused_until_1": { "ts": 1769328850, "vo": "" },
+            "ambient_temperature": { "ts": 1769328850, "vi": 18 },
+            "battery_level": { "ts": 1769815947, "vi": 86 },
+            "be_decision_time": { "ts": 1769328850, "vi": 511 },
+            "button_config_time": { "ts": 1769328850, "vi": 1800 },
+            "command": { "ts": 1769328850, "vi": 1 },
+            "error": { "ts": 1769328850, "vi": 0 },
+            "fatal_error_log": {
+              "ts": 1717431177,
+              "vo": "//////////////////////////////////////////8="
+            },
+            "frost_warning": { "ts": 1769328850, "vi": 0 },
+            "rf_link_quality": { "ts": 1770161548, "vi": 100 },
+            "schedule_config": { "ts": 1769328850, "vo": "" },
+            "schedule_state": { "ts": 1769328850, "vo": "" },
+            "schedule_state_control_shorten": { "ts": 1769328850, "vo": "" },
+            "schedule_state_control_skip": { "ts": 1769328850, "vo": "" },
+            "valve_error_1": { "ts": 1769328850, "vi": 0 },
+            "watering_timer_1": { "ts": 1769328850, "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:x:31000"
+        },
+        "lemonbeat_status_message": {
+          "0": {
+            "code": { "ts": 1768845002, "vi": 3 },
+            "data": { "ts": 1768845002, "vs": "" },
+            "level": { "ts": 1768845002, "vi": 2 },
+            "type": { "ts": 1768845002, "vi": 200 }
+          },
+          "_urn": "urn:oma:lwm2m:x:28173"
+        }
+      }
+    },
+    "request_id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
+    "success": true
+  }
+]

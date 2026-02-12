@@ -1,0 +1,31 @@
+[
+  {
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "metadata": { "sequence": 3500, "source": "lemonbeatd" },
+    "payload": {
+      "3034F8EE90126D400001737D": {
+        "connection_status": {
+          "0": { "online": { "ts": 1761915305, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1769328850, "vs": "Water Control" },
+            "error_code": { "ai": [0], "ts": 1769328850 },
+            "firmware_version": { "ts": 1769328850, "vs": "4.0.0-1.6.1" },
+            "hardware_version": { "ts": 1769328850, "vs": "0.3.5" },
+            "manufacturer": { "ts": 1769328850, "vs": "Gardena" },
+            "model_number": { "ts": 1769328850, "vs": "XXXXXX" },
+            "serial_number": { "ts": 1769328850, "vs": "00095101" },
+            "software_version": { "ts": 1769328850, "vs": "2.5.0" },
+            "supported_binding_and_modes": { "ts": 1769328850, "vs": "U" },
+            "utc_offset": { "ts": 1768845002, "vs": "UTC+01:00" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        }
+      }
+    },
+    "request_id": "2a8166c5-d60f-4ddd-8735-29aa3661a128",
+    "success": true
+  }
+]

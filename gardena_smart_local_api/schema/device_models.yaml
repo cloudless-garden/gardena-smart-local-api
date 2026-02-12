@@ -1,0 +1,251 @@
+---
+types:
+  vb: bool
+  vs: str
+  vi: int
+  vo: str
+  vf: float
+  vt: int
+  ai: list[int]
+  as: list[str]
+models:
+  '18869':
+    name: Water Control
+    type: Water Control
+    protocol: gen1
+    commands:
+      none: 0
+      measure_ambient_temperature: 5
+      measure_battery: 6
+      measure_rf_link: 7
+      close_all_valves: 22
+      emc_test_start: 29
+      emc_test_stop: 30
+      reboot: 31
+      ntp_force_sync: 32
+      led_all_off: 33
+      led_all_green_on: 34
+      led_all_red_on: 35
+      reset_all_valve_errors: 36
+      hap_identify: 37
+      test_watchdog: 38
+      test_hard_fault: 39
+      force_report: 50
+    objects:
+      connection_status:
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          action_paused_until_1:
+            type: vo
+            access: rw
+            persistent: true
+            encoding: hex
+            report_on_update: true
+            description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+          ambient_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            report_on_update: true
+            report_interval: 3600
+            description: Ambient temperature
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            report_interval: 86400
+            description: Battery level measured when switching the valve
+          button_config_time:
+            type: vi
+            access: rw
+            unit: s
+            min: 0
+            max: 36000
+            persistent: true
+            report_on_update: true
+            description: Valve open time after button press (default 30 minutes)
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, eeprom, brown_out)
+          fatal_error_log:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Fatal error log (error identifier, file, line, stack)
+          frost_warning:
+            type: vi
+            access: r
+            min: 0
+            max: 1
+            report_on_update: true
+            report_interval: 3600
+            description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          schedule_config:
+            type: vo
+            access: rw
+            encoding: hex
+            persistent: true
+            report_on_update: true
+            description: Schedule configuration (up to 36 schedules, 7 bytes each)
+          schedule_state:
+            type: vo
+            access: r
+            encoding: hex
+            report_on_update: true
+            description: Schedule state (3 bytes per schedule, 108 bytes total)
+          schedule_state_control_shorten:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Shorten schedule duration (3 bytes per schedule)
+          schedule_state_control_skip:
+            type: vo
+            access: rw
+            encoding: hex
+            report_on_update: true
+            description: Skip schedule (1 byte per schedule, 36 bytes total)
+          valve_error_1:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Valve error status (none, valve_broken, frost_prevents_starting, low_battery_prevents_starting, valve_power_supply_failed)
+          valve_open:
+            type: vi
+            access: null
+          valve_open_max_time:
+            type: vi
+            access: null
+          watering_timer_1:
+            type: vi
+            access: rw
+            unit: s
+            min: -36000
+            max: 36000
+            report_on_update: true
+            description: Watering timer (write >0=start manual, <0=start scheduled, 0=stop; read 0=not running, >0=manual running, <0=scheduled running)
+      lemonbeat_status_message:
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type

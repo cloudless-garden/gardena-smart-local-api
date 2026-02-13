@@ -16,7 +16,10 @@ class BaseModelDefinition(BaseModel):
     objects: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(model_number={self.model_number!r}, name={self.name!r}, type={self.type!r})"
+        return (
+            f"{self.__class__.__name__}(model_number={self.model_number!r}, "
+            f"name={self.name!r}, type={self.type!r})"
+        )
 
 
 class Gen1ModelDefinition(BaseModelDefinition):

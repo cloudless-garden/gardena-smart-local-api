@@ -2,6 +2,11 @@ from typing import Any
 
 from ..messages import IngressMessageList, Reply
 from .device import Device, DeviceMap
+from .gen1 import WaterControl
+
+MODEL_NUMBER_MAP: dict[str, type[Device]] = {
+    "18869": WaterControl,
+}
 
 
 async def _create_device_from_data(device_data: dict[str, Any]) -> Device | None:
@@ -9,7 +14,7 @@ async def _create_device_from_data(device_data: dict[str, Any]) -> Device | None
     if model_number is None:
         return None
 
-    return await Device._from_raw(device_data)
+    return await MODEL_NUMBER_MAP.get(model_number, Device)._from_raw(device_data)
 
 
 async def create_devices_from_messages(messages: IngressMessageList) -> DeviceMap:

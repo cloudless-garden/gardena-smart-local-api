@@ -20,6 +20,13 @@ test = [
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.0.0",
 ]
+examples = [
+    "gardena-smart-local-api",
+    "websockets",
+]
+
+[tool.uv]
+package = true
 
 [tool.ruff]
 target-version = "py312"

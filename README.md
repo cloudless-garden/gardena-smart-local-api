@@ -14,6 +14,19 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 pip install gardena-smart-local-api
 ```
 
+## Using the Library
+
+Have a look at our [example code][examples].
+
+You can run the examples from within the repository as follows:
+
+```txt
+uv sync --group examples
+uv run gardena_smart_local_api/examples/valve.py --help
+```
+
+[examples]: https://github.com/cloudless-garden/gardena-smart-local-api/tree/main/gardena_smart_local_api/examples
+
 ## Contributing
 
 ### Commits

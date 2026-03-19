@@ -51,3 +51,14 @@ jobs:
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}
+
+  ha-compat:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Check installability with latest Home Assistant
+        run: uv venv && uv pip install "homeassistant>=2024.12.0" . && uv pip check

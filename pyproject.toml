@@ -7,7 +7,7 @@ packages = ["gardena_smart_local_api"]
 
 [project]
 name = "gardena-smart-local-api"
-version = "0.0.2"
+version = "0.0.3"
 description = "Library to interact with the local GARDENA smart API."
 readme = "README.md"
 requires-python = ">=3.12"

@@ -10,13 +10,13 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 
 ## Installation
 
-```bash
+```txt
 uv sync
 ```
 
 ## Linting
 
-```bash
+```txt
 uv sync --all-groups
 uv run ruff check
 uv run ruff format --check
@@ -25,7 +25,7 @@ uv run ty check
 
 ## Running Tests
 
-```bash
+```txt
 uv sync --group test
 uv run python -m pytest
 ```

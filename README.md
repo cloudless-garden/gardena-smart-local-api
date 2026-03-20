@@ -11,10 +11,12 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 ## Installation
 
 ```txt
-uv sync
+pip install gardena-smart-local-api
 ```
 
-## Linting
+## Contributing
+
+### Linting
 
 ```txt
 uv sync --all-groups
@@ -23,7 +25,7 @@ uv run ruff format --check
 uv run ty check
 ```
 
-## Running Tests
+### Running Tests
 
 ```txt
 uv sync --group test

@@ -9,6 +9,234 @@ types:
   ai: list[int]
   as: list[str]
 models:
+  '18845':
+    name: Sensor
+    type: Sensor
+    protocol: gen1
+    commands:
+      measure_soil_moisture: 2
+      measure_soil_temperature: 3
+      measure_light: 4
+      measure_ambient_temperature: 5
+      measure_battery: 6
+      measure_rf_link: 7
+      reboot: 31
+      emc_test_start: 29
+      emc_test_stop: 30
+      force_report: 50
+    objects:
+      connection_status:
+        mandatory: true
+        resources:
+          online:
+            type: vb
+            access: r
+            description: Indicates if the device is online (true) or offline (false)
+      device:
+        mandatory: true
+        resources:
+          device_type:
+            type: vs
+            access: r
+            description: Type of the device
+          error_code:
+            type: ai
+            access: r
+            description: Current error code(s)
+          firmware_version:
+            type: vs
+            access: r
+            description: Current firmware version
+          hardware_version:
+            type: vs
+            access: r
+            description: Hardware version
+          manufacturer:
+            type: vs
+            access: r
+            description: Manufacturer name
+          model_number:
+            type: vs
+            access: r
+            description: Model number or identifier
+          serial_number:
+            type: vs
+            access: r
+            description: Serial number
+          software_version:
+            type: vs
+            access: r
+            description: Current software version
+          supported_binding_and_modes:
+            type: vs
+            access: r
+            description: Supported bindings and modes
+          utc_offset:
+            type: vs
+            access: rw
+            description: UTC offset currently in effect for device
+      firmware_update:
+        mandatory: true
+        resources:
+          firmware_update_delivery_method:
+            type: vi
+            access: r
+            description: Firmware update delivery method
+          package_uri:
+            type: vs
+            access: rw
+            description: URI from where the device can download the firmware package
+          pkg_version:
+            type: vs
+            access: r
+            description: Package version
+          state:
+            type: vi
+            access: r
+            min: 0
+            max: 3
+            description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+          update_result:
+            type: vi
+            access: r
+            min: 0
+            max: 9
+            description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+      lemonbeat:
+        resources:
+          ambient_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            report_on_update: true
+            report_interval: 3600
+            description: Ambient temperature (not currently used)
+          battery_level:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: Battery level (100% is full)
+          chilled_temperature:
+            type: vi
+            access: null
+          command:
+            type: vi
+            access: rw
+            report_on_update: true
+            description: Command to execute
+          cooldown_time:
+            type: vi
+            access: null
+          disposable_battery_lifecycle:
+            type: vi
+            access: null
+          error:
+            type: vi
+            access: r
+            report_on_update: true
+            description: Error status (none, eeprom, brown_out)
+          fatal_error_log:
+            type: vo
+            access: r
+            report_on_update: true
+            description: Fatal error log
+          frost_warning:
+            type: vi
+            access: r
+            min: 0
+            max: 1
+            report_on_update: true
+            report_interval: 3600
+            description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
+          heated_temperature:
+            type: vi
+            access: null
+          heating_timestamp:
+            type: vo
+            access: null
+          light:
+            type: vi
+            access: r
+            unit: lx
+            min: 0
+            max: 200000
+            report_on_update: true
+            report_interval: 3600
+            description: Light intensity in lux
+          rf_link_quality:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            description: RF link quality percentage
+          rf_link_state:
+            type: vi
+            access: r
+            report_on_update: true
+            description: RF link state
+          soil_humidity:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            report_interval: 14400
+            description: Soil moisture value (mean weighted)
+          soil_humidity_raw_value:
+            type: vi
+            access: r
+            unit: '%'
+            min: 0
+            max: 100
+            report_on_update: true
+            report_interval: 14400
+            description: Soil moisture value as measured
+          soil_temperature:
+            type: vi
+            access: r
+            unit: C
+            min: -30
+            max: 85
+            report_on_update: true
+            report_interval: 3600
+            description: Ground temperature
+          threshold:
+            type: vi
+            access: null
+          voltage_log:
+            type: vo
+            access: null
+      lemonbeat_status_message:
+        mandatory: false
+        resources:
+          code:
+            type: vi
+            access: r
+            description: Status code
+          data:
+            type: vs
+            access: r
+            description: Additional status data (4 bytes HEX)
+          level:
+            type: vi
+            access: r
+            min: 0
+            max: 5
+            description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+          type:
+            type: vi
+            access: r
+            min: 0
+            max: 255
+            description: Message type
   '18869':
     name: Water Control
     type: Water Control

@@ -3,9 +3,11 @@ from typing import Any
 from ..messages import IngressMessageList, Reply
 from .device import Device, DeviceMap
 from .irrigation import Gen1WaterControl
+from .mowers import Gen1Mower
 
 MODEL_NUMBER_MAP: dict[str, type[Device]] = {
     "18869": Gen1WaterControl,
+    "53988": Gen1Mower,
 }
 
 

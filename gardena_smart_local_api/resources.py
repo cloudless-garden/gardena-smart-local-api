@@ -1,17 +1,42 @@
+from base64 import b64decode, b64encode
 from collections.abc import Iterator
 from datetime import datetime
-from typing import Any
+from typing import Annotated, Any
 
-from pydantic import BaseModel, model_serializer, model_validator
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    PlainSerializer,
+    model_serializer,
+    model_validator,
+)
 
-VALUE_TYPES = bool | int | float | str
+
+def _parse_opaque(v: object) -> bytes | None:
+    if v is None:
+        return None
+    if isinstance(v, (bytes, bytearray)):
+        return bytes(v)
+    if isinstance(v, str):
+        return b64decode(v)
+    raise ValueError(f"Expected bytes or base64 string, got {type(v)}")
+
+
+type Opaque = Annotated[
+    bytes,
+    BeforeValidator(_parse_opaque),
+    PlainSerializer(lambda v: b64encode(v).decode(), return_type=str),
+]
+
+
+type VALUE_TYPES = bool | int | float | str | Opaque
 
 
 class ValueField(BaseModel):
     vb: bool | None = None
     vs: str | None = None
     vi: int | None = None
-    vo: str | None = None
+    vo: Opaque | None = None
     vf: float | None = None
     vt: int | None = None
     ts: int | None = None

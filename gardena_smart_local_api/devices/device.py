@@ -10,25 +10,24 @@ from ..resources import VALUE_TYPES, IpsoObject, IpsoPath, ValueField
 from ..utils import deep_merge_dict, delete_nested_key
 
 
-def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, T]:
-    TYPE_MAP = {
-        bool: "vb",
-        int: "vi",
-        float: "vf",
-        str: "vs",
-    }
-
-    value_type = type(value)
-
-    if value_type in TYPE_MAP:
-        return {TYPE_MAP[value_type]: value}
+def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, Any]:
+    if isinstance(value, bool):
+        return ValueField(vb=value).model_dump(exclude_none=True)
+    elif isinstance(value, int):
+        return ValueField(vi=value).model_dump(exclude_none=True)
+    elif isinstance(value, float):
+        return ValueField(vf=value).model_dump(exclude_none=True)
+    elif isinstance(value, str):
+        return ValueField(vs=value).model_dump(exclude_none=True)
+    elif isinstance(value, bytes):
+        return ValueField(vo=value).model_dump(exclude_none=True)
     elif isinstance(value, list):
         if value and isinstance(value[0], int):
             return {"ai": value}
         else:
             return {"as": value}
     else:
-        raise TypeError(f"Unsupported value type: {value_type}")
+        raise TypeError(f"Unsupported value type: {type(value)}")
 
 
 class Device(BaseModel):

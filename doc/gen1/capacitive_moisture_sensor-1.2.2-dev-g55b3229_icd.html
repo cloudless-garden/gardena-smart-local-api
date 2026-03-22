@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Capacitive Moisture Sensor ICD</title>
+    <link rel="stylesheet" type="text/css" href="data:text/css;base64,LyoKICogU291cmNlOiBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9raWxsZXJjdXAvNTkxNzE3OAogKi8KCmh0bWwgewogIGZvbnQtc2l6ZTogMTAwJTsKICBvdmVyZmxvdy15OiBzY3JvbGw7CiAgLXdlYmtpdC10ZXh0LXNpemUtYWRqdXN0OiAxMDAlOwogIC1tcy10ZXh0LXNpemUtYWRqdXN0OiAxMDAlOwp9Cgpib2R5IHsKICBjb2xvcjogIzQ0NDsKICBmb250LWZhbWlseTogR2VvcmdpYSwgUGFsYXRpbm8sICdQYWxhdGlubyBMaW5vdHlwZScsIFRpbWVzLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWY7CiAgZm9udC1zaXplOiAxMHB4OwogIGxpbmUtaGVpZ2h0OiAxLjc7CiAgcGFkZGluZzogMWVtOwogIG1hcmdpbjogYXV0bzsKICAvKm1heC13aWR0aDogNDJlbTsqLwogIGJhY2tncm91bmQ6ICNmZWZlZmU7Cn0KCmEgewogIGNvbG9yOiAjMDY0NWFkOwogIHRleHQtZGVjb3JhdGlvbjogbm9uZTsKfQoKYTp2aXNpdGVkIHsKICBjb2xvcjogIzBiMDA4MDsKfQoKYTpob3ZlciB7CiAgY29sb3I6ICMwNmU7Cn0KCmE6YWN0aXZlIHsKICBjb2xvcjogI2ZhYTcwMDsKfQoKYTpmb2N1cyB7CiAgLypvdXRsaW5lOiB0aGluIGRvdHRlZDsqLwogIG91dGxpbmU6IG5vbmU7CiAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7Cn0KCio6Oi1tb3otc2VsZWN0aW9uIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwgMjU1LCAwLCAwLjMpOwogIGNvbG9yOiAjMDAwOwp9CgoqOjpzZWxlY3Rpb24gewogIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDAsIDAuMyk7CiAgY29sb3I6ICMwMDA7Cn0KCmE6Oi1tb3otc2VsZWN0aW9uIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwgMjU1LCAwLCAwLjMpOwogIGNvbG9yOiAjMDY0NWFkOwp9CgphOjpzZWxlY3Rpb24gewogIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDAsIDAuMyk7CiAgY29sb3I6ICMwNjQ1YWQ7Cn0KCnAgewogIG1hcmdpbjogMWVtIDA7Cn0KCmltZyB7CiAgbWF4LXdpZHRoOiAxMDAlOwp9CgpoMSwgaDIsIGgzLCBoNCwgaDUsIGg2IHsKICBjb2xvcjogIzExMTsKICBsaW5lLWhlaWdodDogMTI1JTsKICBtYXJnaW4tdG9wOiAyZW07CiAgZm9udC13ZWlnaHQ6IG5vcm1hbDsKfQoKaDQsIGg1LCBoNiB7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7Cn0KCmgxIHsKICBmb250LXNpemU6IDIuNWVtOwp9CgpoMiB7CiAgZm9udC1zaXplOiAyZW07Cn0KCmgzIHsKICBmb250LXNpemU6IDEuNWVtOwp9CgpoNCB7CiAgZm9udC1zaXplOiAxLjJlbTsKfQoKaDUgewogIGZvbnQtc2l6ZTogMWVtOwp9CgpoNiB7CiAgZm9udC1zaXplOiAwLjllbTsKfQoKYmxvY2txdW90ZSB7CiAgY29sb3I6ICM2NjY2NjY7CiAgbWFyZ2luOiAwOwogIHBhZGRpbmctbGVmdDogM2VtOwogIGJvcmRlci1sZWZ0OiAwLjVlbSAjRUVFIHNvbGlkOwp9CgpociB7CiAgZGlzcGxheTogYmxvY2s7CiAgaGVpZ2h0OiAycHg7CiAgYm9yZGVyOiAwOwogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjYWFhOwogIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjZWVlOwogIG1hcmdpbjogMWVtIDA7CiAgcGFkZGluZzogMDsKfQoKcHJlLCBjb2RlLCBrYmQsIHNhbXAgewogIGNvbG9yOiAjMDAwOwogIGZvbnQtZmFtaWx5OiBtb25vc3BhY2UsIG1vbm9zcGFjZTsKICBfZm9udC1mYW1pbHk6ICdjb3VyaWVyIG5ldycsIG1vbm9zcGFjZTsKICBmb250LXNpemU6IDAuODZlbTsKICBsaW5lLWhlaWdodDogMS4zNTsKfQoKcHJlIHsKICB3aGl0ZS1zcGFjZTogcHJlOwogIHdoaXRlLXNwYWNlOiBwcmUtd3JhcDsKICB3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7Cn0KCmIsIHN0cm9uZyB7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7Cn0KCmRmbiB7CiAgZm9udC1zdHlsZTogaXRhbGljOwp9CgppbnMgewogIGJhY2tncm91bmQ6ICNmZjk7CiAgY29sb3I6ICMwMDA7CiAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwp9CgptYXJrIHsKICBiYWNrZ3JvdW5kOiAjZmYwOwogIGNvbG9yOiAjMDAwOwogIGZvbnQtc3R5bGU6IGl0YWxpYzsKICBmb250LXdlaWdodDogYm9sZDsKfQoKc3ViLCBzdXAgewogIGZvbnQtc2l6ZTogNzUlOwogIGxpbmUtaGVpZ2h0OiAwOwogIHBvc2l0aW9uOiByZWxhdGl2ZTsKICB2ZXJ0aWNhbC1hbGlnbjogYmFzZWxpbmU7Cn0KCnN1cCB7CiAgdG9wOiAtMC41ZW07Cn0KCnN1YiB7CiAgYm90dG9tOiAtMC4yNWVtOwp9Cgp1bCwgb2wgewogIG1hcmdpbjogMWVtIDA7CiAgcGFkZGluZzogMCAwIDAgMmVtOwp9CgpsaSBwOmxhc3QtY2hpbGQgewogIG1hcmdpbi1ib3R0b206IDA7Cn0KCnVsIHVsLCBvbCBvbCB7CiAgbWFyZ2luOiAuM2VtIDA7Cn0KCmRsIHsKICBtYXJnaW4tYm90dG9tOiAxZW07Cn0KCmR0IHsKICBmb250LXdlaWdodDogYm9sZDsKfQoKZGQgewogIG1hcmdpbjogMCAwIC44ZW0gMmVtOwp9CgpkZDpsYXN0LWNoaWxkIHsKICBtYXJnaW4tYm90dG9tOiAwOwp9CgppbWcgewogIGJvcmRlcjogMDsKICAtbXMtaW50ZXJwb2xhdGlvbi1tb2RlOiBiaWN1YmljOwogIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7Cn0KCmZpZ3VyZSB7CiAgZGlzcGxheTogYmxvY2s7CiAgdGV4dC1hbGlnbjogY2VudGVyOwogIG1hcmdpbjogMWVtIDA7Cn0KCmZpZ3VyZSBpbWcgewogIGJvcmRlcjogbm9uZTsKICBtYXJnaW46IDAgYXV0bzsKfQoKZmlnY2FwdGlvbiB7CiAgZm9udC1zaXplOiAwLjhlbTsKICBmb250LXN0eWxlOiBpdGFsaWM7CiAgbWFyZ2luOiAwIDAgLjhlbTsKfQoKdGFibGUgewogIG1hcmdpbi1ib3R0b206IDJlbTsKICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2RkZDsKICBib3JkZXItcmlnaHQ6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1zcGFjaW5nOiAwOwogIGJvcmRlci1jb2xsYXBzZTogY29sbGFwc2U7Cn0KCnRhYmxlIHRoIHsKICBwYWRkaW5nOiAuMmVtIDFlbTsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZWVlOwogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1sZWZ0OiAxcHggc29saWQgI2RkZDsKfQoKdGFibGUgdGQgewogIHBhZGRpbmc6IC4yZW0gMWVtOwogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1sZWZ0OiAxcHggc29saWQgI2RkZDsKICB2ZXJ0aWNhbC1hbGlnbjogdG9wOwp9CgouYXV0aG9yIHsKICBmb250LXNpemU6IDEuMmVtOwogIHRleHQtYWxpZ246IGNlbnRlcjsKfQoKQG1lZGlhIG9ubHkgc2NyZWVuIGFuZCAobWluLXdpZHRoOiA0ODBweCkgewogIGJvZHkgewogICAgZm9udC1zaXplOiAxMXB4OwogIH0KfQpAbWVkaWEgb25seSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDc2OHB4KSB7CiAgYm9keSB7CiAgICBmb250LXNpemU6IDEycHg7CiAgfQp9CkBtZWRpYSBwcmludCB7CiAgKiB7CiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudCAhaW1wb3J0YW50OwogICAgY29sb3I6IGJsYWNrICFpbXBvcnRhbnQ7CiAgICBmaWx0ZXI6IG5vbmUgIWltcG9ydGFudDsKICAgIC1tcy1maWx0ZXI6IG5vbmUgIWltcG9ydGFudDsKICB9CgogIGJvZHkgewogICAgZm9udC1zaXplOiAxMnB0OwogICAgbWF4LXdpZHRoOiAxMDAlOwogIH0KCiAgYSwgYTp2aXNpdGVkIHsKICAgIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lOwogIH0KCiAgaHIgewogICAgaGVpZ2h0OiAxcHg7CiAgICBib3JkZXI6IDA7CiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgYmxhY2s7CiAgfQoKICBhW2hyZWZdOmFmdGVyIHsKICAgIGNvbnRlbnQ6ICIgKCIgYXR0cihocmVmKSAiKSI7CiAgfQoKICBhYmJyW3RpdGxlXTphZnRlciB7CiAgICBjb250ZW50OiAiICgiIGF0dHIodGl0bGUpICIpIjsKICB9CgogIC5pciBhOmFmdGVyLCBhW2hyZWZePSJqYXZhc2NyaXB0OiJdOmFmdGVyLCBhW2hyZWZePSIjIl06YWZ0ZXIgewogICAgY29udGVudDogIiI7CiAgfQoKICBwcmUsIGJsb2NrcXVvdGUgewogICAgYm9yZGVyOiAxcHggc29saWQgIzk5OTsKICAgIHBhZGRpbmctcmlnaHQ6IDFlbTsKICAgIHBhZ2UtYnJlYWstaW5zaWRlOiBhdm9pZDsKICB9CgogIHRyLCBpbWcgewogICAgcGFnZS1icmVhay1pbnNpZGU6IGF2b2lkOwogIH0KCiAgaW1nIHsKICAgIG1heC13aWR0aDogMTAwJSAhaW1wb3J0YW50OwogIH0KCiAgQHBhZ2UgOmxlZnQgewogICAgbWFyZ2luOiAxNW1tIDIwbW0gMTVtbSAxMG1tOwp9CgogIEBwYWdlIDpyaWdodCB7CiAgICBtYXJnaW46IDE1bW0gMTBtbSAxNW1tIDIwbW07Cn0KCiAgcCwgaDIsIGgzIHsKICAgIG9ycGhhbnM6IDM7CiAgICB3aWRvd3M6IDM7CiAgfQoKICBoMiwgaDMgewogICAgcGFnZS1icmVhay1hZnRlcjogYXZvaWQ7CiAgfQp9Cg==">
+</head>
+<body>
+<h1>Capacitive Moisture Sensor ICD</h1>
+
+<p>Generation Time: 04.10.2024 10:25:37</p>
+<p>Application Firmware Version: 1.2.2-dev-g55b3229</p>
+
+<h2>Device Description</h2>
+<dl>
+    <dt>Name</dt>
+    <dd>SG Sensor 2</dd>
+    <dt>Type</dt>
+    <dd>8</dd>
+</dl>
+
+<h2>Value Description</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Writable</th>
+        <th>Persistent</th>
+        <th>Report on Update</th>
+        <th>Report Interval [s]</th>
+        <th>Data Type</th>
+        <th>Unit</th>
+        <th>Min</th>
+        <th>Max</th>
+        <th>Step Size</th>
+        <th>Length [bytes]</th>
+        <th>Uninitialized Value Representation</th>
+        <th>Encoding</th>
+        <th>Comments</th>
+        <th>Examples</th>
+    </tr>
+            <tr>
+                <td title="Value ID = 1"><p>rf_link_quality</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>%</p></td>
+                    <td><p>0</p></td>
+                    <td><p>100</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>NaN</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 2"><p>battery_level</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>%</p></td>
+                    <td><p>0</p></td>
+                    <td><p>100</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td><p>100% is full</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 3"><p>fatal_error_log</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>32</p></td>
+                <td></td>
+                <td><p>Format: [IIDDDDNN FFFFLLLL AAAAAAAA]
+* II: error identifier in ASCII, 1 byte
+* DDDD: 2 bytes which are unused
+* NN: index of log entry in flash, 1 byte
+* FFFF: file number, 2 bytes
+* LLLL: line number, 2 bytes
+* AAAAAAAA: address from stack, 4 bytes</p></td>
+                <td><p>The first 2 x 4 bytes are identifier, index, file and line number. The following 6 x 4 bytes are the addresses which repersents the call stack</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 4"><p>soil_temperature</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p>3600</p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>C</p></td>
+                    <td><p>-30</p></td>
+                    <td><p>85</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>NaN</p></td>
+                <td></td>
+                <td><p>Near ground or soil temperature, depends on installation setup</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 5"><p>soil_moisture</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p>3600</p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>%</p></td>
+                    <td><p>0</p></td>
+                    <td><p>100</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>NaN</p></td>
+                <td></td>
+                <td><p>Soil moisture</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 6"><p>frost_warning</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p>3600</p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>1</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>NaN</p></td>
+                <td></td>
+                <td><p>The sensor reports frost warning if temperature falls below +5°C</p></td>
+                <td><p>On = frost (1), Off = no frost (0)</p></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 7"><p>error</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        <a href="#enum_error">error enum</a>
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>1</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td><p>Sensor errors</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 8"><p>raw_counts</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>Counts</p></td>
+                    <td><p>0</p></td>
+                    <td><p>10000</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>NaN</p></td>
+                <td></td>
+                <td><p>Raw counter values</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 9"><p>command</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        <a href="#enum_command">command enum</a>
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>50</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 10"><p>model_determination_status</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        <a href="#enum_model_determination_status">model_determination_status enum</a>
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>6</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 11"><p>model_determination_mode</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        <a href="#enum_model_determination_mode">model_determination_mode enum</a>
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>1</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>0</p></td>
+                <td></td>
+                <td><p>Specifies whether the default or experimental soil recognition logic has to be used.</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 12"><p>model_definition</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>25</p></td>
+                <td></td>
+                <td><p>format: 0x[nn pp cc cc pp cc cc ...]
+First entry is 100% and last entry is 0%</p>
+<ul>
+<li>nn: number of entries, up to 8 entries</li>
+<li>pp: percent</li>
+<li>cc cc: count value, 2 bytes in little endian</li>
+</ul>
+<p>Example:
+0x03, 0x64, 0xD0, 0x07, 0x37, 0x28, 0x0A, 0x00, 0xA0, 0x0F
+--&gt; 3 entries, percent=100% counts=2000, percent=55% counts=2600, percent=0% counts=4000</p></td>
+                <td><p>Model definition with up to 7 intermediate linear interpolation points</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 13"><p>automodel_definition</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>104</p></td>
+                <td><p>0</p></td>
+                <td><p>format: 0x[vv dd dd ... ]</p>
+<ul>
+<li>vv: version</li>
+<li>dd: automodel data bytes</li>
+</ul></td>
+                <td><p>Soil auto-recognition internal state. Should be saved and re-written back after firmware upgrade.</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 14"><p>soil_type_determination_result_1</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>200</p></td>
+                <td><p>0</p></td>
+                <td><p>Raw counts are 2 bytes in little endian format</p></td>
+                <td><p>The first 100 measurements as raw counts. This is equal to 8h 20min.</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 15"><p>soil_type_determination_result_2</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>200</p></td>
+                <td><p>0</p></td>
+                <td><p>Raw counts are 2 bytes in little endian format</p></td>
+                <td><p>The next 100 measurements as raw counts. This is equal to 8h 20min.</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 16"><p>soil_type_determination_result_3</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>176</p></td>
+                <td><p>0</p></td>
+                <td><p>Raw counts are 2 bytes in little endian format</p></td>
+                <td><p>The last 88 measurements as raw counts. This is equal to 7h 20min.</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 17"><p>measurement_interval</p></td>
+                <td><p>Time interval between the periodic measurements if the soil model is final.</p></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>seconds</p></td>
+                    <td><p>10</p></td>
+                    <td><p>86400</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>3600</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 18"><p>experimental_model_state</p></td>
+                <td><p>Experimental model internal state</p></td>
+                <td><p>False</p></td>
+                <td><p>False</p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>65535</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>32768</p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 19"><p>soil_moisture_experimental_model</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p>900</p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>%</p></td>
+                    <td><p>0</p></td>
+                    <td><p>100</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td><p>NaN</p></td>
+                <td></td>
+                <td><p>Soil moisture from experimental model</p></td>
+                <td></td>
+            </tr>
+</table>
+
+<h2>Status Reports</h2>
+<p>
+    The following status reports are only for status reports with <strong>type-id = 200</strong>. All other status reports with different
+    type-id can be found in <a href="https://confluence-husqvarna.riada.se/download/attachments/51185455/LB_LsDL_Specification_v01_13.pdf?api=v2">
+    Lemonbeat smart Device Language (LsDL)</a>, p.72ff.
+</p>
+
+<table>
+    <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Level</th>
+        <th>Data</th>
+    </tr>
+        <tr>
+            <td><p>0</p></td>
+            <td><p>ok</p></td>
+            <td><p>all ok</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>1</p></td>
+            <td><p>brown_out_reset</p></td>
+            <td><p>This means that a circuit causes a computer processor to reset or reboot due to a drop in the power supply output.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>2</p></td>
+            <td><p>watchdog_reset</p></td>
+            <td><p>This is triggered when a computer malfunctions due to hardware or software reasons (i.e. the computer 'hangs').</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>3</p></td>
+            <td><p>soft_reset</p></td>
+            <td><p>This is when the device is turned off and on (restarted).</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>6</p></td>
+            <td><p>sleep_mode_error</p></td>
+            <td><p>The Sleepmode parameter wasn't accepted. Not able to go in sleep mode.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>7</p></td>
+            <td><p>sleep_mode_timeout</p></td>
+            <td><p>This means that it wasn't possible to set the device into sleep in the preset time.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>8</p></td>
+            <td><p>eeprom_error</p></td>
+            <td><p>The Lemonbeat stack reported a unknown error whle read/write to/from eeprom.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>10</p></td>
+            <td><p>uninitialized_value_requested</p></td>
+            <td><p>This means a not yet initialized value was requested. The value id is reported in the data of the status report.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>13</p></td>
+            <td><p>battery_supply_out_of_range</p></td>
+            <td><p>This means that the battery voltage is higher or lower as the specified operation voltage. Weak Battery or the test circuit for the battery voltage or ADC input is damaged.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>18</p></td>
+            <td><p>eeprom_timeout</p></td>
+            <td><p>EEPROM process has a timeout</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>22</p></td>
+            <td><p>adc_broken</p></td>
+            <td><p>The ADC conversion failed. ADC module damaged.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>23</p></td>
+            <td><p>adc_invoke_timeout</p></td>
+            <td><p>This means that it wasn't possible to get the requested data from ADC module in the preset time and giving up.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>24</p></td>
+            <td><p>fota_blocked</p></td>
+            <td><p>Issued when a FOTA update gets blocked due to a too low (&lt;= 5%) battery level.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>26</p></td>
+            <td><p>counter_error</p></td>
+            <td><p>Counter driver has an error</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>27</p></td>
+            <td><p>counter_timeout</p></td>
+            <td><p>Counter driver has a timeout</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>30</p></td>
+            <td><p>heartbeat_ok</p></td>
+            <td><p>EMC test support is enabled; Both MCUs run correctly.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>43</p></td>
+            <td><p>value_reporting_queue_full</p></td>
+            <td><p>Value could not be added to the queue</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>45</p></td>
+            <td><p>value_reporting_send_error</p></td>
+            <td><p>Value could not be sent.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>48</p></td>
+            <td><p>hard_fault</p></td>
+            <td><p>Hard fault interrupt occured</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>49</p></td>
+            <td><p>runtime_assert</p></td>
+            <td><p>Runtime assert triggered</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>53</p></td>
+            <td><p>value_overflow</p></td>
+            <td><p>Reported number is out of range and will not be sent.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+</table>
+
+<h2>Enums</h2>
+        <h3 id="enum_command">command</h3>
+        <p>List of commands supported by sensor.</p>
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>none</p></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>measure_soil_moisture</p></td>
+                        <td><p>Starts soil moisture measurement</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>3</p></td>
+                        <td><p>measure_soil_temperature</p></td>
+                        <td><p>Measure the soil temperature</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>6</p></td>
+                        <td><p>measure_battery</p></td>
+                        <td><p>Measures the battery level.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>7</p></td>
+                        <td><p>measure_rf_link</p></td>
+                        <td><p>Report RF link quality.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>29</p></td>
+                        <td><p>emc_test_start</p></td>
+                        <td><p>Start EMC test support.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>30</p></td>
+                        <td><p>emc_test_stop</p></td>
+                        <td><p>Stop EMC test support.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>31</p></td>
+                        <td><p>reboot</p></td>
+                        <td><p>Reboot device.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>32</p></td>
+                        <td><p>ntp_force_sync</p></td>
+                        <td><p>Force device to sync time with ntp.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>33</p></td>
+                        <td><p>led_all_off</p></td>
+                        <td><p>Turn off all LEDs.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>34</p></td>
+                        <td><p>led_all_green_on</p></td>
+                        <td><p>Turn on all green LEDs.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>35</p></td>
+                        <td><p>led_all_red_on</p></td>
+                        <td><p>Turn on all red LEDs.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>37</p></td>
+                        <td><p>hap_identify</p></td>
+                        <td><p>Identify the device in a way conforming to the HomeKit Accessory Protocol specification.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>38</p></td>
+                        <td><p>test_watchdog</p></td>
+                        <td><p>Enter an infinite loop to test the watchdog.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>39</p></td>
+                        <td><p>test_hard_fault</p></td>
+                        <td><p>Calls a null pointer to trigger a hard fault interrupt.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>40</p></td>
+                        <td><p>enable_jig_testing</p></td>
+                        <td><p>Enables Jig testing</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>41</p></td>
+                        <td><p>disable_jig_testing</p></td>
+                        <td><p>Disables Jig testing</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>50</p></td>
+                        <td><p>force_report</p></td>
+                        <td><p>Report values that might have changed since last time but were not necessarily reported.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_error">error</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>none</p></td>
+                        <td><p>No Error, all OK</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>eeprom</p></td>
+                        <td><p>Could not read from or write to eeprom.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_model_determination_mode">model_determination_mode</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>default</p></td>
+                        <td><p>Non-linear models, model determination process is based on code version 1.0.0.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>experimental</p></td>
+                        <td><p>Linear models, model determination process is developed from scratch.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_model_determination_status">model_determination_status</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>default_model</p></td>
+                        <td><p>No model is determinated, so default model is active.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>determination_running</p></td>
+                        <td><p>Model determination process is running.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>preliminary_model</p></td>
+                        <td><p>Determination is finished. Sensor sets a preliminary model.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>3</p></td>
+                        <td><p>final_model</p></td>
+                        <td><p>Model is validated by BE or model is set by BE.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>4</p></td>
+                        <td><p>determination_failed</p></td>
+                        <td><p>Failed to collect all needed data or no model could not be determined.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>5</p></td>
+                        <td><p>power_up</p></td>
+                        <td><p>New power up of the sensor, perhaps because of battery change, new model determination is needed.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>6</p></td>
+                        <td><p>location_change</p></td>
+                        <td><p>Planting location has changed, new model determination is needed.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_rf_link_state">rf_link_state</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>bad</p></td>
+                        <td><p>RF link quality is &lt; 30%.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>poor</p></td>
+                        <td><p>RF link quality is &gt;= 30% and &lt; 50%.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>good</p></td>
+                        <td><p>RF link quality &gt;= 50%.</p></td>
+                    </tr>
+        </table>
+</body>
+</html>

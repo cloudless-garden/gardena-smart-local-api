@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Power ICD</title>
+    <link rel="stylesheet" type="text/css" href="data:text/css;base64,LyoKICogU291cmNlOiBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9raWxsZXJjdXAvNTkxNzE3OAogKi8KCmh0bWwgewogIGZvbnQtc2l6ZTogMTAwJTsKICBvdmVyZmxvdy15OiBzY3JvbGw7CiAgLXdlYmtpdC10ZXh0LXNpemUtYWRqdXN0OiAxMDAlOwogIC1tcy10ZXh0LXNpemUtYWRqdXN0OiAxMDAlOwp9Cgpib2R5IHsKICBjb2xvcjogIzQ0NDsKICBmb250LWZhbWlseTogR2VvcmdpYSwgUGFsYXRpbm8sICdQYWxhdGlubyBMaW5vdHlwZScsIFRpbWVzLCAnVGltZXMgTmV3IFJvbWFuJywgc2VyaWY7CiAgZm9udC1zaXplOiAxMHB4OwogIGxpbmUtaGVpZ2h0OiAxLjc7CiAgcGFkZGluZzogMWVtOwogIG1hcmdpbjogYXV0bzsKICAvKm1heC13aWR0aDogNDJlbTsqLwogIGJhY2tncm91bmQ6ICNmZWZlZmU7Cn0KCmEgewogIGNvbG9yOiAjMDY0NWFkOwogIHRleHQtZGVjb3JhdGlvbjogbm9uZTsKfQoKYTp2aXNpdGVkIHsKICBjb2xvcjogIzBiMDA4MDsKfQoKYTpob3ZlciB7CiAgY29sb3I6ICMwNmU7Cn0KCmE6YWN0aXZlIHsKICBjb2xvcjogI2ZhYTcwMDsKfQoKYTpmb2N1cyB7CiAgLypvdXRsaW5lOiB0aGluIGRvdHRlZDsqLwogIG91dGxpbmU6IG5vbmU7CiAgdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7Cn0KCio6Oi1tb3otc2VsZWN0aW9uIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwgMjU1LCAwLCAwLjMpOwogIGNvbG9yOiAjMDAwOwp9CgoqOjpzZWxlY3Rpb24gewogIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDAsIDAuMyk7CiAgY29sb3I6ICMwMDA7Cn0KCmE6Oi1tb3otc2VsZWN0aW9uIHsKICBiYWNrZ3JvdW5kOiByZ2JhKDI1NSwgMjU1LCAwLCAwLjMpOwogIGNvbG9yOiAjMDY0NWFkOwp9CgphOjpzZWxlY3Rpb24gewogIGJhY2tncm91bmQ6IHJnYmEoMjU1LCAyNTUsIDAsIDAuMyk7CiAgY29sb3I6ICMwNjQ1YWQ7Cn0KCnAgewogIG1hcmdpbjogMWVtIDA7Cn0KCmltZyB7CiAgbWF4LXdpZHRoOiAxMDAlOwp9CgpoMSwgaDIsIGgzLCBoNCwgaDUsIGg2IHsKICBjb2xvcjogIzExMTsKICBsaW5lLWhlaWdodDogMTI1JTsKICBtYXJnaW4tdG9wOiAyZW07CiAgZm9udC13ZWlnaHQ6IG5vcm1hbDsKfQoKaDQsIGg1LCBoNiB7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7Cn0KCmgxIHsKICBmb250LXNpemU6IDIuNWVtOwp9CgpoMiB7CiAgZm9udC1zaXplOiAyZW07Cn0KCmgzIHsKICBmb250LXNpemU6IDEuNWVtOwp9CgpoNCB7CiAgZm9udC1zaXplOiAxLjJlbTsKfQoKaDUgewogIGZvbnQtc2l6ZTogMWVtOwp9CgpoNiB7CiAgZm9udC1zaXplOiAwLjllbTsKfQoKYmxvY2txdW90ZSB7CiAgY29sb3I6ICM2NjY2NjY7CiAgbWFyZ2luOiAwOwogIHBhZGRpbmctbGVmdDogM2VtOwogIGJvcmRlci1sZWZ0OiAwLjVlbSAjRUVFIHNvbGlkOwp9CgpociB7CiAgZGlzcGxheTogYmxvY2s7CiAgaGVpZ2h0OiAycHg7CiAgYm9yZGVyOiAwOwogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjYWFhOwogIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjZWVlOwogIG1hcmdpbjogMWVtIDA7CiAgcGFkZGluZzogMDsKfQoKcHJlLCBjb2RlLCBrYmQsIHNhbXAgewogIGNvbG9yOiAjMDAwOwogIGZvbnQtZmFtaWx5OiBtb25vc3BhY2UsIG1vbm9zcGFjZTsKICBfZm9udC1mYW1pbHk6ICdjb3VyaWVyIG5ldycsIG1vbm9zcGFjZTsKICBmb250LXNpemU6IDAuODZlbTsKICBsaW5lLWhlaWdodDogMS4zNTsKfQoKcHJlIHsKICB3aGl0ZS1zcGFjZTogcHJlOwogIHdoaXRlLXNwYWNlOiBwcmUtd3JhcDsKICB3b3JkLXdyYXA6IGJyZWFrLXdvcmQ7Cn0KCmIsIHN0cm9uZyB7CiAgZm9udC13ZWlnaHQ6IGJvbGQ7Cn0KCmRmbiB7CiAgZm9udC1zdHlsZTogaXRhbGljOwp9CgppbnMgewogIGJhY2tncm91bmQ6ICNmZjk7CiAgY29sb3I6ICMwMDA7CiAgdGV4dC1kZWNvcmF0aW9uOiBub25lOwp9CgptYXJrIHsKICBiYWNrZ3JvdW5kOiAjZmYwOwogIGNvbG9yOiAjMDAwOwogIGZvbnQtc3R5bGU6IGl0YWxpYzsKICBmb250LXdlaWdodDogYm9sZDsKfQoKc3ViLCBzdXAgewogIGZvbnQtc2l6ZTogNzUlOwogIGxpbmUtaGVpZ2h0OiAwOwogIHBvc2l0aW9uOiByZWxhdGl2ZTsKICB2ZXJ0aWNhbC1hbGlnbjogYmFzZWxpbmU7Cn0KCnN1cCB7CiAgdG9wOiAtMC41ZW07Cn0KCnN1YiB7CiAgYm90dG9tOiAtMC4yNWVtOwp9Cgp1bCwgb2wgewogIG1hcmdpbjogMWVtIDA7CiAgcGFkZGluZzogMCAwIDAgMmVtOwp9CgpsaSBwOmxhc3QtY2hpbGQgewogIG1hcmdpbi1ib3R0b206IDA7Cn0KCnVsIHVsLCBvbCBvbCB7CiAgbWFyZ2luOiAuM2VtIDA7Cn0KCmRsIHsKICBtYXJnaW4tYm90dG9tOiAxZW07Cn0KCmR0IHsKICBmb250LXdlaWdodDogYm9sZDsKfQoKZGQgewogIG1hcmdpbjogMCAwIC44ZW0gMmVtOwp9CgpkZDpsYXN0LWNoaWxkIHsKICBtYXJnaW4tYm90dG9tOiAwOwp9CgppbWcgewogIGJvcmRlcjogMDsKICAtbXMtaW50ZXJwb2xhdGlvbi1tb2RlOiBiaWN1YmljOwogIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7Cn0KCmZpZ3VyZSB7CiAgZGlzcGxheTogYmxvY2s7CiAgdGV4dC1hbGlnbjogY2VudGVyOwogIG1hcmdpbjogMWVtIDA7Cn0KCmZpZ3VyZSBpbWcgewogIGJvcmRlcjogbm9uZTsKICBtYXJnaW46IDAgYXV0bzsKfQoKZmlnY2FwdGlvbiB7CiAgZm9udC1zaXplOiAwLjhlbTsKICBmb250LXN0eWxlOiBpdGFsaWM7CiAgbWFyZ2luOiAwIDAgLjhlbTsKfQoKdGFibGUgewogIG1hcmdpbi1ib3R0b206IDJlbTsKICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2RkZDsKICBib3JkZXItcmlnaHQ6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1zcGFjaW5nOiAwOwogIGJvcmRlci1jb2xsYXBzZTogY29sbGFwc2U7Cn0KCnRhYmxlIHRoIHsKICBwYWRkaW5nOiAuMmVtIDFlbTsKICBiYWNrZ3JvdW5kLWNvbG9yOiAjZWVlOwogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1sZWZ0OiAxcHggc29saWQgI2RkZDsKfQoKdGFibGUgdGQgewogIHBhZGRpbmc6IC4yZW0gMWVtOwogIGJvcmRlci10b3A6IDFweCBzb2xpZCAjZGRkOwogIGJvcmRlci1sZWZ0OiAxcHggc29saWQgI2RkZDsKICB2ZXJ0aWNhbC1hbGlnbjogdG9wOwp9CgouYXV0aG9yIHsKICBmb250LXNpemU6IDEuMmVtOwogIHRleHQtYWxpZ246IGNlbnRlcjsKfQoKQG1lZGlhIG9ubHkgc2NyZWVuIGFuZCAobWluLXdpZHRoOiA0ODBweCkgewogIGJvZHkgewogICAgZm9udC1zaXplOiAxMXB4OwogIH0KfQpAbWVkaWEgb25seSBzY3JlZW4gYW5kIChtaW4td2lkdGg6IDc2OHB4KSB7CiAgYm9keSB7CiAgICBmb250LXNpemU6IDEycHg7CiAgfQp9CkBtZWRpYSBwcmludCB7CiAgKiB7CiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudCAhaW1wb3J0YW50OwogICAgY29sb3I6IGJsYWNrICFpbXBvcnRhbnQ7CiAgICBmaWx0ZXI6IG5vbmUgIWltcG9ydGFudDsKICAgIC1tcy1maWx0ZXI6IG5vbmUgIWltcG9ydGFudDsKICB9CgogIGJvZHkgewogICAgZm9udC1zaXplOiAxMnB0OwogICAgbWF4LXdpZHRoOiAxMDAlOwogIH0KCiAgYSwgYTp2aXNpdGVkIHsKICAgIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lOwogIH0KCiAgaHIgewogICAgaGVpZ2h0OiAxcHg7CiAgICBib3JkZXI6IDA7CiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgYmxhY2s7CiAgfQoKICBhW2hyZWZdOmFmdGVyIHsKICAgIGNvbnRlbnQ6ICIgKCIgYXR0cihocmVmKSAiKSI7CiAgfQoKICBhYmJyW3RpdGxlXTphZnRlciB7CiAgICBjb250ZW50OiAiICgiIGF0dHIodGl0bGUpICIpIjsKICB9CgogIC5pciBhOmFmdGVyLCBhW2hyZWZePSJqYXZhc2NyaXB0OiJdOmFmdGVyLCBhW2hyZWZePSIjIl06YWZ0ZXIgewogICAgY29udGVudDogIiI7CiAgfQoKICBwcmUsIGJsb2NrcXVvdGUgewogICAgYm9yZGVyOiAxcHggc29saWQgIzk5OTsKICAgIHBhZGRpbmctcmlnaHQ6IDFlbTsKICAgIHBhZ2UtYnJlYWstaW5zaWRlOiBhdm9pZDsKICB9CgogIHRyLCBpbWcgewogICAgcGFnZS1icmVhay1pbnNpZGU6IGF2b2lkOwogIH0KCiAgaW1nIHsKICAgIG1heC13aWR0aDogMTAwJSAhaW1wb3J0YW50OwogIH0KCiAgQHBhZ2UgOmxlZnQgewogICAgbWFyZ2luOiAxNW1tIDIwbW0gMTVtbSAxMG1tOwp9CgogIEBwYWdlIDpyaWdodCB7CiAgICBtYXJnaW46IDE1bW0gMTBtbSAxNW1tIDIwbW07Cn0KCiAgcCwgaDIsIGgzIHsKICAgIG9ycGhhbnM6IDM7CiAgICB3aWRvd3M6IDM7CiAgfQoKICBoMiwgaDMgewogICAgcGFnZS1icmVhay1hZnRlcjogYXZvaWQ7CiAgfQp9Cg==">
+</head>
+<body>
+<h1>Power ICD</h1>
+
+<p>Generation Time: 04.10.2024 10:25:34</p>
+<p>Application Firmware Version: 3.0.3-dev-g55b3229</p>
+
+<h2>Device Description</h2>
+<dl>
+    <dt>Name</dt>
+    <dd>SG Power</dd>
+    <dt>Type</dt>
+    <dd>7</dd>
+</dl>
+
+<h2>Value Description</h2>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Writable</th>
+        <th>Persistent</th>
+        <th>Report on Update</th>
+        <th>Report Interval [s]</th>
+        <th>Data Type</th>
+        <th>Unit</th>
+        <th>Min</th>
+        <th>Max</th>
+        <th>Step Size</th>
+        <th>Length [bytes]</th>
+        <th>Uninitialized Value Representation</th>
+        <th>Encoding</th>
+        <th>Comments</th>
+        <th>Examples</th>
+    </tr>
+            <tr>
+                <td title="Value ID = 1"><p>rf_link_quality</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>%</p></td>
+                    <td><p>0</p></td>
+                    <td><p>100</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 2"><p>fatal_error_log</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>32</p></td>
+                <td></td>
+                <td><p>Format: [IIDDDDNN FFFFLLLL AAAAAAAA]
+* II: error identifier in ASCII, 1 byte
+* DDDD: 2 bytes which are unused
+* NN: index of log entry in flash, 1 byte
+* FFFF: file number, 2 bytes
+* LLLL: line number, 2 bytes
+* AAAAAAAA: address from stack, 4 bytes</p></td>
+                <td><p>The first 2 x 4 bytes are identifier, index, file and line number. The following 6 x 4 bytes are the addresses which repersents the call stack</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 3"><p>error</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        <a href="#enum_error">error enum</a>
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>2</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td><ul>
+<li>timer_cancelled will be reported at time of supposed schedule start, i.e no advanced calculation will be made if a high prio timer will conflict with a schedule</li>
+<li>Error is reset at beginning of a new non-conflicting schedule or power switch</li>
+</ul></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 4"><p>command</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        <a href="#enum_command">command enum</a>
+                </p></td>
+                <td><p></p></td>
+                    <td><p>0</p></td>
+                    <td><p>39</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 5"><p>schedule_config</p></td>
+                <td></td>
+                <td><p>False</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>252</p></td>
+                <td></td>
+                <td><p>Format: 0x[IIWWHHMMDDDDAA],[...] up to 36 schedules</p>
+<ul>
+<li>I: schedule id</li>
+<li>W: weekdays bitmask, LSB = sunday (first day in week)</li>
+<li>H: start hour: 0x00 - 0x18</li>
+<li>M:  start minute: 0x00 - 0x3B</li>
+<li>DD: duration in minutes [low byte, high byte]: [0x00, 0x00] - [0xFF, 0xFF]</li>
+<li>A: action_id (see enum action_id)</li>
+</ul></td>
+                <td><p>Note: The times are in local time.</p>
+<p>Size = 7 bytes x 36 schedules = 252 bytes</p>
+<p>Example:</p>
+<p>id=01,weekdays=Mon-Thu,time=14:59,duration=300s,action=actor1
+--&gt; 0x01 1E 0E 3B 05 00 00</p>
+<p>Default value = empty</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 6"><p>power_timer</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>s</p></td>
+                    <td><p>-16777215</p></td>
+                    <td><p>16777216</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td><ul>
+<li>[-2^24+1 ; -1] low prio timer in seconds</li>
+<li>0 : switch off</li>
+<li>[0; 2^24-1] : high prio timer in seconds</li>
+<li>2^24 = <strong> infinite on </strong></li>
+</ul></td>
+                <td><ul>
+<li>write X &gt; 0: start timer / initiate high priority timer.</li>
+<li>write X &lt; 0: start timer / initiate low priority timer (initiated by SM action),
+  ignored if a high priority timer is already running.</li>
+<li>write 0: stop timer / cancel high and low priority (manual and scheduled) timers.</li>
+<li>read 0: timer not running.</li>
+<li>read X &gt; 0: high priority (manual) timer running, will end at report_timestamp + X.</li>
+<li>read X &lt; 0: low priority (scheduled) timer running, will end at report_timestamp - X.</li>
+</ul></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 7"><p>action_paused_until_1</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>6</p></td>
+                <td></td>
+                <td><p>Format: YYYYMMDDHHmm</p>
+<ul>
+<li>YYYY: year[low byte, high byte], little endian</li>
+<li>MM: month</li>
+<li>DD: day in month</li>
+<li>HH: hour</li>
+<li>mm: minutes</li>
+</ul></td>
+                <td><p>Note: The time is in local time.</p>
+<p>timestamp until the action timer 1 is paused (watering_timer_1)</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 8"><p>sun_data</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>254</p></td>
+                <td></td>
+                <td><p>Format: 2-byte header followed by 84 3-byte blocks:
+      0x oooo [ xxxxxx ] * 84</p>
+<p>oooo: signed big endian 16 bit number: half distance (in seconds) from GMT meridian to the target longitude.
+      example: for Zürich this is ( 8.55 / 360 * 86400 / 2) = 1026 = 0x0402 -&gt; [0x02 0x04]
+      example: for Madrid this is (-3.70 / 360 * 86400 / 2) = -444 = 0xFE44 -&gt; [0x44 0xFE]
+      Could be outside of -12h...12h range. For example, for Kiribati islands this is +13:34.
+      If instead these will be configured as -10:26 that will introduce an error of about a minute.
+xxxxxx: lookup point, containing one signed and one unsigned integers:
+       10-bit integer encoding <code>(Equation of Time) * 15/32</code>
+       14-bit integer encoding <code>(day length) * 6/32</code>
+       Example: if EoT is -801 seconds and day length is 50108 seconds then:
+       -801 * 15/32 ~= -375 = 0b 1010001000
+       50108 * 6/32 ~= 9395 = 0x413f = 0b 10010010110011</p>
+<pre><code>   0b10010010110011_1010001000 = 0x92ce88 -&gt; [0x88 0xce 0x92]
+</code></pre>
+<p>The lookup points are spaced exactly 1/84th of mean tropical year apart (31556925/84 seconds apart).
+The first point corresponds to the unix time 1640102340 (2021-12-21 15:59:00 GMT) as well as to all exactly same
+second of all previous and following tropical years. For the reference: at that time the Earth has almost reached
+the perihelion and the EoT is midway decreasing from the maximum of 16 minutes to the minimum of -14 minutes.</p>
+<p>IMPORTANT NOTICE! Make the logitude and latitude coarce enough to protect the sensitive geo location data.
+Example: Zürich coordinates are (+8.5417, +47.3769). By applying float(round(x*20))/20 we get (+8.55, 47.40).
+Such rounding introduces an error of no more than 2.8 kilometers.</p></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 9"><p>sun_schedule_config</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>252</p></td>
+                <td></td>
+                <td><p>Format: repeating blocks of 7 bytes - up to 36 blocks</p>
+<p>mmmm mmmm  ..bb .MMM | mmmm mmmm  ..bb MMMM | i aaa .ccc | vvvv vvvv  VVVV VVVV</p>
+<p>schedule start       |    schedule end      |id aid cycle|   repetition value</p>
+<ul>
+<li>b: offset (B)ase (00=midday, 01=sunrise, 10=sunset)</li>
+<li>m: offset (M)inutes (signed 12 bit)</li>
+<li>i: extra_id flag</li>
+<li>a: (A)ction ID</li>
+<li>c: repetition (C)ycle type ( 000=12 day cycle, 001=14 day cycle, 010=15 day cycle)</li>
+<li>v: repetition (V)alue, i.e. days (12, 14 or 15 lower bits are used, bit 0 = first day)</li>
+</ul>
+<p>PAY ATTENTION! all values are little endian. Uppercase letters denote upper bits.</p></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 10"><p>schedule_state</p></td>
+                <td></td>
+                <td><p></p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>108</p></td>
+                <td></td>
+                <td><p>Value setting format: [IISSff] 108 bytes</p>
+<ul>
+<li>I: schedule id</li>
+<li>S: schedule state</li>
+<li>f: update flag (1: updated, 0: nothing changed)</li>
+</ul></td>
+                <td><p>Size = 3 bytes x 36 schedules = 108 bytes</p>
+<p>States: See at the enum schedule_state</p>
+<p>Default value = empty</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 11"><p>schedule_state_control_skip</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>36</p></td>
+                <td></td>
+                <td><p>Format: [II] 1 byte</p>
+<ul>
+<li>II: schedule id</li>
+</ul></td>
+                <td><p>Size = 1 byte x 36 schedules = 36 bytes</p>
+<p>Default value = empty</p>
+<p>Attention: if multiple ids are sent and at least one id has an error
+the whole value gets rejected and the value schedule_state stays the same</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 12"><p>schedule_state_control_shorten</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        hex
+                </p></td>
+                <td><p></p></td>
+                    <td colspan="3"></td>
+                <td><p>108</p></td>
+                <td></td>
+                <td><p>Format: [IIDDDD] 3 bytes</p>
+<ul>
+<li>II: schedule id</li>
+<li>DD: duration in minutes, little endian</li>
+</ul></td>
+                <td><p>Size = 3 byte x 36 schedules = 108 bytes</p>
+<p>Default value = empty</p>
+<p>Attention: if multiple ids are sent and at least one id has an error
+the whole value gets rejected and the value schedule_state stays the same</p></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td title="Value ID = 13"><p>be_decision_time</p></td>
+                <td></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p>True</p></td>
+                <td><p></p></td>
+                <td><p>
+                        number
+                </p></td>
+                <td><p>s</p></td>
+                    <td><p>1</p></td>
+                    <td><p>3600</p></td>
+                    <td><p>1</p></td>
+                <td><p></p></td>
+                <td></td>
+                <td></td>
+                <td><p>Timeout for smart decision from backend (max 1h).
+Default value is 8 minutes</p></td>
+                <td></td>
+            </tr>
+</table>
+
+<h2>Status Reports</h2>
+<p>
+    The following status reports are only for status reports with <strong>type-id = 200</strong>. All other status reports with different
+    type-id can be found in <a href="https://confluence-husqvarna.riada.se/download/attachments/51185455/LB_LsDL_Specification_v01_13.pdf?api=v2">
+    Lemonbeat smart Device Language (LsDL)</a>, p.72ff.
+</p>
+
+<table>
+    <tr>
+        <th>Code</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Level</th>
+        <th>Data</th>
+    </tr>
+        <tr>
+            <td><p>0</p></td>
+            <td><p>ok</p></td>
+            <td><p>all ok</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>1</p></td>
+            <td><p>brown_out_reset</p></td>
+            <td><p>This means that a circuit causes a computer processor to reset or reboot due to a drop in the power supply output.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>2</p></td>
+            <td><p>watchdog_reset</p></td>
+            <td><p>This is triggered when a computer malfunctions due to hardware or software reasons (i.e. the computer 'hangs').</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>3</p></td>
+            <td><p>soft_reset</p></td>
+            <td><p>This is when the device is turned off and on (restarted).</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>6</p></td>
+            <td><p>sleep_mode_error</p></td>
+            <td><p>The Sleepmode parameter wasn't accepted. Not able to go in sleep mode.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>7</p></td>
+            <td><p>sleep_mode_timeout</p></td>
+            <td><p>This means that it wasn't possible to set the device into sleep in the preset time.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>8</p></td>
+            <td><p>eeprom_error</p></td>
+            <td><p>The Lemonbeat stack reported a unknown error whle read/write to/from eeprom.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>10</p></td>
+            <td><p>uninitialized_value_requested</p></td>
+            <td><p>This means a not yet initialized value was requested. The value id is reported in the data of the status report.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>11</p></td>
+            <td><p>secondary_mcu_bootloader_error</p></td>
+            <td><p>Attempt to check the STM8 firmware version (and to update if needed) failed.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>18</p></td>
+            <td><p>eeprom_timeout</p></td>
+            <td><p>EEPROM process has a timeout</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>30</p></td>
+            <td><p>heartbeat_ok</p></td>
+            <td><p>EMC test support is enabled; Both MCUs run correctly.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>33</p></td>
+            <td><p>safety_timer_elapsed</p></td>
+            <td><p>Valve safety timer elapsed, data is valve id</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>40</p></td>
+            <td><p>custom_hex_value_error</p></td>
+            <td><p>The length of an ICD value is invalid.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>41</p></td>
+            <td><p>schedule_config_error</p></td>
+            <td><p>A schedule has corrupt data. The schedule id and position of the error are sent in the status report data field. Example 0x02 0x06 -&gt; action of schedule id 2 is invalid</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>42</p></td>
+            <td><p>schedule_state_control_error</p></td>
+            <td><p>invalid schedule id (0x01), invalid duration (0x02), illegal state (0x03)</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>43</p></td>
+            <td><p>value_reporting_queue_full</p></td>
+            <td><p>Value could not be added to the queue</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>45</p></td>
+            <td><p>value_reporting_send_error</p></td>
+            <td><p>Value could not be sent.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>48</p></td>
+            <td><p>hard_fault</p></td>
+            <td><p>Hard fault interrupt occured</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>49</p></td>
+            <td><p>runtime_assert</p></td>
+            <td><p>Runtime assert triggered</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+        <tr>
+            <td><p>53</p></td>
+            <td><p>value_overflow</p></td>
+            <td><p>Reported number is out of range and will not be sent.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>61</p></td>
+            <td><p>sun_schedule_config_error</p></td>
+            <td><p>At least one of sun schedules is corrupt. See data for exact code and position.</p></td>
+            <td><p>error</p></td>
+            <td><p>True</p></td>
+        </tr>
+        <tr>
+            <td><p>62</p></td>
+            <td><p>sun_data_error</p></td>
+            <td><p>Sun data is corrupt. Most likely - wrong size.</p></td>
+            <td><p>error</p></td>
+            <td><p></p></td>
+        </tr>
+</table>
+
+<h2>Enums</h2>
+        <h3 id="enum_action_id">action_id</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>actor_1</p></td>
+                        <td><p>Power on/off</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_command">command</h3>
+        <p>List of commands supported by Smart Power.</p>
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>none</p></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>identify_device</p></td>
+                        <td><p>[DEPRECATED] <del>Blink power LED and repeatedly report RF link quality and state for 3 minutes.</del></p></td>
+                    </tr>
+                    <tr>
+                        <td><p>7</p></td>
+                        <td><p>measure_rf_link</p></td>
+                        <td><p>Report RF link quality.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>29</p></td>
+                        <td><p>emc_test_start</p></td>
+                        <td><p>Start EMC test support.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>30</p></td>
+                        <td><p>emc_test_stop</p></td>
+                        <td><p>Stop EMC test support.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>31</p></td>
+                        <td><p>reboot</p></td>
+                        <td><p>Reboot device.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>32</p></td>
+                        <td><p>ntp_force_sync</p></td>
+                        <td><p>Force device to sync time with ntp.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>33</p></td>
+                        <td><p>led_all_off</p></td>
+                        <td><p>Turn off all LEDs.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>34</p></td>
+                        <td><p>led_all_green_on</p></td>
+                        <td><p>Turn on all green LEDs.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>35</p></td>
+                        <td><p>led_all_red_on</p></td>
+                        <td><p>Turn on all red LEDs.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>37</p></td>
+                        <td><p>hap_identify</p></td>
+                        <td><p>Identify the device in a way conforming to the HomeKit Accessory Protocol specification.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>38</p></td>
+                        <td><p>test_watchdog</p></td>
+                        <td><p>Enter an infinite loop to test the watchdog.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>39</p></td>
+                        <td><p>test_hard_fault</p></td>
+                        <td><p>Calls a null pointer to trigger a hard fault interrupt.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_error">error</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>none</p></td>
+                        <td><p>No error</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>timer_cancelled</p></td>
+                        <td><p>unused error</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>eeprom</p></td>
+                        <td><p>Could not read from or write to eeprom.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_rf_link_state">rf_link_state</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>bad</p></td>
+                        <td><p>RF link quality is &lt; 30%.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>poor</p></td>
+                        <td><p>RF link quality is &gt;= 30% and &lt; 50%.</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>good</p></td>
+                        <td><p>RF link quality &gt;= 50%.</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_schedule_state">schedule_state</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>0</p></td>
+                        <td><p>idle</p></td>
+                        <td><p>no or invalid schedule</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>scheduled</p></td>
+                        <td><p>schedule is active and is waiting to get scheduled</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>will_start</p></td>
+                        <td><p>schedule is ready to start, wait for BE decision</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>3</p></td>
+                        <td><p>skipped</p></td>
+                        <td><p>skip schedule</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>4</p></td>
+                        <td><p>shorten_duration</p></td>
+                        <td><p>shorten the duration of the schedule</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>5</p></td>
+                        <td><p>running</p></td>
+                        <td><p>schedule is running</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>6</p></td>
+                        <td><p>stopped</p></td>
+                        <td><p>schedule stopped</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>7</p></td>
+                        <td><p>error</p></td>
+                        <td><p>an error occured affecting the schedule</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>8</p></td>
+                        <td><p>overwritten</p></td>
+                        <td><p>schedule is overwritten because of manual watering</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>9</p></td>
+                        <td><p>done</p></td>
+                        <td><p>schedule finished</p></td>
+                    </tr>
+        </table>
+        <h3 id="enum_state_control_error">state_control_error</h3>
+        
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+                    <tr>
+                        <td><p>1</p></td>
+                        <td><p>invalid_schedule_id</p></td>
+                        <td><p>invalid id</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>2</p></td>
+                        <td><p>invalid_duration</p></td>
+                        <td><p>duration is longer than schedule duration</p></td>
+                    </tr>
+                    <tr>
+                        <td><p>3</p></td>
+                        <td><p>illegal_state</p></td>
+                        <td><p>state does not allow a change</p></td>
+                    </tr>
+        </table>
+</body>
+</html>

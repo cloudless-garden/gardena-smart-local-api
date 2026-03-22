@@ -31,6 +31,21 @@ class EgressMessageList(RootModel[list[Request]]):
     def __str__(self) -> str:
         return self.model_dump_json(exclude_none=True)
 
+    def __iter__(self):
+        return iter(self.root)
+
+    def __len__(self):
+        return len(self.root)
+
+    def __getitem__(self, index):
+        return self.root[index]
+
+    def __setitem__(self, index, value):
+        self.root[index] = value
+
+    def __delitem__(self, index):
+        del self.root[index]
+
 
 class ErrorMetadata(BaseModel):
     error_source: str

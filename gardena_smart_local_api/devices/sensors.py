@@ -3,7 +3,25 @@ from ..resources import IpsoPath
 from .gen1 import Gen1BatteryPoweredDevice
 
 
-class Sensor1(Gen1BatteryPoweredDevice):
+class _Sensor(Gen1BatteryPoweredDevice):
+    @property
+    def has_frost_warning(self) -> bool | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="frost_warning",
+            )
+        )
+        if isinstance(value, int):
+            return bool(value)
+        return None
+
+    def build_refresh_soil_moisture_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("measure_soil_moisture"))
+
+
+class Sensor1(_Sensor):
     @property
     def temperature(self) -> int | None:
         value = self.get_value(
@@ -16,25 +34,6 @@ class Sensor1(Gen1BatteryPoweredDevice):
         if isinstance(value, int):
             return value
         return None
-
-    def build_refresh_temperature_obj(self) -> EgressMessageList:
-        return self.build_command_obj(self.get_command("measure_ambient_temperature"))
-
-    @property
-    def light(self) -> int | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="light",
-            )
-        )
-        if isinstance(value, int):
-            return value
-        return None
-
-    def build_refresh_light_obj(self) -> EgressMessageList:
-        return self.build_command_obj(self.get_command("measure_light"))
 
     @property
     def soil_moisture(self) -> int | None:
@@ -49,31 +48,52 @@ class Sensor1(Gen1BatteryPoweredDevice):
             return value
         return None
 
-    def build_refresh_soil_moisture_obj(self) -> EgressMessageList:
-        return self.build_command_obj(self.get_command("measure_soil_moisture"))
-
     @property
-    def has_frost_warning(self) -> bool | None:
+    def light(self) -> int | None:
         value = self.get_value(
             IpsoPath(
                 object_name="lemonbeat",
                 object_instance_id="0",
-                resource_name="frost_warning",
-            )
-        )
-        if isinstance(value, int):
-            return bool(value)
-        return None
-
-    @property
-    def error(self) -> int | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="error",
+                resource_name="light",
             )
         )
         if isinstance(value, int):
             return value
         return None
+
+    def build_refresh_temperature_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("measure_ambient_temperature"))
+
+    def build_refresh_light_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("measure_light"))
+
+
+class Sensor2(_Sensor):
+    @property
+    def temperature(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="soil_temperature",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def soil_moisture(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="soil_moisture",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    def build_refresh_temperature_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("measure_soil_temperature"))

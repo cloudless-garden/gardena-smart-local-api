@@ -51,6 +51,26 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ github.token }}
 
+  package:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Install wheel and test dependencies
+        run: |
+          UV_PROJECT_ENVIRONMENT=$RUNNER_TEMP/.venv uv sync --group test --no-install-project
+          uv pip install --python $RUNNER_TEMP/.venv dist/*.whl
+
+      - name: Run tests against installed package
+        working-directory: ${{ runner.temp }}
+        run: uv run pytest $GITHUB_WORKSPACE/tests/ --import-mode=importlib
+
   ha-compat:
     runs-on: ubuntu-24.04
     steps:

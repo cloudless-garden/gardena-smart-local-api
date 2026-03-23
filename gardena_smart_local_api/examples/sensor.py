@@ -2,7 +2,7 @@
 import asyncio
 import sys
 
-from gardena_smart_local_api.devices import Sensor1
+from gardena_smart_local_api.devices import Sensor1, Sensor2
 from gardena_smart_local_api.examples import ExampleApp
 
 
@@ -27,13 +27,14 @@ async def main():
                     print("No device ID provided")
                     return 1
                 sensor = app.devices[app.args.device_id]
-                if not isinstance(sensor, Sensor1):
+                if not isinstance(sensor, (Sensor1, Sensor2)):
                     print("Incompatible device selected")
                     return 1
                 print(f"Sensor {sensor.id}:")
                 print(f"  Temperature:     {sensor.temperature}°C")
                 print(f"  Soil moisture:   {sensor.soil_moisture}%")
-                print(f"  Light:           {sensor.light} lx")
+                if isinstance(sensor, Sensor1):
+                    print(f"  Light:           {sensor.light} lx")
                 print(f"  Battery:         {sensor.battery_level}%")
                 print(f"  RF link quality: {sensor.rf_link_quality}%")
                 print(f"  Frost warning:   {sensor.has_frost_warning}")

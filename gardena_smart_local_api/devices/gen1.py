@@ -91,6 +91,19 @@ class Gen1Device(Device):
     def build_refresh_rf_link_state_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_rf_link"))
 
+    @property
+    def error(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="error",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
 
 class Gen1BatteryPoweredDevice(Gen1Device):
     @property

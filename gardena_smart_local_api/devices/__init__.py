@@ -3,12 +3,12 @@ from .device_builder import (
     create_devices_from_json,
     create_devices_from_messages,
 )
-from .irrigation import WaterControl
+from .irrigation import Gen1WaterControl
 
 __all__ = [
     "Device",
     "DeviceMap",
-    "WaterControl",
+    "Gen1WaterControl",
     "build_discovery_obj",
     "create_devices_from_json",
     "create_devices_from_messages",

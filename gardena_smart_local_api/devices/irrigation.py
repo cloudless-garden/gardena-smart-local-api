@@ -3,7 +3,7 @@ from ..resources import IpsoPath
 from .gen1 import Gen1BatteryPoweredGen1Device
 
 
-class WaterControl(Gen1BatteryPoweredGen1Device):
+class Gen1WaterControl(Gen1BatteryPoweredGen1Device):
     def build_set_watering_timer_obj(self, seconds: int) -> EgressMessageList:
         """Set the watering timer.
 
@@ -14,7 +14,7 @@ class WaterControl(Gen1BatteryPoweredGen1Device):
             EgressMessageList ready to be sent to the local GARDENA smart API.
 
         Example:
-            >>> WaterControl(...).build_set_watering_timer_obj(3600)
+            >>> Gen1WaterControl(...).build_set_watering_timer_obj(3600)
             EgressMessageList([
                 Request(
                     request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",

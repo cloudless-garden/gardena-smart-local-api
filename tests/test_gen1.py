@@ -4,8 +4,8 @@ from gardena_smart_local_api.devices.device_builder import create_devices_from_m
 from gardena_smart_local_api.devices.gen1 import (
     Gen1BatteryPoweredGen1Device,
     Gen1Device,
-    WaterControl,
 )
+from gardena_smart_local_api.devices.irrigation import WaterControl
 
 
 @pytest.mark.asyncio

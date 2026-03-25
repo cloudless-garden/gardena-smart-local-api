@@ -3,7 +3,7 @@ from .device_builder import (
     create_devices_from_json,
     create_devices_from_messages,
 )
-from .gen1 import WaterControl
+from .irrigation import WaterControl
 
 __all__ = [
     "Device",

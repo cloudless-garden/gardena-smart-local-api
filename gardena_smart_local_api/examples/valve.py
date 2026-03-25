@@ -2,7 +2,7 @@
 import asyncio
 import sys
 
-from gardena_smart_local_api.devices import WaterControl
+from gardena_smart_local_api.devices import Gen1WaterControl
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
@@ -35,7 +35,7 @@ async def main():
                     print("No device ID provided")
                     return 1
                 wc = app.devices[app.args.device_id]
-                if not isinstance(wc, WaterControl):
+                if not isinstance(wc, Gen1WaterControl):
                     print("Incompatible device selected")
                     return 1
                 request = wc.build_set_watering_timer_obj(app.args.duration)
@@ -51,7 +51,7 @@ async def main():
                     print("No device ID provided")
                     return 1
                 wc = app.devices[app.args.device_id]
-                if not isinstance(wc, WaterControl):
+                if not isinstance(wc, Gen1WaterControl):
                     print("Incompatible device selected")
                     return 1
                 request = wc.build_stop_watering_obj()

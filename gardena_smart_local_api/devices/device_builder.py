@@ -2,7 +2,7 @@ from typing import Any
 
 from ..messages import IngressMessageList, Reply
 from .device import Device, DeviceMap
-from .gen1 import WaterControl
+from .irrigation import WaterControl
 
 MODEL_NUMBER_MAP: dict[str, type[Device]] = {
     "18869": WaterControl,

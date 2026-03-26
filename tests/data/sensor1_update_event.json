@@ -1,0 +1,13 @@
+[
+  {
+    "entity": { "device": "3034F8EE901267400000B333", "path": "lemonbeat/0" },
+    "metadata": { "source": "lemonbeatd", "sequence": 656 },
+    "op": "update",
+    "payload": {
+      "soil_humidity": { "ts": 1771869960, "vi": 0 },
+      "soil_temperature": { "ts": 1771869960, "vi": 21 },
+      "soil_humidity_raw_value": { "ts": 1771869960, "vi": 0 },
+      "_urn": "urn:oma:lwm2m:x:31000"
+    }
+  }
+]

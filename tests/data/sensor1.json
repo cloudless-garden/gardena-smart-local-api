@@ -1,0 +1,66 @@
+[
+  {
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "metadata": { "sequence": 3806, "source": "lemonbeatd" },
+    "payload": {
+      "3034F8EE901267400000B333": {
+        "connection_status": {
+          "0": { "online": { "ts": 1768826098, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1769328781, "vs": "Sensor" },
+            "error_code": { "ai": [0], "ts": 1769328781 },
+            "firmware_version": { "ts": 1769328781, "vs": "4.0.0-1.6.1" },
+            "hardware_version": { "ts": 1769328781, "vs": "1.0.3" },
+            "manufacturer": { "ts": 1769328781, "vs": "Gardena" },
+            "model_number": { "ts": 1769328781, "vs": "18845" },
+            "serial_number": { "ts": 1769328781, "vs": "00045875" },
+            "software_version": { "ts": 1769328781, "vs": "2.4.1" },
+            "supported_binding_and_modes": { "ts": 1769328781, "vs": "U" },
+            "utc_offset": { "ts": 1771785563, "vs": "UTC+01:00" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": { "vi": 1 },
+            "package_uri": { "vs": "" },
+            "pkg_version": { "vs": "" },
+            "state": { "vi": 0 },
+            "update_result": { "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "lemonbeat": {
+          "0": {
+            "ambient_temperature": { "ts": 1771868360, "vi": 20 },
+            "battery_level": { "ts": 1770545566, "vi": 22 },
+            "command": { "ts": 1770223552, "vi": 7 },
+            "error": { "ts": 1769328781, "vi": 0 },
+            "fatal_error_log": { "ts": 1768826104, "vo": "SAAAAJ8MPAG50gIATzgAAP+vAABLKQEATykBAAWaAAA=" },
+            "frost_warning": { "ts": 1769180103, "vi": 0 },
+            "light": { "ts": 1771868360, "vi": 0 },
+            "rf_link_quality": { "ts": 1770500987, "vi": 100 },
+            "soil_humidity": { "ts": 1771866307, "vi": 0 },
+            "soil_humidity_raw_value": { "ts": 1771866307, "vi": 0 },
+            "soil_temperature": { "ts": 1771866307, "vi": 21 }
+          },
+          "_urn": "urn:oma:lwm2m:x:31000"
+        },
+        "lemonbeat_status_message": {
+          "0": {
+            "code": { "ts": 1771785563, "vi": 11 },
+            "data": { "ts": 1771785563, "vs": "" },
+            "level": { "ts": 1771785563, "vi": 1 },
+            "type": { "ts": 1771785563, "vi": 101 }
+          },
+          "_urn": "urn:oma:lwm2m:x:28173"
+        }
+      }
+    },
+    "request_id": "abee8048-f9e0-4c54-8fce-c20ccd5dcf2e",
+    "success": true
+  }
+]

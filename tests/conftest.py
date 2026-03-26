@@ -65,3 +65,37 @@ def unknown_device_json():
 @pytest.fixture
 def unknown_device(unknown_device_json):
     return IngressMessageList.model_validate_json(unknown_device_json)
+
+
+@pytest.fixture
+def sensor1_json():
+    data_file = Path(__file__).parent / "data" / "sensor1.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def sensor1_message(sensor1_json):
+    return IngressMessageList.model_validate_json(sensor1_json)
+
+
+@pytest_asyncio.fixture
+async def sensor1(sensor1_message):
+    return list((await create_devices_from_messages(sensor1_message)).values())[0]
+
+
+@pytest.fixture
+def sensor1_update_event_json():
+    data_file = Path(__file__).parent / "data" / "sensor1_update_event.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def sensor1_update_event(sensor1_update_event_json):
+    return IngressMessageList.model_validate_json(sensor1_update_event_json)
+
+
+@pytest.fixture
+def sensor1_and_update_event(sensor1_message, sensor1_update_event):
+    return sensor1_message + sensor1_update_event

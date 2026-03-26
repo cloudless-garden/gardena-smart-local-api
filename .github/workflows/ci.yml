@@ -46,7 +46,7 @@ jobs:
           uv run pytest --cov=gardena_smart_local_api --cov-report=term --cov-report=xml
 
       - name: Coverage comment
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && matrix.python-version == '3.12'
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ github.token }}

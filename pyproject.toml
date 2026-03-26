@@ -51,6 +51,7 @@ known-first-party = ["gardena_smart_local_api"]
 [tool.coverage.run]
 relative_files = true
 source = ["gardena_smart_local_api"]
+omit = ["gardena_smart_local_api/examples/*"]
 
 [tool.coverage.report]
 show_missing = true

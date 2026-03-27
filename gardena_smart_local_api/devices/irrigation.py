@@ -1,6 +1,10 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from .gen1 import Gen1BatteryPoweredDevice
+from .gen2 import Gen2BatteryPoweredDevice
+
+# Used to indicate that the action was initiated through WebSocket API.
+COMMAND_SOURCE = "18"
 
 
 class Gen1WaterControl(Gen1BatteryPoweredDevice):
@@ -120,4 +124,42 @@ class Gen1WaterControl(Gen1BatteryPoweredDevice):
                 resource_name="button_config_time",
             ),
             seconds,
+        )
+
+
+class Gen2WaterControl(Gen2BatteryPoweredDevice):
+    @property
+    def valve_count(self) -> int:
+        return len(self.get_object_instance_ids("actuator"))
+
+    def build_open_valve_obj(
+        self, valve_id: int, duration_seconds: int
+    ) -> EgressMessageList:
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="actuator",
+                object_instance_id=str(valve_id),
+                resource_name="start",
+            ),
+            [COMMAND_SOURCE, str(duration_seconds)],
+        )
+
+    def build_close_valve_obj(self, valve_id: int) -> EgressMessageList:
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="actuator",
+                object_instance_id=str(valve_id),
+                resource_name="stop",
+            ),
+            [COMMAND_SOURCE],
+        )
+
+    def build_close_all_valves_obj(self) -> EgressMessageList:
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="sg_common",
+                object_instance_id="0",
+                resource_name="stop_all_actuators",
+            ),
+            [COMMAND_SOURCE],
         )

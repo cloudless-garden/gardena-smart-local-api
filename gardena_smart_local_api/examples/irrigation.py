@@ -2,7 +2,7 @@
 import asyncio
 import sys
 
-from gardena_smart_local_api.devices import Gen1WaterControl
+from gardena_smart_local_api.devices import Gen1WaterControl, Gen2WaterControl
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
@@ -14,6 +14,12 @@ async def main():
             "nargs": 1,
             "choices": ("list", "start", "stop"),
             "help": "List devices or start/stop watering",
+        },
+        {
+            "name_or_flags": ["valve_id"],
+            "nargs": "?",
+            "type": int,
+            "help": "Valve to open/close (default: 0)",
         },
         {
             "name_or_flags": ["duration"],
@@ -34,12 +40,32 @@ async def main():
                 if app.args.device_id is None:
                     print("No device ID provided")
                     return 1
+
                 wc = app.devices[app.args.device_id]
-                if not isinstance(wc, Gen1WaterControl):
+
+                if not isinstance(wc, (Gen1WaterControl, Gen2WaterControl)):
                     print("Incompatible device selected")
                     return 1
-                request = wc.build_set_watering_timer_obj(app.args.duration)
+
+                if isinstance(wc, Gen1WaterControl):
+                    request = wc.build_set_watering_timer_obj(app.args.duration)
+                else:
+                    if (
+                        app.args.valve_id is not None
+                        and app.args.valve_id >= wc.valve_count
+                    ):
+                        print(
+                            f'Valve ID "{app.args.valve_id}" out of range, '
+                            f"valid IDs: 0...{wc.valve_count - 1}"
+                        )
+                        return 1
+                    request = wc.build_open_valve_obj(
+                        app.args.valve_id if app.args.valve_id is not None else 0,
+                        app.args.duration,
+                    )
+
                 result = await app.send_request(request)
+
                 if result is not None and not result[0].success:
                     print("Failed to start watering")
                     if isinstance(result[0], ErrorMessage):
@@ -50,12 +76,32 @@ async def main():
                 if app.args.device_id is None:
                     print("No device ID provided")
                     return 1
+
                 wc = app.devices[app.args.device_id]
-                if not isinstance(wc, Gen1WaterControl):
+
+                if not isinstance(wc, (Gen1WaterControl, Gen2WaterControl)):
                     print("Incompatible device selected")
                     return 1
-                request = wc.build_stop_watering_obj()
+
+                if isinstance(wc, Gen1WaterControl):
+                    request = wc.build_stop_watering_obj()
+                else:
+                    if (
+                        app.args.valve_id is not None
+                        and app.args.valve_id >= wc.valve_count
+                    ):
+                        print(
+                            f'Valve ID "{app.args.valve_id}" out of range, '
+                            f"valid IDs: 0...{wc.valve_count - 1}"
+                        )
+                        return 1
+                    if app.args.valve_id is not None:
+                        request = wc.build_close_valve_obj(app.args.valve_id)
+                    else:
+                        request = wc.build_close_all_valves_obj()
+
                 result = await app.send_request(request)
+
                 if result is not None and not result[0].success:
                     print("Failed to stop watering")
                     if isinstance(result[0], ErrorMessage):

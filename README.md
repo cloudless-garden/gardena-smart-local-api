@@ -4,11 +4,14 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 
 ## Supported Devices
 
-| Device | Article Number | Model (EAN suffix) |
-|--------|----------------|--------------------|
-| smart Sensor | 19030-20 | 18845 |
-| smart Sensor II | 19040-20 | 19040 |
-| smart Water Control | 19031-20 | 18869 |
+| Device                       | Article Number | Model (EAN suffix) |
+| ---------------------------- | -------------- | ------------------ |
+| smart Sensor                 | 19030-20       | 18845              |
+| smart Sensor II              | 19040-20       | 19040              |
+| smart Water Control          | 19031-20       | 18869              |
+| smart Water Control          | 19033-20       | 2812               |
+| smart Dual Water Control     | 19034-20       | 2814               |
+| smart Pipeline Water Control | 19050-20       | 2826               |
 
 ## Installation
 

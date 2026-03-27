@@ -1,0 +1,368 @@
+name: smart Dual Water Control
+protocol: gen2
+objects:
+  actuator:
+    object_id: 28180
+    object_urn: urn:oma:lwm2m:x:28180:0.4
+    object_version: '0.4'
+    mandatory: false
+    multi_instance: true
+    resources:
+      default_duration_seconds:
+        type: vi
+        access: rw
+        unit: s
+        description: Duration of action started with a physical button. Setting to 0 disables the start on button press.
+      available:
+        type: vb
+        access: r
+        description: Indicate whether this actuator is available (e.g. valve connected)
+      error:
+        type: vi
+        access: r
+        description: Device and/or actuator specific error
+      paused_until:
+        type: vt
+        access: rw
+        unit: s
+        description: Scheduled actions paused until seconds from unix epoch
+      name:
+        type: vs
+        access: rw
+        description: Name to be used for HomeKit.
+      master:
+        type: vi
+        access: rw
+        description: 'Master channel: 0=NONE (not linked to master channel), 1=LINKED (linked to master channel).'
+      current:
+        type: vi
+        access: r
+        unit: mA
+        description: Current in mA (optional)
+      state:
+        type: vi
+        access: r
+        description: 'Current actuator state: 0=INACTIVE, 1=STARTING, 2=ACTIVE, 3=STOPPING'
+      start:
+        type: null
+        access: x
+        description: >-
+          Start action of this actuator and create a new timeslot.
+          Args: 0=start source (int), 1=duration in seconds (int).
+      stop:
+        type: null
+        access: x
+        description: >-
+          Immediately stop actuator.
+          Args: 0=stop source (int).
+      reset_error:
+        type: null
+        access: x
+        description: Reset actuator error.
+  connection_status:
+    object_id: 28171
+    object_urn: urn:oma:lwm2m:x:28171
+    object_version: '1.0'
+    mandatory: false
+    resources:
+      online:
+        type: vb
+        access: r
+        description: Recent successful communication
+  connectivity_monitoring:
+    resources:
+      cell_id:
+        type: vi
+        access: r
+      lac:
+        type: vi
+        access: r
+      link_quality:
+        type: vi
+        access: r
+      network_bearer:
+        type: vi
+        access: r
+      radio_signal_strength:
+        type: vi
+        access: r
+      signalsnr:
+        type: vi
+        access: r
+      smcc:
+        type: vi
+        access: r
+      smnc:
+        type: vi
+        access: r
+  device:
+    resources:
+      available_power_sources:
+        type: ai
+        access: r
+      battery_level:
+        type: vi
+        access: r
+      battery_status:
+        type: vi
+        access: r
+      current_time:
+        type: vt
+        access: rw
+      device_type:
+        type: vs
+        access: r
+      error_code:
+        type: ai
+        access: r
+      firmware_version:
+        type: vs
+        access: r
+      hardware_version:
+        type: vs
+        access: r
+      manufacturer:
+        type: vs
+        access: r
+      model_number:
+        type: vs
+        access: r
+      power_source_current:
+        type: ai
+        access: r
+      power_source_voltage:
+        type: ai
+        access: r
+      serial_number:
+        type: vs
+        access: r
+      software_version:
+        type: vs
+        access: r
+      supported_binding_and_modes:
+        type: vs
+        access: r
+      timezone:
+        type: vs
+        access: rw
+      utc_offset:
+        type: vs
+        access: rw
+  firmware_update:
+    resources:
+      firmware_update_delivery_method:
+        type: vi
+        access: r
+      package_uri:
+        type: vs
+        access: rw
+      pkg_name:
+        type: vs
+        access: r
+      pkg_version:
+        type: vs
+        access: r
+      state:
+        type: vi
+        access: r
+      update_result:
+        type: vi
+        access: r
+  irrigation_control:
+    object_id: 28152
+    object_urn: urn:oma:lwm2m:x:28152:0.2
+    object_version: '0.2'
+    resources:
+      error:
+        type: vi
+        access: r
+        description: Device error
+  master_channel:
+    object_id: 30000
+    object_urn: urn:oma:lwm2m:x:30000:0.1
+    object_version: '0.1'
+    multi_instance: true
+    resources:
+      available:
+        type: vb
+        access: r
+        description: Indicate that the master channel is available and connected
+      error:
+        type: vi
+        access: r
+        description: Device and/or actuator specific error
+      active:
+        type: vb
+        access: r
+        description: Master channel is active / running
+      pressure_release_time:
+        type: vi
+        access: rw
+        unit: s
+        description: Default time is 20 s
+  schedule:
+    object_id: 28181
+    object_urn: urn:oma:lwm2m:x:28181:0.2
+    object_version: '0.2'
+    multi_instance: true
+    resources:
+      start_offset_from:
+        type: vi
+        access: rw
+        description: Schedule start offset from
+      start_offset_seconds:
+        type: vi
+        access: rw
+        unit: s
+        description: Seconds after/before start offset
+      end_offset_from:
+        type: vi
+        access: rw
+        description: Schedule end offset from
+      end_offset_seconds:
+        type: vi
+        access: rw
+        unit: s
+        description: Seconds after/before end offset
+      repetition_type:
+        type: vi
+        access: rw
+        description: 'Repetition cycle type: instructs how to interpret the repetition_value bitmask'
+      repetition_value:
+        type: vi
+        access: rw
+        description: Repetition value bitmask
+      actuator:
+        type: vi
+        access: rw
+        description: Actuator ID
+      pre_offset:
+        type: vi
+        access: rw
+        description: Magic cookie used by backend. Copied over to corresponding timeslot.
+  sg_common:
+    object_id: 28183
+    object_urn: urn:oma:lwm2m:x:28183:0.6
+    object_version: '0.6'
+    resources:
+      be_decision_seconds:
+        type: vi
+        access: rw
+        description: Backend decision time
+      name:
+        type: vs
+        access: rw
+        description: Name used for HomeKit.
+      fatal_error_log:
+        type: vo
+        access: rw
+        description: Contains callstack dump, reset reason, etc.
+      reboot_reason:
+        type: vi
+        access: r
+        description: Reboot reason
+      exclusion_requested:
+        type: vb
+        access: r
+        description: Set to true when device excludes itself from the smart system.
+      duty_cycle_tracking_status:
+        type: vi
+        access: r
+        description: State of duty cycle tracking
+      sun_data:
+        type: vo
+        access: rw
+        description: Day length/day middle lookup table for sunrise/sunset calculations
+      duty_cycle_tracking_critical_air_time:
+        type: vb
+        access: r
+        description: Set if critical air time reached.
+      identify:
+        type: null
+        access: x
+        description: Blink leds on the device
+      measure_rf_link:
+        type: null
+        access: x
+        description: Measure RF link quality
+      all_led_off:
+        type: null
+        access: x
+        description: Turn all LED off
+      all_red_led_on:
+        type: null
+        access: x
+        description: Turn all red LED on
+      all_green_led_on:
+        type: null
+        access: x
+        description: Turn all green LED on
+      all_blue_led_on:
+        type: null
+        access: x
+        description: Turn all blue LED on
+      measure_battery:
+        type: null
+        access: x
+        description: Measure the battery level
+      stop_all_actuators:
+        type: null
+        access: x
+        description: >-
+          Stops all actuators of the device.
+          Args: 0=stop source (int).
+      reset_all_actuator_errors:
+        type: null
+        access: x
+        description: Resets all actuator errors. Device errors are not reset.
+      override_duty_cycle_tracking:
+        type: null
+        access: x
+        description: >-
+          Override duty cycle tracking to disable it for a defined time.
+          Args: 0=time in seconds (int).
+      send_all_objects:
+        type: null
+        access: x
+        description: Request the device to send all ipso objects.
+  timeslot:
+    object_id: 28182
+    object_urn: urn:oma:lwm2m:x:28182:0.2
+    object_version: '0.2'
+    multi_instance: true
+    resources:
+      start:
+        type: vt
+        access: r
+        description: Intended start time in seconds since UNIX epoch.
+      adjusted_stop:
+        type: vt
+        access: r
+        unit: s
+        description: Best known stop time (from the device standpoint).
+      state:
+        type: vi
+        access: r
+        description: 'Timeslot state: 0=IDLE, 1=SCHEDULED, 2=WILL_START, 3=SKIPPED, 5=RUNNING, 6=STOPPED, 7=ERROR, 8=OVERWRITTEN, 9=DONE, 10=DELETED, 11=REQUESTED'
+      initial_source:
+        type: vi
+        access: r
+        description: 'The reason why this timeslot was created: 0=NONE, 1=PHYSICAL_BUTTON, 2=ERROR, 3=SCHEDULE, 4=BOOK_KEEPING, 16=SMART_SYSTEM, 17=HOMEKIT, 18=WEB_SOCKET'
+      adjustment_source:
+        type: vi
+        access: r
+        description: How adjusted_stop was set. Same values as for initial_source.
+      pre_offset:
+        type: vi
+        access: r
+        description: Magic cookie used by backend. Copied over from schedule config.
+      actuator:
+        type: vi
+        access: r
+        description: Corresponding actuator id (zero-indexed).
+      adjust_duration:
+        type: null
+        access: x
+        description: >-
+          Adjust duration of planned or running timeslot.
+          Args: 0=adjustment source (int), 1=new duration in seconds (int).

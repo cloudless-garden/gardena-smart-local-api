@@ -73,7 +73,7 @@ class Event(BaseModel):
 
 class Reply(BaseModel):
     payload: dict = Field(default_factory=dict)
-    entity: Entity
+    entity: Entity | None = None
     request_id: str
     success: bool
 

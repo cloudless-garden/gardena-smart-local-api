@@ -3,7 +3,7 @@ from .device_builder import (
     create_devices_from_json,
     create_devices_from_messages,
 )
-from .irrigation import Gen1WaterControl
+from .irrigation import Gen1WaterControl, Gen2WaterControl
 from .mowers import Gen1Mower
 from .sensors import Sensor1, Sensor2
 
@@ -12,6 +12,7 @@ __all__ = [
     "DeviceMap",
     "Gen1Mower",
     "Gen1WaterControl",
+    "Gen2WaterControl",
     "Sensor1",
     "Sensor2",
     "build_discovery_obj",

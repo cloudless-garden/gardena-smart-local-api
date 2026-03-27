@@ -124,6 +124,20 @@ class Device(BaseModel):
             ]
         )
 
+    def build_execute_obj(
+        self, path: IpsoPath, value: VALUE_TYPES
+    ) -> EgressMessageList:
+        payload = _value_to_payload(value)
+        return EgressMessageList(
+            [
+                Request(
+                    op="execute",
+                    entity=Entity(device=self.id, path=path, service=self.service),
+                    payload=payload,
+                )
+            ]
+        )
+
     @cached_property
     def objects(self) -> dict[str, dict[str, IpsoObject]]:
         result: dict[str, dict[str, IpsoObject]] = {}
@@ -315,7 +329,7 @@ class DeviceMap(RootModel[dict[str, Device]], MutableMapping):
         return len(self.root)
 
 
-def build_discover_gen1_obj() -> EgressMessageList:
+def build_discovery_obj() -> EgressMessageList:
     return EgressMessageList(
         [
             Request(
@@ -323,10 +337,12 @@ def build_discover_gen1_obj() -> EgressMessageList:
                 entity=Entity(
                     service="lemonbeatd", path=IpsoPath(object_name="devices")
                 ),
-            )
+            ),
+            Request(
+                op="read",
+                entity=Entity(
+                    service="lwm2mserver", path=IpsoPath(object_name="devices")
+                ),
+            ),
         ]
     )
-
-
-def build_discovery_obj() -> EgressMessageList:
-    return build_discover_gen1_obj()

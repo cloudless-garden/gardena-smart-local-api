@@ -2,7 +2,7 @@ from typing import Any
 
 from ..messages import IngressMessageList, Reply
 from .device import Device, DeviceMap
-from .irrigation import Gen1WaterControl
+from .irrigation import Gen1WaterControl, Gen2WaterControl
 from .mowers import Gen1Mower
 from .sensors import Sensor1, Sensor2
 
@@ -10,6 +10,9 @@ MODEL_NUMBER_MAP: dict[str, type[Device]] = {
     "18845": Sensor1,
     "18869": Gen1WaterControl,
     "19040": Sensor2,
+    "2812": Gen2WaterControl,
+    "2814": Gen2WaterControl,
+    "2826": Gen2WaterControl,
     "53988": Gen1Mower,
 }
 

@@ -170,7 +170,7 @@ class IpsoResource:
         self.object_instance_id = object_instance_id
         self.resource_instance_id = resource_instance_id
         self.type = resource_data.get("type")  # vb, vs, vi, etc.
-        self.access = resource_data.get("access")  # r, rw, w, or None
+        self.access = resource_data.get("access")  # r, rw, w, x, or None
         self.unit = resource_data.get("unit")
         self.description = resource_data.get("description")
         self.constraints = resource_data.get("constraints")
@@ -191,6 +191,10 @@ class IpsoResource:
     @property
     def is_writable(self) -> bool:
         return self.access in ("w", "rw") if self.access else False
+
+    @property
+    def is_executable(self) -> bool:
+        return self.access == "x" if self.access else False
 
     def get_value(self, raw_data: dict[str, Any]) -> Any | None:
         obj = raw_data

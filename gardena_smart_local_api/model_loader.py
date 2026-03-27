@@ -26,11 +26,16 @@ class Gen1ModelDefinition(BaseModelDefinition):
     commands: dict[str, int] = Field(default_factory=dict)
 
 
+class Gen2ModelDefinition(BaseModelDefinition):
+    protocol: Literal["gen2"] = "gen2"
+
+
 PROTOCOL_MAP = {
     "gen1": Gen1ModelDefinition,
+    "gen2": Gen2ModelDefinition,
 }
 
-ModelDefinition = Gen1ModelDefinition
+ModelDefinition = Gen1ModelDefinition | Gen2ModelDefinition
 
 
 class ModelLoader:

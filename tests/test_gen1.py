@@ -2,7 +2,7 @@ import pytest
 
 from gardena_smart_local_api.devices.device_builder import create_devices_from_messages
 from gardena_smart_local_api.devices.gen1 import (
-    Gen1BatteryPoweredGen1Device,
+    Gen1BatteryPoweredDevice,
     Gen1Device,
 )
 from gardena_smart_local_api.devices.irrigation import Gen1WaterControl
@@ -43,7 +43,7 @@ async def test_gen1_rf_link_quality(water_control):
 @pytest.mark.asyncio
 async def test_water_control_specific(water_control):
     assert isinstance(water_control, Gen1WaterControl)
-    assert isinstance(water_control, Gen1BatteryPoweredGen1Device)
+    assert isinstance(water_control, Gen1BatteryPoweredDevice)
 
     battery_level = water_control.battery_level
     assert battery_level is not None

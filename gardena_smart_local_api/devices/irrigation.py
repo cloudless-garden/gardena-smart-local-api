@@ -1,9 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredGen1Device
+from .gen1 import Gen1BatteryPoweredDevice
 
 
-class Gen1WaterControl(Gen1BatteryPoweredGen1Device):
+class Gen1WaterControl(Gen1BatteryPoweredDevice):
     def build_set_watering_timer_obj(self, seconds: int) -> EgressMessageList:
         """Set the watering timer.
 

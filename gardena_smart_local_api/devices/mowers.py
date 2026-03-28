@@ -1,9 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredGen1Device
+from .gen1 import Gen1BatteryPoweredDevice
 
 
-class Gen1Mower(Gen1BatteryPoweredGen1Device):
+class Gen1Mower(Gen1BatteryPoweredDevice):
     """
     For now, only mowers with model number 53988 are supported
     """

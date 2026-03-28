@@ -1,9 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredGen1Device
+from .gen1 import Gen1BatteryPoweredDevice
 
 
-class Sensor1(Gen1BatteryPoweredGen1Device):
+class Sensor1(Gen1BatteryPoweredDevice):
     @property
     def temperature(self) -> int | None:
         value = self.get_value(

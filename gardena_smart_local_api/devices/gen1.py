@@ -158,7 +158,7 @@ class Gen1Device(Device):
         return str(value) if value else None
 
 
-class Gen1BatteryPoweredGen1Device(Gen1Device):
+class Gen1BatteryPoweredDevice(Gen1Device):
     @property
     def battery_level(self) -> float | None:
         value = self.get_value(

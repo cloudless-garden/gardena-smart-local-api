@@ -6,6 +6,32 @@ from gardena_smart_local_api.resources import ValueField
 @pytest.mark.parametrize(
     "plain, serialized",
     [
+        (b"", '{"vo":""}'),
+        (b"\xff", '{"vo":"/w=="}'),
+        (b"\x00\x00\x00\x00\x0e\x10", '{"vo":"AAAAAA4Q"}'),
+    ],
+)
+def test_value_field_serialize_vo(plain, serialized):
+    vf = ValueField(vo=plain)
+    assert vf.model_dump_json(exclude_none=True) == serialized
+
+
+@pytest.mark.parametrize(
+    "plain, serialized",
+    [
+        (b"", '{"vo":""}'),
+        (b"\xff", '{"vo":"/w=="}'),
+        (b"\x00\x00\x00\x00\x0e\x10", '{"vo":"AAAAAA4Q"}'),
+    ],
+)
+def test_value_field_deserialize_vo(plain, serialized):
+    vf = ValueField.model_validate_json(serialized)
+    assert vf.vo == plain
+
+
+@pytest.mark.parametrize(
+    "plain, serialized",
+    [
         ([0], '{"ai":["0=0"]}'),
         ([1], '{"ai":["0=1"]}'),
         ([1, 2], '{"ai":["0=1,1=2"]}'),

@@ -214,6 +214,72 @@ class Device(BaseModel):
         """
         return list(self.objects.get(object_name, {}).keys())
 
+    @property
+    def is_online(self) -> bool | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="connection_status",
+                object_instance_id="0",
+                resource_name="online",
+            )
+        )
+        if isinstance(value, bool):
+            return value
+        return None
+
+    def build_reload_online_status_obj(self) -> EgressMessageList:
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="connection_status",
+                object_instance_id="0",
+                resource_name="online",
+            )
+        )
+
+    @property
+    def serial_number(self) -> str | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="device",
+                object_instance_id="0",
+                resource_name="serial_number",
+            )
+        )
+        return str(value) if value else None
+
+    @property
+    def manufacturer(self) -> str | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="device",
+                object_instance_id="0",
+                resource_name="manufacturer",
+            )
+        )
+        return str(value) if value else None
+
+    @property
+    def software_version(self) -> str | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="device",
+                object_instance_id="0",
+                resource_name="software_version",
+            )
+        )
+        return str(value) if value else None
+
+    @property
+    def hardware_version(self) -> str | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="device",
+                object_instance_id="0",
+                resource_name="hardware_version",
+            )
+        )
+        return str(value) if value else None
+
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}(id={self.id!r}, "

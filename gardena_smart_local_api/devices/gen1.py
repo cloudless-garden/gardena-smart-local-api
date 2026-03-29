@@ -54,50 +54,6 @@ class Gen1Device(Device):
         return EgressMessageList([request])
 
     @property
-    def is_online(self) -> bool | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="connection_status",
-                object_instance_id="0",
-                resource_name="online",
-            )
-        )
-        if isinstance(value, bool):
-            return value
-        return None
-
-    def build_reload_online_status_obj(self) -> EgressMessageList:
-        return self.build_read_value_obj(
-            IpsoPath(
-                object_name="connection_status",
-                object_instance_id="0",
-                resource_name="online",
-            )
-        )
-
-    @property
-    def serial_number(self) -> str | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="device",
-                object_instance_id="0",
-                resource_name="serial_number",
-            )
-        )
-        return str(value) if value else None
-
-    @property
-    def manufacturer(self) -> str | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="device",
-                object_instance_id="0",
-                resource_name="manufacturer",
-            )
-        )
-        return str(value) if value else None
-
-    @property
     def rf_link_quality(self) -> int | None:
         value = self.get_value(
             IpsoPath(
@@ -134,28 +90,6 @@ class Gen1Device(Device):
 
     def build_reload_rf_link_state_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_rf_link"))
-
-    @property
-    def software_version(self) -> str | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="device",
-                object_instance_id="0",
-                resource_name="software_version",
-            )
-        )
-        return str(value) if value else None
-
-    @property
-    def hardware_version(self) -> str | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="device",
-                object_instance_id="0",
-                resource_name="hardware_version",
-            )
-        )
-        return str(value) if value else None
 
 
 class Gen1BatteryPoweredDevice(Gen1Device):

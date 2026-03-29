@@ -1,11 +1,14 @@
+import re
 from base64 import b64decode, b64encode
 from collections.abc import Iterator
 from datetime import datetime
-from typing import Annotated, Any
+from typing import Annotated, Any, cast
 
 from pydantic import (
+    AliasChoices,
     BaseModel,
     BeforeValidator,
+    Field,
     PlainSerializer,
     model_serializer,
     model_validator,
@@ -29,7 +32,50 @@ type Opaque = Annotated[
 ]
 
 
-type VALUE_TYPES = bool | int | float | str | Opaque
+def _parse_ai(v: object) -> list[int] | None:
+    if v is None:
+        return None
+    if isinstance(v, list):
+        if len(v) == 1 and isinstance(v[0], str):
+            return list(map(int, re.findall(r"\d+=(\d+)", v[0])))
+        return cast(list[int], v)
+    raise ValueError(f"Expected list[int] or str, got: {type(v)}")
+
+
+IntArray = Annotated[
+    list[int],
+    BeforeValidator(_parse_ai),
+    PlainSerializer(
+        lambda v: [",".join(f"{i}={x}" for i, x in enumerate(v))],
+        return_type=list[str],
+    ),
+]
+
+
+def _parse_as(v: object) -> list[str] | None:
+    """Note: Apostrophes in array values are not supported."""
+    if v is None:
+        return None
+    if isinstance(v, list):
+        if len(v) == 1 and isinstance(v[0], str):
+            matches = re.findall(r"\d+='(.*?)'(?:,|$)", v[0])
+            if matches:
+                return matches
+        return cast(list[str], v)
+    raise ValueError(f"Expected list[str] or str, got: {type(v)}")
+
+
+StringArray = Annotated[
+    list[str],
+    BeforeValidator(_parse_as),
+    PlainSerializer(
+        lambda v: [",".join(f"{i}='{s}'" for i, s in enumerate(v))],
+        return_type=list[str],
+    ),
+]
+
+
+type VALUE_TYPES = bool | int | float | str | Opaque | IntArray | StringArray
 
 
 class ValueField(BaseModel):
@@ -40,6 +86,13 @@ class ValueField(BaseModel):
     vf: float | None = None
     vt: int | None = None
     ts: int | None = None
+    ai: IntArray | None = None
+    as_: StringArray | None = Field(
+        validation_alias=AliasChoices("as", "as_"),
+        serialization_alias="as",
+        default=None,
+    )
+    model_config = {"serialize_by_alias": True}
 
     @property
     def value(self) -> VALUE_TYPES | None:

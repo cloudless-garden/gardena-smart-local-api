@@ -1,6 +1,6 @@
 from collections.abc import MutableMapping
 from functools import cached_property
-from typing import Any, ClassVar
+from typing import Any, ClassVar, cast
 
 from pydantic import BaseModel, Field, RootModel
 
@@ -10,24 +10,29 @@ from ..resources import VALUE_TYPES, IpsoObject, IpsoPath, ValueField
 from ..utils import deep_merge_dict, delete_nested_key
 
 
-def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, Any]:
-    if isinstance(value, bool):
-        return ValueField(vb=value).model_dump(exclude_none=True)
-    elif isinstance(value, int):
-        return ValueField(vi=value).model_dump(exclude_none=True)
-    elif isinstance(value, float):
-        return ValueField(vf=value).model_dump(exclude_none=True)
-    elif isinstance(value, str):
-        return ValueField(vs=value).model_dump(exclude_none=True)
-    elif isinstance(value, bytes):
-        return ValueField(vo=value).model_dump(exclude_none=True)
-    elif isinstance(value, list):
-        if value and isinstance(value[0], int):
-            return {"ai": value}
+def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, T]:
+    SCALAR_TYPE_MAP = {
+        bool: "vb",
+        int: "vi",
+        float: "vf",
+        str: "vs",
+        bytes: "vo",
+    }
+
+    if isinstance(value, list):
+        if len(value) == 0:
+            raise TypeError("Empty list")
+        if isinstance(value[0], int):
+            return ValueField(ai=cast(list[int], value)).model_dump(exclude_none=True)
+        elif isinstance(value[0], str):
+            return ValueField(as_=cast(list[str], value)).model_dump(exclude_none=True)
         else:
-            return {"as": value}
+            raise TypeError(f"Unsupported list value type: {type(value[0])}")
     else:
-        raise TypeError(f"Unsupported value type: {type(value)}")
+        key = SCALAR_TYPE_MAP.get(type(value))
+        if key is None:
+            raise TypeError(f"Unsupported value type: {type(value)}")
+        return ValueField(**{key: cast(Any, value)}).model_dump(exclude_none=True)
 
 
 class Device(BaseModel):

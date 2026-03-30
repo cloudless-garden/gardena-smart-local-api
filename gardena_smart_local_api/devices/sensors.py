@@ -17,7 +17,7 @@ class Sensor1(Gen1BatteryPoweredDevice):
             return value
         return None
 
-    def build_reload_temperature_obj(self) -> EgressMessageList:
+    def build_refresh_temperature_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_ambient_temperature"))
 
     @property
@@ -33,7 +33,7 @@ class Sensor1(Gen1BatteryPoweredDevice):
             return value
         return None
 
-    def build_reload_light_obj(self) -> EgressMessageList:
+    def build_refresh_light_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_light"))
 
     @property
@@ -49,7 +49,7 @@ class Sensor1(Gen1BatteryPoweredDevice):
             return value
         return None
 
-    def build_reload_soil_moisture_obj(self) -> EgressMessageList:
+    def build_refresh_soil_moisture_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_soil_moisture"))
 
     @property

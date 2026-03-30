@@ -66,7 +66,7 @@ class Gen1Device(Device):
             return value
         return None
 
-    def build_reload_rf_link_quality_obj(self) -> EgressMessageList:
+    def build_refresh_rf_link_quality_obj(self) -> EgressMessageList:
         return self.build_read_value_obj(
             IpsoPath(
                 object_name="lemonbeat",
@@ -88,7 +88,7 @@ class Gen1Device(Device):
             return value
         return None
 
-    def build_reload_rf_link_state_obj(self) -> EgressMessageList:
+    def build_refresh_rf_link_state_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_rf_link"))
 
 
@@ -106,5 +106,5 @@ class Gen1BatteryPoweredDevice(Gen1Device):
             return float(value)
         return None
 
-    def build_reload_battery_level_obj(self) -> EgressMessageList:
+    def build_refresh_battery_level_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_battery"))

@@ -227,7 +227,7 @@ class Device(BaseModel):
             return value
         return None
 
-    def build_reload_online_status_obj(self) -> EgressMessageList:
+    def build_refresh_online_status_obj(self) -> EgressMessageList:
         return self.build_read_value_obj(
             IpsoPath(
                 object_name="connection_status",

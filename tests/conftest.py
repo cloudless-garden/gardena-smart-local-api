@@ -99,3 +99,37 @@ def sensor1_update_event(sensor1_update_event_json):
 @pytest.fixture
 def sensor1_and_update_event(sensor1_message, sensor1_update_event):
     return sensor1_message + sensor1_update_event
+
+
+@pytest.fixture
+def sensor2_json():
+    data_file = Path(__file__).parent / "data" / "sensor2.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def sensor2_message(sensor2_json):
+    return IngressMessageList.model_validate_json(sensor2_json)
+
+
+@pytest_asyncio.fixture
+async def sensor2(sensor2_message):
+    return list((await create_devices_from_messages(sensor2_message)).values())[0]
+
+
+@pytest.fixture
+def sensor2_update_event_json():
+    data_file = Path(__file__).parent / "data" / "sensor2_update_event.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def sensor2_update_event(sensor2_update_event_json):
+    return IngressMessageList.model_validate_json(sensor2_update_event_json)
+
+
+@pytest.fixture
+def sensor2_and_update_event(sensor2_message, sensor2_update_event):
+    return sensor2_message + sensor2_update_event

@@ -1,0 +1,74 @@
+[
+  {
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "metadata": { "sequence": 31, "source": "lemonbeatd" },
+    "payload": {
+      "3034F8EE9012980000000B31": {
+        "connection_status": {
+          "0": { "online": { "ts": 1774281158, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1774281163, "vs": "Sensor" },
+            "error_code": { "ai": [0], "ts": 1774281163 },
+            "firmware_version": { "ts": 1774281163, "vs": "4.0.0-1.5.3" },
+            "hardware_version": { "ts": 1774281163, "vs": "0.0.1" },
+            "manufacturer": { "ts": 1774281163, "vs": "Gardena" },
+            "model_number": { "ts": 1774281163, "vs": "19040" },
+            "serial_number": { "ts": 1774281163, "vs": "00002865" },
+            "software_version": { "ts": 1774281163, "vs": "1.2.2" },
+            "supported_binding_and_modes": { "ts": 1774281163, "vs": "U" },
+            "utc_offset": { "ts": 1774288359, "vs": "UTC+01:00" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": { "vi": 1 },
+            "package_uri": { "vs": "" },
+            "pkg_version": { "vs": "" },
+            "state": { "vi": 0 },
+            "update_result": { "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "lemonbeat": {
+          "0": {
+            "automodel_definition": { "ts": 1774281163, "vo": "" },
+            "battery_level": { "ts": 1774302759, "vi": 60 },
+            "command": { "ts": 1774343143, "vi": 3 },
+            "error": { "ts": 1774281163, "vi": 0 },
+            "experimental_model_state": { "ts": 1774281163, "vi": null },
+            "fatal_error_log": { "ts": 1774281163, "vo": "SAAAA22EaAF10QIAgWUAANNAAQDnqgEA66oBAH15AAA=" },
+            "frost_warning": { "ts": 1774343143, "vi": 0 },
+            "measurement_interval": { "ts": 1774281163, "vi": 3600 },
+            "model_definition": { "ts": 1774281163, "vo": "" },
+            "model_determination_mode": { "ts": 1774281163, "vi": 0 },
+            "model_determination_status": { "ts": 1774281163, "vi": 0 },
+            "raw_counts": { "ts": 1774518761, "vi": 0 },
+            "rf_link_quality": { "ts": 1774518761, "vi": 100 },
+            "soil_moisture": { "ts": 1774518761, "vi": 100 },
+            "soil_moisture_experimental_model": { "ts": 1774281163, "vi": null },
+            "soil_temperature": { "ts": 1774284759, "vi": 22 },
+            "soil_type_determination_result_1": { "ts": 1774281163, "vo": "" },
+            "soil_type_determination_result_2": { "ts": 1774281163, "vo": "" },
+            "soil_type_determination_result_3": { "ts": 1774281163, "vo": "" }
+          },
+          "_urn": "urn:oma:lwm2m:x:31000"
+        },
+        "lemonbeat_status_message": {
+          "0": {
+            "code": { "ts": 1774288359, "vi": 53 },
+            "data": { "ts": 1774288359, "vs": "04" },
+            "level": { "ts": 1774288359, "vi": 2 },
+            "type": { "ts": 1774288359, "vi": 200 }
+          },
+          "_urn": "urn:oma:lwm2m:x:28173"
+        }
+      }
+    },
+    "request_id": "55ea8bd3-d3c9-45d2-9c74-c994fe551f86",
+    "success": true
+  }
+]

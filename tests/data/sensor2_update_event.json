@@ -1,0 +1,12 @@
+[
+  {
+    "entity": { "device": "3034F8EE9012980000000B31", "path": "lemonbeat/0" },
+    "metadata": { "source": "lemonbeatd", "sequence": 12 },
+    "op": "update",
+    "payload": {
+      "_urn": "urn:oma:lwm2m:x:31000",
+      "raw_counts": { "ts": 1774522361, "vi": 0 },
+      "soil_moisture": { "ts": 1774522361, "vi": 42 }
+    }
+  }
+]

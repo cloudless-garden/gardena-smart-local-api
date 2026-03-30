@@ -23,7 +23,7 @@ You can run the examples from within the repository as follows:
 
 ```txt
 uv sync --group examples
-uv run gardena_smart_local_api/examples/valve.py --help
+uv run gardena_smart_local_api/examples/irrigation.py --help
 ```
 
 [examples]: https://github.com/cloudless-garden/gardena-smart-local-api/tree/main/gardena_smart_local_api/examples

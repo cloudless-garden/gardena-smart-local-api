@@ -153,6 +153,17 @@ class Device(BaseModel):
         """
         return self.objects.get(object_name, {}).get(instance_id)
 
+    def get_object_instance_ids(self, object_name: str) -> list[str]:
+        """Get list of all instance IDs for an object.
+
+        Args:
+            object_name: Name of the object
+
+        Returns:
+            List of instance ID strings
+        """
+        return [k for k in self.objects.get(object_name, {}).keys() if k != "_urn"]
+
     def get_resource(
         self, object_name: str, instance_id: str | int, resource_name: str
     ) -> Any | None:
@@ -207,17 +218,6 @@ class Device(BaseModel):
                 )
             ]
         )
-
-    def list_instances(self, object_name: str) -> list[str]:
-        """Get list of all instance IDs for an object.
-
-        Args:
-            object_name: Name of the object
-
-        Returns:
-            List of instance ID strings
-        """
-        return list(self.objects.get(object_name, {}).keys())
 
     @property
     def is_online(self) -> bool | None:

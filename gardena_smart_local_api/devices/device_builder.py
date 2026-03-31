@@ -7,6 +7,7 @@ from .irrigation import (
     Gen1WaterControl,
     Gen2IrrigationControl,
     Gen2WaterControl,
+    Pump,
 )
 from .mowers import Gen1Mower1, Gen1Mower2, Gen2Mower
 from .power import PowerAdapter
@@ -22,6 +23,7 @@ MODEL_NUMBER_MAP: dict[str, type[Device]] = {
     "18845": Sensor1,
     "18869": Gen1WaterControl,
     "19040": Sensor2,
+    "22538": Pump,
     "29694": Gen1Mower1,
     "31653": Gen1IrrigationControl,
     "35279": PowerAdapter,

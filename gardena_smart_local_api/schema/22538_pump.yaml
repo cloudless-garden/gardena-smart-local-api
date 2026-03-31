@@ -1,0 +1,235 @@
+name: Automatic Home and Garden Pump
+protocol: gen1
+commands:
+  measure_rf_link: 7
+  trigger_data_update: 21
+  reset_flow_resettable: 27
+  reset_outlet_temperature_min_max: 28
+  mark_frost_warning_ok: 30
+  reboot: 31
+  ntp_force_sync: 32
+  led_all_off: 33
+  led_all_green_on: 34
+  led_all_red_on: 35
+  reset_all_valve_errors: 36
+  hap_identify: 37
+  test_watchdog: 38
+  test_hard_fault: 39
+objects:
+  connection_status:
+    resources:
+      online:
+        type: vb
+        access: r
+        description: Indicates if the device is online (true) or offline (false)
+  device:
+    resources:
+      device_type:
+        type: vs
+        access: r
+        description: Type of the device
+      error_code:
+        type: ai
+        access: r
+        description: Current error code(s)
+      firmware_version:
+        type: vs
+        access: r
+        description: Current firmware version
+      hardware_version:
+        type: vs
+        access: r
+        description: Hardware version
+      manufacturer:
+        type: vs
+        access: r
+        description: Manufacturer name
+      model_number:
+        type: vs
+        access: r
+        description: Model number or identifier
+      serial_number:
+        type: vs
+        access: r
+        description: Serial number
+      software_version:
+        type: vs
+        access: r
+        description: Current software version
+      supported_binding_and_modes:
+        type: vs
+        access: r
+        description: Supported bindings and modes
+      utc_offset:
+        type: vs
+        access: rw
+        description: UTC offset currently in effect for device
+  firmware_update:
+    resources:
+      firmware_update_delivery_method:
+        type: vi
+        access: r
+      package_uri:
+        type: vs
+        access: rw
+      pkg_version:
+        type: vs
+        access: r
+      state:
+        type: vi
+        access: r
+      update_result:
+        type: vi
+        access: r
+  lemonbeat:
+    resources:
+      action_paused_until_1:
+        type: vo
+        access: rw
+      be_decision_time:
+        type: vi
+        access: rw
+      command:
+        type: vi
+        access: rw
+      dripping_alert:
+        type: vi
+        access: rw
+        description: Dripping alert timeout (60Min=factory default, 2Min, off)
+      error:
+        type: vi
+        access: r
+        description: Error status (none, eeprom, unexpected_setting_change)
+      error1_count:
+        type: vi
+        access: r
+        description: Count of valve error 1 occurrences
+      error2_count:
+        type: vi
+        access: r
+        description: Count of valve error 2 occurrences
+      error3_count:
+        type: vi
+        access: r
+        description: Count of valve error 3 occurrences
+      error4_count:
+        type: vi
+        access: r
+        description: Count of valve error 4 occurrences
+      fatal_error_log:
+        type: vo
+        access: r
+      flow_rate:
+        type: vi
+        access: r
+        unit: L/h
+        description: Flow rate (not accurate, reports on 76 L/h delta)
+      flow_since_last_reset:
+        type: vi
+        access: r
+        unit: m3
+        description: Water volume transported since last reset
+      flow_total:
+        type: vi
+        access: r
+        unit: m3
+        description: Total water volume transported
+      frost_warning:
+        type: vi
+        access: r
+        description: "Frost warning if temperature falls below +5\xB0C (1=frost, 0=no frost)"
+      operating_mode:
+        type: vi
+        access: rw
+        description: 'Operating mode: 0=scheduled, 1=automatic'
+      outlet_pressure:
+        type: vf
+        access: r
+        unit: Bar
+        description: Outlet pressure in Bar
+      outlet_pressure_max:
+        type: vf
+        access: r
+        unit: Bar
+        description: Maximum outlet pressure
+      outlet_temperature:
+        type: vi
+        access: r
+        description: Outlet temperature
+      outlet_temperature_max:
+        type: vi
+        access: r
+        description: Maximum outlet temperature
+      outlet_temperature_min:
+        type: vi
+        access: r
+        description: Minimum outlet temperature
+      pump_mode:
+        type: vi
+        access: r
+        description: 'Pump mode: 0=off, 1=auto (water pumped if preconditions satisfied)'
+      pump_on_off:
+        type: vi
+        access: r
+        description: 'Motor state: 0=motor_disabled, 1=motor_enabled'
+      pump_state:
+        type: vi
+        access: r
+        description: '0=pump_is_just_starting, 1=water_in_the_pump_body, 2=no_water_in_the_pump_body, 3=flow_after_5s, 4=no_flow_after_5s'
+      rf_link_quality:
+        type: vi
+        access: r
+        unit: '%'
+        description: RF link quality percentage
+      schedule_config:
+        type: vo
+        access: rw
+      schedule_state:
+        type: vo
+        access: r
+      schedule_state_control_shorten:
+        type: vo
+        access: rw
+      schedule_state_control_skip:
+        type: vo
+        access: rw
+      turn_on_pressure:
+        type: vf
+        access: rw
+        unit: Bar
+        description: Lower pressure limit for auto mode
+      valve_error_1:
+        type: vi
+        access: r
+        description: Valve error status
+      watering_timer_1:
+        type: vi
+        access: rw
+        unit: s
+        description: >-
+          Pump activation timer.
+          0: not running.
+          X > 0: high priority (manual) watering running, ends at report_timestamp + X.
+          X < 0: low priority (scheduled) watering running, ends at report_timestamp - X.
+  lemonbeat_status_message:
+    resources:
+      code:
+        type: vi
+        access: r
+        description: Status code
+      data:
+        type: vs
+        access: r
+        description: Additional status data (4 bytes HEX)
+      level:
+        type: vi
+        access: r
+        min: 0
+        max: 5
+        description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+      type:
+        type: vi
+        access: r
+        min: 0
+        max: 255
+        description: Message type

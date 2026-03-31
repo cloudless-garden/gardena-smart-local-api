@@ -2,7 +2,7 @@
 import asyncio
 import sys
 
-from gardena_smart_local_api.devices import Gen1Mower
+from gardena_smart_local_api.devices import Gen1Mower1, Gen1Mower2
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
@@ -35,11 +35,11 @@ async def main():
                     print("No device ID provided")
                     return 1
                 mower = app.devices[app.args.device_id]
-                if not isinstance(mower, Gen1Mower):
+                if not isinstance(mower, (Gen1Mower1, Gen1Mower2)):
                     print("Incompatible device selected")
                     return 1
                 duration = int(app.args.duration * 3600)
-                request = mower.build_start_mowing_obj(0, duration)
+                request = mower.build_start_mowing_obj(duration)
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:
                     print("Failed to start mowing")
@@ -52,7 +52,7 @@ async def main():
                     print("No device ID provided")
                     return 1
                 mower = app.devices[app.args.device_id]
-                if not isinstance(mower, Gen1Mower):
+                if not isinstance(mower, (Gen1Mower1, Gen1Mower2)):
                     print("Incompatible device selected")
                     return 1
                 request = mower.build_stop_mowing_obj()

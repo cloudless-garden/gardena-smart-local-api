@@ -1,4 +1,4 @@
-name: SILENO life
+name: SILENO city/life (with LONA)
 protocol: gen1
 commands:
   measure_rf_link: 7
@@ -34,16 +34,16 @@ objects:
     resources:
       checksum:
         type: vi
-        access: null
+        access: r
       content_tag:
         type: vi
-        access: null
+        access: r
       slot:
         type: vi
-        access: null
+        access: r
       status:
         type: vi
-        access: null
+        access: r
   device:
     object_id: 3
     object_urn: urn:oma:lwm2m:oma:3
@@ -164,10 +164,10 @@ objects:
         description: Time in hours that the cutting disc has been active
       data_download:
         type: vo
-        access: null
+        access: r
       data_download_int:
         type: vo
-        access: null
+        access: rw
       device_type:
         type: vs
         access: r
@@ -189,7 +189,7 @@ objects:
         description: Guide wire length in meters
       internal_connection_state:
         type: vi
-        access: null
+        access: r
       last_error_code:
         type: vi
         access: r
@@ -199,7 +199,7 @@ objects:
         description: Last reported error code from the mower
       lona:
         type: vo
-        access: null
+        access: r
       lona_control:
         type:
           - vi
@@ -212,10 +212,10 @@ objects:
         description: LONA control flags (8 bytes, bit flags for LONA features)
       lona_mcu_boot_fw_version:
         type: vo
-        access: null
+        access: r
       lona_mcu_fw_version:
         type: vo
-        access: null
+        access: r
       lona_status:
         type: vo
         access: r
@@ -237,12 +237,9 @@ objects:
         access: r
         report_on_update: true
         description: 'MMI application version (format: XX.XX)'
-      mower_timer:
-        type: vi
-        access: null
       mower_timer_with_distance:
         type: vo
-        access: null
+        access: rw
       position:
         type: vo
         access: r
@@ -313,7 +310,7 @@ objects:
         description: Source/reason for timestamp_next_start (no_source, daily_limit, week_timer, countdown, charging, auto_timer, frost)
       start_delay_ms:
         type: vi
-        access: null
+        access: rw
       starting_points:
         type: vo
         access: rw

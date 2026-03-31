@@ -4,13 +4,14 @@ from .device_builder import (
     create_devices_from_messages,
 )
 from .irrigation import Gen1WaterControl, Gen2WaterControl
-from .mowers import Gen1Mower
+from .mowers import Gen1Mower1, Gen1Mower2
 from .sensors import Sensor1, Sensor2
 
 __all__ = [
     "Device",
     "DeviceMap",
-    "Gen1Mower",
+    "Gen1Mower1",
+    "Gen1Mower2",
     "Gen1WaterControl",
     "Gen2WaterControl",
     "Sensor1",

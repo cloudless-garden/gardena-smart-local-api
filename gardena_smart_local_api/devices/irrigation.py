@@ -31,6 +31,53 @@ class TimeslotState(Enum):
         return self.name.lower()
 
 
+class PumpError(Enum):
+    NONE = 0
+    PUMP_NOT_FILLED = 1
+    CLEAN_GASKET = 2
+    CLEAN_FINE_MESH = 3
+    SMALL_LEAKAGE = 4
+
+    def __str__(self):
+        return self.name.lower()
+
+
+class PumpOperatingMode(Enum):
+    SCHEDULED = 0
+    AUTOMATIC = 1
+
+    def __str__(self):
+        return self.name.lower()
+
+
+class PumpDrippingAlert(Enum):
+    MINUTES_60 = 0
+    MINUTES_2 = 1
+    DRIPPING_ALERT_OFF = 2
+
+    def __str__(self):
+        return self.name.lower()
+
+
+class PumpMode(Enum):
+    OFF = 0
+    AUTO = 1
+
+    def __str__(self):
+        return self.name.lower()
+
+
+class PumpState(Enum):
+    PUMP_IS_JUST_STARTING = 0
+    WATER_IN_THE_PUMP_BODY = 1
+    NO_WATER_IN_THE_PUMP_BODY = 2
+    FLOW_AFTER_5S = 3
+    NO_FLOW_AFTER_5S = 4
+
+    def __str__(self):
+        return self.name.lower()
+
+
 class _Gen1Irrigation(Gen1Device, ABC):
     @property
     @abstractmethod
@@ -236,3 +283,269 @@ class Gen2WaterControl(Gen2BatteryMixin, _Gen2Irrigation):
 
 class Gen2IrrigationControl(_Gen2Irrigation):
     pass
+
+
+class Pump(Gen1IdentifyMixin, Gen1FrostWarningMixin, _Gen1Irrigation):
+    @property
+    def valve_count(self) -> int:
+        return 1
+
+    @property
+    def valve_ids(self) -> list[int]:
+        return [0]
+
+    def build_close_all_valves_obj(self) -> EgressMessageList:
+        return self.build_close_valve_obj(valve_id=0)
+
+    @property
+    def pump_mode(self) -> PumpMode | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="pump_mode",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return PumpMode(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def pump_state(self) -> PumpState | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="pump_state",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return PumpState(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def is_running(self) -> bool | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="pump_on_off",
+            )
+        )
+        if isinstance(value, int):
+            return value != 0
+        return None
+
+    @property
+    def outlet_pressure(self) -> float | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="outlet_pressure",
+            )
+        )
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    @property
+    def outlet_pressure_max(self) -> float | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="outlet_pressure_max",
+            )
+        )
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    @property
+    def outlet_temperature(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="outlet_temperature",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def outlet_temperature_max(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="outlet_temperature_max",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def outlet_temperature_min(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="outlet_temperature_min",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def flow_rate(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="flow_rate",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def flow_total(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="flow_total",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def flow_since_last_reset(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="flow_since_last_reset",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def operating_mode(self) -> PumpOperatingMode | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="operating_mode",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return PumpOperatingMode(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def turn_on_pressure(self) -> float | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="turn_on_pressure",
+            )
+        )
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    @property
+    def dripping_alert(self) -> PumpDrippingAlert | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="dripping_alert",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return PumpDrippingAlert(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def pump_error(self) -> PumpError | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="valve_error_1",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return PumpError(value)
+            except ValueError:
+                pass
+        return None
+
+    def build_set_operating_mode_obj(
+        self, mode: PumpOperatingMode
+    ) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="operating_mode",
+            ),
+            mode.value,
+        )
+
+    def build_set_turn_on_pressure_obj(self, pressure: float) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="turn_on_pressure",
+            ),
+            pressure,
+        )
+
+    def build_set_dripping_alert_obj(self, timeout: int) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="dripping_alert",
+            ),
+            timeout,
+        )
+
+    def build_reset_flow_resettable_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("reset_flow_resettable"))
+
+    def build_reset_all_valve_errors_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("reset_all_valve_errors"))
+
+    def build_reset_outlet_temperature_min_max_obj(self) -> EgressMessageList:
+        return self.build_command_obj(
+            self.get_command("reset_outlet_temperature_min_max")
+        )

@@ -283,8 +283,7 @@ class Device(BaseModel):
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}(id={self.id!r}, "
-            f"model={self.model_definition.name!r}, "
-            f"type={self.model_definition.type!r})"
+            f"model={self.model_definition.name!r})"
         )
 
 

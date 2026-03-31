@@ -11,14 +11,13 @@ DEFAULT_PATH = Path(__file__).parent / "schema" / "device_models.yaml"
 class BaseModelDefinition(BaseModel):
     model_number: str
     name: str
-    type: str
     description: str | None = None
     objects: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}(model_number={self.model_number!r}, "
-            f"name={self.name!r}, type={self.type!r})"
+            f"name={self.name!r})"
         )
 
 

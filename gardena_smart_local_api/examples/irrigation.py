@@ -28,7 +28,7 @@ async def main():
         match app.args.command[0]:
             case "list":
                 for dev_id, device in app.devices.items():
-                    print(f"{dev_id} ({device.model_definition.type})")
+                    print(f"{dev_id} ({device.model_definition.name})")
 
             case "start":
                 if app.args.device_id is None:

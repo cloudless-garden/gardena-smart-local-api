@@ -76,22 +76,6 @@ class Gen1Device(Device):
         )
 
     @property
-    def rf_link_state(self) -> int | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="rf_link_state",
-            )
-        )
-        if isinstance(value, int):
-            return value
-        return None
-
-    def build_refresh_rf_link_state_obj(self) -> EgressMessageList:
-        return self.build_command_obj(self.get_command("measure_rf_link"))
-
-    @property
     def error(self) -> int | None:
         value = self.get_value(
             IpsoPath(

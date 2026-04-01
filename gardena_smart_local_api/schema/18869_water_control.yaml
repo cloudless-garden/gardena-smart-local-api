@@ -199,12 +199,6 @@ objects:
         access: r
         report_on_update: true
         description: Valve error status (none, valve_broken, frost_prevents_starting, low_battery_prevents_starting, valve_power_supply_failed)
-      valve_open:
-        type: vi
-        access: null
-      valve_open_max_time:
-        type: vi
-        access: null
       watering_timer_1:
         type: vi
         access: rw

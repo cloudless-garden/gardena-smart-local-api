@@ -148,11 +148,6 @@ objects:
         max: 100
         report_on_update: true
         description: RF link quality percentage
-      rf_link_state:
-        type: vi
-        access: r
-        report_on_update: true
-        description: RF link state
       soil_humidity:
         type: vi
         access: r

@@ -108,20 +108,11 @@ objects:
         max: 100
         report_on_update: true
         description: Battery level (100% is full)
-      chilled_temperature:
-        type: vi
-        access: null
       command:
         type: vi
         access: rw
         report_on_update: true
         description: Command to execute
-      cooldown_time:
-        type: vi
-        access: null
-      disposable_battery_lifecycle:
-        type: vi
-        access: null
       error:
         type: vi
         access: r
@@ -140,12 +131,6 @@ objects:
         report_on_update: true
         report_interval: 3600
         description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
-      heated_temperature:
-        type: vi
-        access: null
-      heating_timestamp:
-        type: vo
-        access: null
       light:
         type: vi
         access: r
@@ -195,12 +180,6 @@ objects:
         report_on_update: true
         report_interval: 3600
         description: Ground temperature
-      threshold:
-        type: vi
-        access: null
-      voltage_log:
-        type: vo
-        access: null
   lemonbeat_status_message:
     mandatory: false
     resources:

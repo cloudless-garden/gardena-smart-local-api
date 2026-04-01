@@ -137,9 +137,6 @@ objects:
         report_on_update: true
         report_interval: 3600
         description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
-      max:
-        type: vi
-        access: null
       measurement_interval:
         type: vi
         access: rw
@@ -149,9 +146,6 @@ objects:
         persistent: true
         report_on_update: true
         description: Time interval between periodic measurements when model is final
-      min:
-        type: vi
-        access: null
       model_definition:
         type: vo
         access: rw
@@ -177,9 +171,6 @@ objects:
         max: 10000
         report_on_update: true
         description: Raw counter values
-      raw_counts_2:
-        type: vi
-        access: null
       rf_link_quality:
         type: vi
         access: r

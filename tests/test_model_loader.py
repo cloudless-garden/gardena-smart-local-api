@@ -18,7 +18,7 @@ async def test_model_loader_get_model_by_number():
     model = loader.get_model("18869")
     assert model is not None
     assert model.model_number == "18869"
-    assert model.name == "Water Control"
+    assert model.name == "smart Water Control"
 
 
 @pytest.mark.asyncio

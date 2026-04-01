@@ -1,4 +1,4 @@
-name: Water Control
+name: smart Water Control
 protocol: gen1
 commands:
   none: 0

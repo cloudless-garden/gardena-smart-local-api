@@ -1,4 +1,4 @@
-name: SILENO city/life (with LONA)
+name: smart SILENO city/life (with LONA)
 protocol: gen1
 commands:
   measure_rf_link: 7

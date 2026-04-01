@@ -1,4 +1,4 @@
-name: Sensor
+name: smart Sensor
 protocol: gen1
 commands:
   measure_soil_moisture: 2

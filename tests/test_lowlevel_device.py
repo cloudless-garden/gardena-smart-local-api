@@ -192,4 +192,4 @@ async def test_create_devices_from_data(water_control_json):
     assert "3034F8EE90126D400001737D" in devices
     device = devices["3034F8EE90126D400001737D"]
     assert device.id == "3034F8EE90126D400001737D"
-    assert device.model_definition.name == "Water Control"
+    assert device.model_definition.name == "smart Water Control"

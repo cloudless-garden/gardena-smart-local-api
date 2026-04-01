@@ -8,7 +8,7 @@ async def test_model_loader_initialization():
     # Use the default path
     loader = await get_model_loader()
     assert loader is not None
-    assert loader.yaml_path.exists()
+    assert loader.schema_dir.is_dir()
 
 
 @pytest.mark.asyncio

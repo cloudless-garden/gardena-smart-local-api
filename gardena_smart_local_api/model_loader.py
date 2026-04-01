@@ -5,7 +5,7 @@ import yaml
 from aiofile import async_open
 from pydantic import BaseModel, Field
 
-DEFAULT_PATH = Path(__file__).parent / "schema" / "device_models.yaml"
+DEFAULT_SCHEMA_DIR = Path(__file__).parent / "schema"
 
 
 class BaseModelDefinition(BaseModel):
@@ -34,12 +34,11 @@ ModelDefinition = Gen1ModelDefinition
 
 
 class ModelLoader:
-    def __init__(self, yaml_path: Path | str = DEFAULT_PATH):
-        self.yaml_path = Path(yaml_path)
-        if not self.yaml_path.exists():
-            raise FileNotFoundError(f"Device models file not found: {self.yaml_path}")
+    def __init__(self, schema_dir: Path | str = DEFAULT_SCHEMA_DIR):
+        self.schema_dir = Path(schema_dir)
+        if not self.schema_dir.is_dir():
+            raise FileNotFoundError(f"Schema directory not found: {self.schema_dir}")
 
-        self._types: dict[str, str] = {}
         self._models: dict[str, ModelDefinition] = {}
         self._loaded = False
 
@@ -56,20 +55,13 @@ class ModelLoader:
         if self._loaded:
             return
 
-        async with async_open(self.yaml_path, mode="r") as f:
-            content = await f.read()
+        for model_file in sorted(self.schema_dir.glob("*.yaml")):
+            model_number = model_file.stem.split("_")[0]
+            async with async_open(model_file, mode="r") as f:
+                data = yaml.safe_load(await f.read())
+            self._models[model_number] = self.parse_model_definition(model_number, data)
 
-        data = yaml.safe_load(content)
-        self._types = data.get("types", {})
-        self._models = {
-            model_number: self.parse_model_definition(model_number, model_data)
-            for model_number, model_data in data.get("models", {}).items()
-        }
         self._loaded = True
-
-    @property
-    def types(self) -> dict[str, str]:
-        return self._types
 
     def get_model(self, model_number: str | int) -> ModelDefinition | None:
         return self._models.get(str(model_number))
@@ -78,8 +70,8 @@ class ModelLoader:
 _loader_cache: dict[Path, ModelLoader] = {}
 
 
-async def get_model_loader(yaml_path: Path | str = DEFAULT_PATH) -> ModelLoader:
-    path = Path(yaml_path).resolve()
+async def get_model_loader(schema_dir: Path | str = DEFAULT_SCHEMA_DIR) -> ModelLoader:
+    path = Path(schema_dir).resolve()
 
     if path not in _loader_cache:
         loader = ModelLoader(path)

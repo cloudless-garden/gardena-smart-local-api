@@ -1,13 +1,13 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredDevice
+from .gen1 import Gen1BatteryPoweredDevice, IdentifyMixin
 from .gen2 import Gen2BatteryPoweredDevice
 
 # Used to indicate that the action was initiated through WebSocket API.
 COMMAND_SOURCE = "18"
 
 
-class Gen1WaterControl(Gen1BatteryPoweredDevice):
+class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
     def build_set_watering_timer_obj(self, seconds: int) -> EgressMessageList:
         """Set the watering timer.
 

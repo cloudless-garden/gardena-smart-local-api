@@ -15,6 +15,7 @@ from gardena_smart_local_api.devices import (
 )
 from gardena_smart_local_api.messages import (
     EgressMessageList,
+    Event,
     IngressMessageList,
     Reply,
 )
@@ -51,6 +52,32 @@ class ExampleApp:
         self.parser = parser
         self.ws = None
         self.devices = DeviceMap({})
+        self.events = []
+        self.replies = {}
+        self._exiting = asyncio.Event()
+
+    async def _receiver(self):
+        while not self._exiting.is_set():
+            raw = await self.receive()
+            if raw is None:
+                continue
+            msgs = IngressMessageList.model_validate_json(raw)
+            for msg in msgs:
+                match msg:
+                    case Event():
+                        self.events.append(msg)
+                    case Reply():
+                        self.replies[msg.request_id] = msg
+
+    async def _device_updater(self):
+        while not self._exiting.is_set():
+            for event in self.events[:]:
+                if event.op == "update":
+                    device_id = event.entity.device
+                    if device_id in self.devices:
+                        self.devices[device_id].update_data(event)
+                        self.events.remove(event)
+            await asyncio.sleep(0.5)
 
     async def connect(self):
         self.args = self.parser.parse_args()
@@ -70,6 +97,9 @@ class ExampleApp:
             close_timeout=0,
         )
 
+        self._receive_task = asyncio.create_task(self._receiver())
+        self._device_updater_task = asyncio.create_task(self._device_updater())
+
     async def disconnect(self):
         if self.ws:
             await self.ws.close()
@@ -84,27 +114,27 @@ class ExampleApp:
         if not self.ws:
             raise RuntimeError("Not connected")
         try:
-            return await asyncio.wait_for(self.ws.recv(), timeout=3.0)
+            return await asyncio.wait_for(self.ws.recv(), timeout=1.0)
         except TimeoutError:
             pass
         return None
 
-    async def send_request(self, msgs: EgressMessageList) -> IngressMessageList | None:
-        await self.send(str(msgs))
+    async def send_request(self, reqs: EgressMessageList) -> IngressMessageList:
+        await self.send(str(reqs))
 
-        request_ids = {m.request_id for m in msgs}
+        request_ids = {m.request_id for m in reqs}
+
+        reps = IngressMessageList([])
 
         for _ in range(10):
-            reply_json = await self.receive()
-            if reply_json is None:
-                continue
-            replies = IngressMessageList.model_validate_json(reply_json)
-            if not replies or not isinstance(replies[0], Reply):
-                continue
-            if {r.request_id for r in replies} == request_ids:
-                return replies
+            for request_id in request_ids:
+                if request_id in self.replies:
+                    reps.append(self.replies.pop(request_id))
+            if len(reps) == len(reqs):
+                break
+            await asyncio.sleep(1)
 
-        return None
+        return reps
 
     async def discover_devices(self) -> DeviceMap:
         discovery = build_discovery_obj()
@@ -124,4 +154,7 @@ class ExampleApp:
         return self
 
     async def __aexit__(self, *args):
+        self._exiting.set()
+        await self._receive_task
+        await self._device_updater_task
         await self.disconnect()

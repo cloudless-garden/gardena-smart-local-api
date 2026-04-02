@@ -46,6 +46,9 @@ class EgressMessageList(RootModel[list[Request]]):
     def __delitem__(self, index):
         del self.root[index]
 
+    def append(self, item: Request) -> None:
+        self.root.append(item)
+
 
 class ErrorMetadata(BaseModel):
     error_source: str
@@ -127,3 +130,6 @@ class IngressMessageList(RootModel[list[Event | Reply | ErrorMessage]]):
 
     def __delitem__(self, index):
         del self.root[index]
+
+    def append(self, item: Event | Reply | ErrorMessage) -> None:
+        self.root.append(item)

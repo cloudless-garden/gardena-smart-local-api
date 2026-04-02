@@ -6,6 +6,8 @@ from gardena_smart_local_api.devices import Gen1Mower1, Gen1Mower2
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
+COMPATIBLE = (Gen1Mower1, Gen1Mower2)
+
 
 async def main():
     extra_args = [
@@ -13,7 +15,7 @@ async def main():
             "name_or_flags": ["command"],
             "nargs": 1,
             "choices": ("list", "start", "stop"),
-            "help": "List devices or start/stop mowing",
+            "help": "List applicable devices or start/stop mowing",
         },
         {
             "name_or_flags": ["duration"],
@@ -27,8 +29,7 @@ async def main():
     async with ExampleApp(extra_args) as app:
         match app.args.command[0]:
             case "list":
-                for dev_id, device in app.devices.items():
-                    print(f"{dev_id} ({device.model_definition.name})")
+                app.list_devices(COMPATIBLE)
 
             case "start":
                 if app.args.device_id is None:

@@ -6,6 +6,8 @@ from gardena_smart_local_api.devices import Gen1WaterControl, Gen2WaterControl
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
+COMPATIBLE = (Gen1WaterControl, Gen2WaterControl)
+
 
 async def main():
     extra_args = [
@@ -13,7 +15,7 @@ async def main():
             "name_or_flags": ["command"],
             "nargs": 1,
             "choices": ("list", "start", "stop"),
-            "help": "List devices or start/stop watering",
+            "help": "List applicable devices or start/stop watering",
         },
         {
             "name_or_flags": ["valve_id"],
@@ -33,8 +35,7 @@ async def main():
     async with ExampleApp(extra_args) as app:
         match app.args.command[0]:
             case "list":
-                for dev_id, device in app.devices.items():
-                    print(f"{dev_id} ({device.model_definition.name})")
+                app.list_devices(COMPATIBLE)
 
             case "start":
                 if app.args.device_id is None:
@@ -43,7 +44,7 @@ async def main():
 
                 wc = app.devices[app.args.device_id]
 
-                if not isinstance(wc, (Gen1WaterControl, Gen2WaterControl)):
+                if not isinstance(wc, COMPATIBLE):
                     print("Incompatible device selected")
                     return 1
 
@@ -79,7 +80,7 @@ async def main():
 
                 wc = app.devices[app.args.device_id]
 
-                if not isinstance(wc, (Gen1WaterControl, Gen2WaterControl)):
+                if not isinstance(wc, COMPATIBLE):
                     print("Incompatible device selected")
                     return 1
 

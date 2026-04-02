@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 from typing import Any, Literal
 
@@ -60,7 +61,10 @@ class ModelLoader:
         if self._loaded:
             return
 
-        for model_file in sorted(self.schema_dir.glob("*.yaml")):
+        model_files = await asyncio.to_thread(
+            lambda: sorted(self.schema_dir.glob("*.yaml"))
+        )
+        for model_file in model_files:
             model_number = model_file.stem.split("_")[0]
             async with async_open(model_file, mode="r") as f:
                 data = yaml.safe_load(await f.read())

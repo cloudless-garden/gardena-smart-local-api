@@ -12,6 +12,7 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 | smart Water Control           | 19033-20                               | 2812               |
 | smart Dual Water Control      | 19034-20                               | 2814               |
 | smart Pipeline Water Control  | 19050-20                               | 2826               |
+| smart Power Adapter           | 19095-20                               | 35279              |
 | smart SILENO                  | 19060-20, 19060-60                     | 6146               |
 | smart SILENO+                 | 19061-20, 19061-60, 19064-60, 19065-60 | 6146               |
 | smart SILENO city             | 19066-20, 19069-20                     | 29694              |

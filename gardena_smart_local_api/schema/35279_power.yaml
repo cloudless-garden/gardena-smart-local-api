@@ -1,0 +1,192 @@
+name: smart Power Adapter
+protocol: gen1
+commands:
+  measure_rf_link: 7
+  emc_test_start: 29
+  emc_test_stop: 30
+  reboot: 31
+  ntp_force_sync: 32
+  led_all_off: 33
+  led_all_green_on: 34
+  led_all_red_on: 35
+  hap_identify: 37
+  test_watchdog: 38
+  test_hard_fault: 39
+objects:
+  connection_status:
+    mandatory: true
+    resources:
+      online:
+        type: vb
+        access: r
+        description: Indicates if the device is online (true) or offline (false)
+  device:
+    mandatory: true
+    resources:
+      device_type:
+        type: vs
+        access: r
+        description: Type of the device
+      error_code:
+        type: ai
+        access: r
+        description: Current error code(s)
+      firmware_version:
+        type: vs
+        access: r
+        description: Current firmware version
+      hardware_version:
+        type: vs
+        access: r
+        description: Hardware version
+      manufacturer:
+        type: vs
+        access: r
+        description: Manufacturer name
+      model_number:
+        type: vs
+        access: r
+        description: Model number or identifier
+      serial_number:
+        type: vs
+        access: r
+        description: Serial number
+      software_version:
+        type: vs
+        access: r
+        description: Current software version
+      supported_binding_and_modes:
+        type: vs
+        access: r
+        description: Supported bindings and modes
+      utc_offset:
+        type: vs
+        access: rw
+        description: UTC offset currently in effect for device
+  firmware_update:
+    mandatory: true
+    resources:
+      firmware_update_delivery_method:
+        type: vi
+        access: r
+        description: Firmware update delivery method
+      package_uri:
+        type: vs
+        access: rw
+        description: URI from where the device can download the firmware package
+      pkg_version:
+        type: vs
+        access: r
+        description: Package version
+      state:
+        type: vi
+        access: r
+        min: 0
+        max: 3
+        description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+      update_result:
+        type: vi
+        access: r
+        min: 0
+        max: 9
+        description: 'Update result: 0=Initial, 1=Success, 2=Not enough storage, 3=Out of memory, 4=Connection lost, 5=CRC check failure, 6=Unsupported package type, 7=Invalid URI, 8=Update failed, 9=Unsupported protocol'
+  lemonbeat:
+    resources:
+      action_paused_until_1:
+        type: vo
+        access: rw
+        persistent: true
+        encoding: hex
+        report_on_update: true
+        description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
+      command:
+        type: vi
+        access: rw
+        report_on_update: true
+        description: Command to execute
+      error:
+        type: vi
+        access: r
+        report_on_update: true
+        description: Error status (none, timer_cancelled, eeprom)
+      fatal_error_log:
+        type: vo
+        access: r
+        encoding: hex
+        report_on_update: true
+        description: Fatal error log (error identifier, file, line, stack)
+      power_timer:
+        type: vi
+        access: rw
+        unit: s
+        min: -16777215
+        max: 16777216
+        report_on_update: true
+        description: Power timer (write >0=high prio, <0=low prio, 0=stop; read >0=high running, <0=low running, 2^24=infinite on)
+      rf_link_quality:
+        type: vi
+        access: r
+        unit: '%'
+        min: 0
+        max: 100
+        report_on_update: true
+        description: RF link quality percentage
+      schedule_config:
+        type: vo
+        access: r
+        encoding: hex
+        report_on_update: true
+        description: Schedule configuration (read-only, up to 36 schedules)
+      schedule_state:
+        type: vo
+        access: r
+        encoding: hex
+        report_on_update: true
+        description: Schedule state (3 bytes per schedule, 108 bytes total)
+      schedule_state_control_shorten:
+        type: vo
+        access: rw
+        encoding: hex
+        report_on_update: true
+        description: Shorten schedule duration (3 bytes per schedule)
+      schedule_state_control_skip:
+        type: vo
+        access: rw
+        encoding: hex
+        report_on_update: true
+        description: Skip schedule (1 byte per schedule, 36 bytes total)
+      sun_data:
+        type: vo
+        access: rw
+        encoding: hex
+        report_on_update: true
+        description: Sun data for sunrise/sunset calculations (2-byte header + 84 3-byte blocks)
+      sun_schedule_config:
+        type: vo
+        access: rw
+        encoding: hex
+        report_on_update: true
+        description: Sun-based schedule configuration (up to 36 schedules, 7 bytes each)
+  lemonbeat_status_message:
+    mandatory: false
+    resources:
+      code:
+        type: vi
+        access: r
+        description: Status code
+      data:
+        type: vs
+        access: r
+        description: Additional status data (4 bytes HEX)
+      level:
+        type: vi
+        access: r
+        min: 0
+        max: 5
+        description: 'Message level: 0=Disabled, 1=Important, 2=Error, 3=Warning, 4=Info, 5=Debug'
+      type:
+        type: vi
+        access: r
+        min: 0
+        max: 255
+        description: Message type

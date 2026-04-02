@@ -1,4 +1,4 @@
-from typing import ClassVar
+from typing import ClassVar, Protocol
 
 from pydantic import Field
 
@@ -105,3 +105,13 @@ class Gen1BatteryPoweredDevice(Gen1Device):
 
     def build_refresh_battery_level_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_battery"))
+
+
+class _Gen1Commands(Protocol):
+    def build_command_obj(self, command: int) -> EgressMessageList: ...
+    def get_command(self, name: str) -> int: ...
+
+
+class IdentifyMixin:
+    def build_identify_obj(self: _Gen1Commands) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("hap_identify"))

@@ -1,9 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredDevice
+from .gen1 import Gen1BatteryPoweredDevice, IdentifyMixin
 
 
-class _Sensor(Gen1BatteryPoweredDevice):
+class _Sensor(IdentifyMixin, Gen1BatteryPoweredDevice):
     @property
     def has_frost_warning(self) -> bool | None:
         value = self.get_value(

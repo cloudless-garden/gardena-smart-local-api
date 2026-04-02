@@ -1,0 +1,59 @@
+[
+  {
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "metadata": { "sequence": 1434, "source": "lemonbeatd" },
+    "payload": {
+      "3034F8EE902273C000009390": {
+        "connection_status": {
+          "0": { "online": { "ts": 1772100985, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1770737575, "vs": "Power Adapter" },
+            "error_code": { "ai": [0], "ts": 1770737575 },
+            "firmware_version": { "ts": 1770737575, "vs": "4.0.0-1.5.3" },
+            "hardware_version": { "ts": 1770737575, "vs": "0.0.1" },
+            "manufacturer": { "ts": 1770737575, "vs": "Gardena" },
+            "model_number": { "ts": 1770737575, "vs": "35279" },
+            "serial_number": { "ts": 1770737575, "vs": "00037776" },
+            "software_version": { "ts": 1770737575, "vs": "3.0.3" },
+            "supported_binding_and_modes": { "ts": 1770737575, "vs": "U" },
+            "utc_offset": { "ts": 1774746188, "vs": "UTC+02:00" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": { "vi": 1 },
+            "package_uri": { "vs": "" },
+            "pkg_version": { "vs": "" },
+            "state": { "vi": 0 },
+            "update_result": { "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "lemonbeat": {
+          "0": {
+            "action_paused_until_1": { "ts": 1769328752, "vo": "" },
+            "be_decision_time": { "ts": 1769328752, "vi": 545 },
+            "command": { "ts": 1774952858, "vi": 37 },
+            "error": { "ts": 1769328752, "vi": 0 },
+            "fatal_error_log": { "ts": 1683703450, "vo": "QQAAH+PC8gDPzgIAw88CAAnPAgBN2QIA56oBAH15AAA=" },
+            "power_timer": { "ts": 1774970116, "vi": 0 },
+            "rf_link_quality": { "ts": 1774967051, "vi": 100 },
+            "schedule_config": { "ts": 1769328752, "vo": "" },
+            "schedule_state": { "ts": 1769328752, "vo": "" },
+            "schedule_state_control_shorten": { "ts": 1769328752, "vo": "" },
+            "schedule_state_control_skip": { "ts": 1769328752, "vo": "" },
+            "sun_data": { "ts": 1769328752, "vo": "XAQPEFnNK1mVr1lcb1oiU1vyulzITl6ewl+AymFp9mNWGmZNPmhK1mpOHm1Yim9qAnJ+unSXhne3znnWinz4bn8fp4FCZ4RnU4eNu4muL4zRs47tV5EEAJQcDJYseJg47JpBwJxD6J5C7KA6XKIuEKQfcKUKiKb2a6fb76fDV6iqX6iOL6h3v6di46ZND6Y/z6Q1N6Mu56Es+58yG54755tKn5lfr5d4K5WTn5K3j5Db340AKIstCIlVOIaAgIOu+IDYfH4FBXwpOXlLhXZtVXSHlXGc6W6skWy0RWq2wWexnWWkoWONnWFzrV9RFV4jnVz2VFvDNFqFoFlNLFk=" },
+            "sun_schedule_config": { "ts": 1769328752, "vo": "" }
+          },
+          "_urn": "urn:oma:lwm2m:x:31000"
+        }
+      }
+    },
+    "request_id": "5f20e8a5-06dd-4745-830a-9c6a8f8e62fc",
+    "success": true
+  }
+]

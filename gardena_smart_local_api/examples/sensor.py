@@ -5,6 +5,8 @@ import sys
 from gardena_smart_local_api.devices import Sensor1, Sensor2
 from gardena_smart_local_api.examples import ExampleApp
 
+COMPATIBLE = (Sensor1, Sensor2)
+
 
 async def main():
     extra_args = [
@@ -12,22 +14,21 @@ async def main():
             "name_or_flags": ["command"],
             "nargs": 1,
             "choices": ("list", "read"),
-            "help": "List devices or read sensor values",
+            "help": "List applicable devices or read sensor values",
         },
     ]
 
     async with ExampleApp(extra_args) as app:
         match app.args.command[0]:
             case "list":
-                for dev_id, device in app.devices.items():
-                    print(f"{dev_id} ({device.model_definition.name})")
+                app.list_devices(COMPATIBLE)
 
             case "read":
                 if app.args.device_id is None:
                     print("No device ID provided")
                     return 1
                 sensor = app.devices[app.args.device_id]
-                if not isinstance(sensor, (Sensor1, Sensor2)):
+                if not isinstance(sensor, COMPATIBLE):
                     print("Incompatible device selected")
                     return 1
                 print(f"Sensor {sensor.id}:")

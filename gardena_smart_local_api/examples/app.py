@@ -8,6 +8,7 @@ from typing import Self
 import websockets
 
 from gardena_smart_local_api.devices import (
+    Device,
     DeviceMap,
     build_discovery_obj,
     create_devices_from_messages,
@@ -111,6 +112,11 @@ class ExampleApp:
         if replies is None:
             return DeviceMap({})
         return await create_devices_from_messages(replies)
+
+    def list_devices(self, compatible_devices: tuple[type[Device], ...]):
+        for dev_id, device in self.devices.items():
+            if isinstance(device, compatible_devices):
+                print(f"{dev_id} ({device.model_definition.name})")
 
     async def __aenter__(self) -> Self:
         await self.connect()

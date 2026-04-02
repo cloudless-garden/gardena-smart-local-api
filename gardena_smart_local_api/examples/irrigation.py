@@ -52,7 +52,7 @@ async def main():
                 else:
                     if (
                         app.args.valve_id is not None
-                        and app.args.valve_id >= wc.valve_count
+                        and not 0 <= app.args.valve_id < wc.valve_count
                     ):
                         print(
                             f'Valve ID "{app.args.valve_id}" out of range, '
@@ -88,7 +88,7 @@ async def main():
                 else:
                     if (
                         app.args.valve_id is not None
-                        and app.args.valve_id >= wc.valve_count
+                        and not 0 <= app.args.valve_id < wc.valve_count
                     ):
                         print(
                             f'Valve ID "{app.args.valve_id}" out of range, '

@@ -56,6 +56,17 @@ class ExampleApp:
         self.replies = {}
         self._exiting = asyncio.Event()
 
+    async def __aenter__(self) -> Self:
+        await self.connect()
+        self.devices = await self.discover_devices()
+        return self
+
+    async def __aexit__(self, *args):
+        self._exiting.set()
+        await self._receive_task
+        await self._device_updater_task
+        await self.disconnect()
+
     async def _receiver(self):
         while not self._exiting.is_set():
             raw = await self.receive()
@@ -147,14 +158,3 @@ class ExampleApp:
         for dev_id, device in self.devices.items():
             if isinstance(device, compatible_devices):
                 print(f"{dev_id} ({device.model_definition.name})")
-
-    async def __aenter__(self) -> Self:
-        await self.connect()
-        self.devices = await self.discover_devices()
-        return self
-
-    async def __aexit__(self, *args):
-        self._exiting.set()
-        await self._receive_task
-        await self._device_updater_task
-        await self.disconnect()

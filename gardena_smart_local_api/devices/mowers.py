@@ -1,10 +1,53 @@
+from enum import Enum
+
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from .gen1 import Gen1BatteryPoweredDevice
 
 
+class Gen1MowerStatus(Enum):
+    PAUSED = 0
+    OK_CUTTING_AUTO = 1
+    OK_SEARCHING_CS = 2
+    OK_CHARGING = 3
+    OK_LEAVING_CS = 4
+    WAIT_SOFTWARE_DOWNLOAD = 5
+    WAIT_POWER_UP = 6
+    PARKED_WEEK_TIMER = 7
+    PARKED_BY_USER = 8
+    OFF_MAIN_SWITCH = 9
+    WAIT_STOP_PRESSED = 10
+    UNKNOWN = 11
+    ERROR = 12
+    ERROR_POWER_UP = 13
+    WAIT = 14
+    OK_CUTTING_MANUAL = 15
+    PARKED_AUTOTIMER = 16
+    PARKED_DAY_LIMIT = 17
+    PARKED_FROST = 18
+
+    def __str__(self):
+        return self.name.lower()
+
+
 class _Gen1Mower(Gen1BatteryPoweredDevice):
     """Robotic lawn mower base class"""
+
+    @property
+    def status(self) -> Gen1MowerStatus | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="status",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return Gen1MowerStatus(value)
+            except ValueError:
+                pass
+        return None
 
     def build_stop_mowing_obj(self) -> EgressMessageList:
         """Park until further notice.

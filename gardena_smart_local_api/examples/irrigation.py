@@ -32,21 +32,15 @@ async def main():
         },
     ]
 
-    async with ExampleApp(extra_args) as app:
+    async with ExampleApp(COMPATIBLE, extra_args) as app:
         match app.args.command[0]:
             case "list":
-                app.list_devices(COMPATIBLE)
+                app.list_devices()
 
             case "start":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (wc := app.device) is None:
                     return 1
-
-                wc = app.devices[app.args.device_id]
-
-                if not isinstance(wc, COMPATIBLE):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(wc, COMPATIBLE)
 
                 if isinstance(wc, Gen1WaterControl):
                     request = wc.build_set_watering_timer_obj(app.args.duration)
@@ -74,15 +68,9 @@ async def main():
                     return 1
 
             case "stop":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (wc := app.device) is None:
                     return 1
-
-                wc = app.devices[app.args.device_id]
-
-                if not isinstance(wc, COMPATIBLE):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(wc, COMPATIBLE)
 
                 if isinstance(wc, Gen1WaterControl):
                     request = wc.build_stop_watering_obj()

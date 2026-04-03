@@ -26,19 +26,15 @@ async def main():
         },
     ]
 
-    async with ExampleApp(extra_args) as app:
+    async with ExampleApp(COMPATIBLE, extra_args) as app:
         match app.args.command[0]:
             case "list":
-                app.list_devices(COMPATIBLE)
+                app.list_devices()
 
             case "on":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (pa := app.device) is None:
                     return 1
-                pa = app.devices[app.args.device_id]
-                if not isinstance(pa, COMPATIBLE):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(pa, COMPATIBLE)
                 request = pa.build_enable_output_obj(app.args.duration)
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:
@@ -48,13 +44,9 @@ async def main():
                     return 1
 
             case "off":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (pa := app.device) is None:
                     return 1
-                pa = app.devices[app.args.device_id]
-                if not isinstance(pa, COMPATIBLE):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(pa, COMPATIBLE)
                 request = pa.build_disable_output_obj()
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:
@@ -64,13 +56,9 @@ async def main():
                     return 1
 
             case "identify":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (pa := app.device) is None:
                     return 1
-                pa = app.devices[app.args.device_id]
-                if not isinstance(pa, COMPATIBLE):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(pa, COMPATIBLE)
                 request = pa.build_identify_obj()
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:

@@ -1,11 +1,15 @@
 import argparse
 import asyncio
 import base64
+import signal
 import ssl
+import time
 from collections.abc import Iterable
 from typing import Self
 
 import websockets
+from rich.live import Live
+from rich.text import Text
 
 from gardena_smart_local_api.devices import (
     Device,
@@ -42,6 +46,18 @@ class ExampleApp:
             required=False,
             help='ID of device to control (list IDs with "list" command)',
         )
+        parser.add_argument(
+            "-j",
+            "--dump-json",
+            action="store_true",
+            help="Save received messages to JSON files in the current directory",
+        )
+        parser.add_argument(
+            "-w",
+            "--wait",
+            action="store_true",
+            help="Do not quit, continue to receive events",
+        )
 
         for arg_info in extra_args:
             parser.add_argument(
@@ -53,6 +69,7 @@ class ExampleApp:
         self.ws = None
         self.devices = DeviceMap({})
         self.events = []
+        self.event_count = 0
         self.replies = {}
         self._exiting = asyncio.Event()
 
@@ -62,6 +79,20 @@ class ExampleApp:
         return self
 
     async def __aexit__(self, *args):
+        if self.args.wait:
+            done = asyncio.Event()
+            loop = asyncio.get_running_loop()
+            loop.add_signal_handler(signal.SIGINT, done.set)
+            with Live(auto_refresh=False) as live:
+                while not done.is_set():
+                    await asyncio.sleep(0.5)
+                    live.update(
+                        Text(
+                            f"Events received: {self.event_count}\nPress Ctrl+C to quit"
+                        )
+                    )
+                    live.refresh()
+
         self._exiting.set()
         await self._receive_task
         await self._device_updater_task
@@ -74,11 +105,22 @@ class ExampleApp:
                 continue
             msgs = IngressMessageList.model_validate_json(raw)
             for msg in msgs:
+                dumpfile = None
                 match msg:
                     case Event():
+                        self.event_count += 1
                         self.events.append(msg)
+                        if self.args.dump_json:
+                            dumpfile = f"{time.monotonic_ns()}_event.json"
+
                     case Reply():
                         self.replies[msg.request_id] = msg
+                        if self.args.dump_json:
+                            dumpfile = f"{time.monotonic_ns()}_reply.json"
+
+                if self.args.dump_json and dumpfile is not None:
+                    with open(dumpfile, "w") as f:
+                        f.write(msg.model_dump_json(exclude_none=True, indent=2))
 
     async def _device_updater(self):
         while not self._exiting.is_set():

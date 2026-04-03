@@ -14,8 +14,8 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop"),
-            "help": "List applicable devices or start/stop mowing",
+            "choices": ("list", "start", "stop", "status"),
+            "help": "List applicable devices, start/stop mowing or show status",
         },
         {
             "name_or_flags": ["duration"],
@@ -55,6 +55,13 @@ async def main():
                     if isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
+
+            case "status":
+                if (mower := app.device) is None:
+                    return 1
+                assert isinstance(mower, COMPATIBLE)
+                status = mower.status
+                print(f"Mower status: {status}")
 
 
 if __name__ == "__main__":

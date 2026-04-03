@@ -26,7 +26,11 @@ from gardena_smart_local_api.messages import (
 
 
 class ExampleApp:
-    def __init__(self, extra_args: Iterable[dict] = ()):
+    def __init__(
+        self,
+        compatible_devices: tuple[type[Device], ...],
+        extra_args: Iterable[dict] = (),
+    ):
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "-g",
@@ -66,6 +70,7 @@ class ExampleApp:
             )
 
         self.parser = parser
+        self.compatible_devices = compatible_devices
         self.ws = None
         self.devices = DeviceMap({})
         self.events = []
@@ -196,7 +201,22 @@ class ExampleApp:
             return DeviceMap({})
         return await create_devices_from_messages(replies)
 
-    def list_devices(self, compatible_devices: tuple[type[Device], ...]):
+    def list_devices(self):
         for dev_id, device in self.devices.items():
-            if isinstance(device, compatible_devices):
+            if isinstance(device, self.compatible_devices):
                 print(f"{dev_id} ({device.model_definition.name})")
+
+    @property
+    def device(self) -> Device | None:
+        device_id = self.args.device_id
+        if device_id is None:
+            print("No device ID provided")
+            return None
+        if device_id not in self.devices:
+            print("Invalid device ID provided")
+            return None
+        device = self.devices[device_id]
+        if not isinstance(device, self.compatible_devices):
+            print("Incompatible device selected")
+            return None
+        return device

@@ -28,19 +28,15 @@ async def main():
         },
     ]
 
-    async with ExampleApp(extra_args) as app:
+    async with ExampleApp(COMPATIBLE, extra_args) as app:
         match app.args.command[0]:
             case "list":
-                app.list_devices(COMPATIBLE)
+                app.list_devices()
 
             case "read":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (sensor := app.device) is None:
                     return 1
-                sensor = app.devices[app.args.device_id]
-                if not isinstance(sensor, COMPATIBLE):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(sensor, COMPATIBLE)
                 try:
                     await asyncio.wait_for(
                         _display(app, sensor), timeout=app.args.duration

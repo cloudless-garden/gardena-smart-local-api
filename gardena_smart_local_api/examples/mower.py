@@ -26,19 +26,15 @@ async def main():
         },
     ]
 
-    async with ExampleApp(extra_args) as app:
+    async with ExampleApp(COMPATIBLE, extra_args) as app:
         match app.args.command[0]:
             case "list":
-                app.list_devices(COMPATIBLE)
+                app.list_devices()
 
             case "start":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (mower := app.device) is None:
                     return 1
-                mower = app.devices[app.args.device_id]
-                if not isinstance(mower, (Gen1Mower1, Gen1Mower2)):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(mower, COMPATIBLE)
                 duration = int(app.args.duration * 3600)
                 request = mower.build_start_mowing_obj(duration)
                 result = await app.send_request(request)
@@ -49,13 +45,9 @@ async def main():
                     return 1
 
             case "stop":
-                if app.args.device_id is None:
-                    print("No device ID provided")
+                if (mower := app.device) is None:
                     return 1
-                mower = app.devices[app.args.device_id]
-                if not isinstance(mower, (Gen1Mower1, Gen1Mower2)):
-                    print("Incompatible device selected")
-                    return 1
+                assert isinstance(mower, COMPATIBLE)
                 request = mower.build_stop_mowing_obj()
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:

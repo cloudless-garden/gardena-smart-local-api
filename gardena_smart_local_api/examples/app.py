@@ -154,17 +154,17 @@ class ExampleApp:
         self._device_updater_task = asyncio.create_task(self._device_updater())
 
     async def disconnect(self):
-        if self.ws:
+        if self.ws is not None:
             await self.ws.close()
             self.ws = None
 
     async def send(self, data: str):
-        if not self.ws:
+        if self.ws is None:
             raise RuntimeError("Not connected")
         await self.ws.send(data)
 
     async def receive(self) -> str | None:
-        if not self.ws:
+        if self.ws is None:
             raise RuntimeError("Not connected")
         try:
             return await asyncio.wait_for(self.ws.recv(), timeout=1.0)

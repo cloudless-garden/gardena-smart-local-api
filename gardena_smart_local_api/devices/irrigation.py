@@ -127,7 +127,7 @@ class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
         )
 
 
-class Gen2WaterControl(Gen2Device, Gen2BatteryMixin):
+class _Gen2Irrigation(Gen2Device):
     @property
     def valve_count(self) -> int:
         return len(self.get_object_instance_ids("actuator"))
@@ -163,3 +163,11 @@ class Gen2WaterControl(Gen2Device, Gen2BatteryMixin):
             ),
             [COMMAND_SOURCE],
         )
+
+
+class Gen2WaterControl(_Gen2Irrigation, Gen2BatteryMixin):
+    pass
+
+
+class Gen2IrrigationControl(_Gen2Irrigation):
+    pass

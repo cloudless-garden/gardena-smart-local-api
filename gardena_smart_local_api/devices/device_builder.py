@@ -2,12 +2,13 @@ from typing import Any
 
 from ..messages import IngressMessageList, Reply
 from .device import Device, DeviceMap
-from .irrigation import Gen1WaterControl, Gen2WaterControl
+from .irrigation import Gen1WaterControl, Gen2IrrigationControl, Gen2WaterControl
 from .mowers import Gen1Mower1, Gen1Mower2
 from .power import PowerAdapter
 from .sensors import Sensor1, Sensor2
 
 MODEL_NUMBER_MAP: dict[str, type[Device]] = {
+    "469": Gen2IrrigationControl,
     "2812": Gen2WaterControl,
     "2814": Gen2WaterControl,
     "2826": Gen2WaterControl,

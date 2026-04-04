@@ -1,7 +1,7 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from .gen1 import Gen1BatteryPoweredDevice, IdentifyMixin
-from .gen2 import Gen2BatteryPoweredDevice
+from .gen2 import Gen2BatteryMixin, Gen2Device
 
 # Used to indicate that the action was initiated through WebSocket API.
 COMMAND_SOURCE = "18"
@@ -127,7 +127,7 @@ class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
         )
 
 
-class Gen2WaterControl(Gen2BatteryPoweredDevice):
+class Gen2WaterControl(Gen2Device, Gen2BatteryMixin):
     @property
     def valve_count(self) -> int:
         return len(self.get_object_instance_ids("actuator"))

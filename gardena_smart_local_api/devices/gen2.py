@@ -1,20 +1,21 @@
-from typing import ClassVar
+from typing import ClassVar, Protocol
 
 from pydantic import Field
 
 from ..model_loader import Gen2ModelDefinition
-from ..resources import IpsoPath
+from ..resources import VALUE_TYPES, IpsoPath
 from .device import Device
 
 
-class Gen2Device(Device):
-    model_definition: Gen2ModelDefinition = Field()
-    service: ClassVar[str] = "lwm2mserver"
+class _DeviceProtocol(Protocol):
+    """Used to satisfy the type checker."""
+
+    def get_value(self, path: IpsoPath) -> VALUE_TYPES | None: ...
 
 
-class Gen2BatteryPoweredDevice(Gen2Device):
+class Gen2BatteryMixin:
     @property
-    def battery_level(self) -> float | None:
+    def battery_level(self: _DeviceProtocol) -> float | None:
         value = self.get_value(
             IpsoPath(
                 object_name="device",
@@ -25,3 +26,8 @@ class Gen2BatteryPoweredDevice(Gen2Device):
         if isinstance(value, (int, float)):
             return float(value)
         return None
+
+
+class Gen2Device(Device):
+    model_definition: Gen2ModelDefinition = Field()
+    service: ClassVar[str] = "lwm2mserver"

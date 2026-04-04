@@ -160,7 +160,7 @@ objects:
       update_result:
         type: vi
         access: r
-  irrigation_control:
+  water_control:
     resources:
       error:
         type: vi

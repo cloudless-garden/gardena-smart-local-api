@@ -7,9 +7,9 @@ commands:
   measure_ambient_temperature: 5
   measure_battery: 6
   measure_rf_link: 7
-  reboot: 31
   emc_test_start: 29
   emc_test_stop: 30
+  reboot: 31
   force_report: 50
 objects:
   connection_status:

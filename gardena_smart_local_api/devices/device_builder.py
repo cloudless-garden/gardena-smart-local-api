@@ -8,16 +8,16 @@ from .power import PowerAdapter
 from .sensors import Sensor1, Sensor2
 
 MODEL_NUMBER_MAP: dict[str, type[Device]] = {
-    "18845": Sensor1,
-    "18869": Gen1WaterControl,
-    "19040": Sensor2,
     "2812": Gen2WaterControl,
     "2814": Gen2WaterControl,
     "2826": Gen2WaterControl,
+    "6146": Gen1Mower1,
+    "18845": Sensor1,
+    "18869": Gen1WaterControl,
+    "19040": Sensor2,
     "29694": Gen1Mower1,
     "35279": PowerAdapter,
     "53988": Gen1Mower2,
-    "6146": Gen1Mower1,
 }
 
 

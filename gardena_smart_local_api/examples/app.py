@@ -177,7 +177,7 @@ class ExampleApp:
             pass
         return None
 
-    async def send_request(self, reqs: EgressMessageList) -> IngressMessageList:
+    async def send_request(self, reqs: EgressMessageList) -> IngressMessageList | None:
         await self.send(str(reqs))
 
         request_ids = {m.request_id for m in reqs}
@@ -191,6 +191,9 @@ class ExampleApp:
             if len(reps) == len(reqs):
                 break
             await asyncio.sleep(1)
+        else:
+            print("Timeout receiving reply for command")
+            return None
 
         return reps
 

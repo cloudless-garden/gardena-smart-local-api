@@ -38,9 +38,9 @@ async def main():
                 duration = int(app.args.duration * 3600)
                 request = mower.build_start_mowing_obj(duration)
                 result = await app.send_request(request)
-                if result is not None and not result[0].success:
+                if result is None or not result[0].success:
                     print("Failed to start mowing")
-                    if isinstance(result[0], ErrorMessage):
+                    if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 
@@ -50,9 +50,9 @@ async def main():
                 assert isinstance(mower, COMPATIBLE)
                 request = mower.build_stop_mowing_obj()
                 result = await app.send_request(request)
-                if result is not None and not result[0].success:
+                if result is None or not result[0].success:
                     print("Failed to stop mowing")
-                    if isinstance(result[0], ErrorMessage):
+                    if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 

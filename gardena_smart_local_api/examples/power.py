@@ -37,9 +37,9 @@ async def main():
                 assert isinstance(pa, COMPATIBLE)
                 request = pa.build_enable_output_obj(app.args.duration)
                 result = await app.send_request(request)
-                if result is not None and not result[0].success:
+                if result is None or not result[0].success:
                     print("Failed to turn on")
-                    if isinstance(result[0], ErrorMessage):
+                    if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 
@@ -49,9 +49,9 @@ async def main():
                 assert isinstance(pa, COMPATIBLE)
                 request = pa.build_disable_output_obj()
                 result = await app.send_request(request)
-                if result is not None and not result[0].success:
+                if result is None or not result[0].success:
                     print("Failed to turn off")
-                    if isinstance(result[0], ErrorMessage):
+                    if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 
@@ -61,9 +61,9 @@ async def main():
                 assert isinstance(pa, COMPATIBLE)
                 request = pa.build_identify_obj()
                 result = await app.send_request(request)
-                if result is not None and not result[0].success:
+                if result is None or not result[0].success:
                     print("Failed to identify")
-                    if isinstance(result[0], ErrorMessage):
+                    if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 

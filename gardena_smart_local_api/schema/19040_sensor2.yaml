@@ -13,6 +13,11 @@ commands:
   led_all_green_on: 34
   led_all_red_on: 35
   hap_identify: 37
+  test_watchdog: 38
+  test_hard_fault: 39
+  enable_jig_testing: 40
+  disable_jig_testing: 41
+  force_report: 50
 objects:
   connection_status:
     mandatory: true

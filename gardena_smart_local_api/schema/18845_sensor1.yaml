@@ -10,7 +10,13 @@ commands:
   emc_test_start: 29
   emc_test_stop: 30
   reboot: 31
-  force_report: 50
+  ntp_force_sync: 32
+  led_all_off: 33
+  led_all_green_on: 34
+  led_all_red_on: 35
+  hap_identify: 37
+  test_watchdog: 38
+  test_hard_fault: 39
 objects:
   connection_status:
     mandatory: true

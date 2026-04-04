@@ -2,11 +2,15 @@
 import asyncio
 import sys
 
-from gardena_smart_local_api.devices import Gen1WaterControl, Gen2WaterControl
+from gardena_smart_local_api.devices import (
+    Gen1WaterControl,
+    Gen2IrrigationControl,
+    Gen2WaterControl,
+)
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
-COMPATIBLE = (Gen1WaterControl, Gen2WaterControl)
+COMPATIBLE = (Gen2IrrigationControl, Gen1WaterControl, Gen2WaterControl)
 
 
 async def main():

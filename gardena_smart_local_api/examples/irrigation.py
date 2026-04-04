@@ -6,6 +6,7 @@ from gardena_smart_local_api.devices import (
     Gen1WaterControl,
     Gen2IrrigationControl,
     Gen2WaterControl,
+    TimeslotState,
 )
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
@@ -70,6 +71,10 @@ async def main():
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
+                if isinstance(wc, (Gen2IrrigationControl, Gen2WaterControl)):
+                    status = wc.get_timeslot_state(app.args.valve_id)
+                    if status == TimeslotState.ERROR:
+                        print("Device refused to start watering")
 
             case "stop":
                 if (wc := app.device) is None:

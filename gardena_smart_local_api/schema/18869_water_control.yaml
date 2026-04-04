@@ -5,7 +5,6 @@ commands:
   measure_ambient_temperature: 5
   measure_battery: 6
   measure_rf_link: 7
-  close_all_valves: 22
   emc_test_start: 29
   emc_test_stop: 30
   reboot: 31
@@ -17,7 +16,6 @@ commands:
   hap_identify: 37
   test_watchdog: 38
   test_hard_fault: 39
-  force_report: 50
 objects:
   connection_status:
     mandatory: true

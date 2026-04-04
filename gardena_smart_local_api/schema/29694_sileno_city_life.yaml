@@ -2,16 +2,12 @@ name: smart SILENO city/life
 type: Robotic lawn mower
 protocol: gen1
 commands:
-  power_off: 26
-  emc_test_start: 29
-  emc_test_stop: 30
+  measure_rf_link: 7
+  trigger_data_update: 21
   reboot: 31
   ntp_force_sync: 32
-  led_all_off: 33
-  led_all_green_on: 34
-  led_all_red_on: 35
+  test_watchdog: 38
   factory_reset_start_inclusion_mode: 43
-  force_report: 50
 objects:
   connection_status:
     object_id: 28171

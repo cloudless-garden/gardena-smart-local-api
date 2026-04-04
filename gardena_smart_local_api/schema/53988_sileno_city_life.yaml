@@ -2,14 +2,11 @@ name: smart SILENO city/life (with LONA)
 protocol: gen1
 commands:
   measure_rf_link: 7
-  power_off: 26
-  emc_test_start: 29
-  emc_test_stop: 30
+  trigger_data_update: 21
   reboot: 31
   ntp_force_sync: 32
-  led_all_off: 33
-  led_all_green_on: 34
-  led_all_red_on: 35
+  test_watchdog: 38
+  erase_flash: 42
   factory_reset_start_inclusion_mode: 43
   wipe_map: 44
   wipe_zones: 45
@@ -17,7 +14,6 @@ commands:
   deactivate_zones: 47
   board_reset: 48
   wipe_map_and_zones: 49
-  force_report: 50
   trigger_guide_wire_length_measurement: 51
 objects:
   connection_status:

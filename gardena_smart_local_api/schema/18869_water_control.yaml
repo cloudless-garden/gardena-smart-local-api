@@ -18,14 +18,12 @@ commands:
   test_hard_fault: 39
 objects:
   connection_status:
-    mandatory: true
     resources:
       online:
         type: vb
         access: r
         description: Indicates if the device is online (true) or offline (false)
   device:
-    mandatory: true
     resources:
       device_type:
         type: vs
@@ -68,7 +66,6 @@ objects:
         access: rw
         description: UTC offset currently in effect for device
   firmware_update:
-    mandatory: true
     resources:
       firmware_update_delivery_method:
         type: vi
@@ -99,9 +96,7 @@ objects:
       action_paused_until_1:
         type: vo
         access: rw
-        persistent: true
         encoding: hex
-        report_on_update: true
         description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
       ambient_temperature:
         type: vi
@@ -109,8 +104,6 @@ objects:
         unit: C
         min: -30
         max: 85
-        report_on_update: true
-        report_interval: 3600
         description: Ambient temperature
       battery_level:
         type: vi
@@ -118,8 +111,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
-        report_interval: 86400
         description: Battery level measured when switching the valve
       button_config_time:
         type: vi
@@ -127,32 +118,25 @@ objects:
         unit: s
         min: 0
         max: 36000
-        persistent: true
-        report_on_update: true
         description: Valve open time after button press (default 30 minutes)
       command:
         type: vi
         access: rw
-        report_on_update: true
         description: Command to execute
       error:
         type: vi
         access: r
-        report_on_update: true
         description: Error status (none, eeprom, brown_out)
       fatal_error_log:
         type: vo
         access: r
         encoding: hex
-        report_on_update: true
         description: Fatal error log (error identifier, file, line, stack)
       frost_warning:
         type: vi
         access: r
         min: 0
         max: 1
-        report_on_update: true
-        report_interval: 3600
         description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
       rf_link_quality:
         type: vi
@@ -160,37 +144,30 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: RF link quality percentage
       schedule_config:
         type: vo
         access: rw
         encoding: hex
-        persistent: true
-        report_on_update: true
         description: Schedule configuration (up to 36 schedules, 7 bytes each)
       schedule_state:
         type: vo
         access: r
         encoding: hex
-        report_on_update: true
         description: Schedule state (3 bytes per schedule, 108 bytes total)
       schedule_state_control_shorten:
         type: vo
         access: rw
         encoding: hex
-        report_on_update: true
         description: Shorten schedule duration (3 bytes per schedule)
       schedule_state_control_skip:
         type: vo
         access: rw
         encoding: hex
-        report_on_update: true
         description: Skip schedule (1 byte per schedule, 36 bytes total)
       valve_error_1:
         type: vi
         access: r
-        report_on_update: true
         description: Valve error status (none, valve_broken, frost_prevents_starting, low_battery_prevents_starting, valve_power_supply_failed)
       watering_timer_1:
         type: vi
@@ -198,10 +175,8 @@ objects:
         unit: s
         min: -36000
         max: 36000
-        report_on_update: true
         description: Watering timer (write >0=start manual, <0=start scheduled, 0=stop; read 0=not running, >0=manual running, <0=scheduled running)
   lemonbeat_status_message:
-    mandatory: false
     resources:
       code:
         type: vi

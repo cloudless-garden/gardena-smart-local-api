@@ -10,20 +10,12 @@ commands:
   factory_reset_start_inclusion_mode: 43
 objects:
   connection_status:
-    object_id: 28171
-    object_urn: urn:oma:lwm2m:ext:28171
-    object_version: '0.2'
-    mandatory: true
     resources:
       online:
         type: vb
         access: r
         description: Indicates if the device is online (true) or offline (false)
   device:
-    object_id: 3
-    object_urn: urn:oma:lwm2m:oma:3
-    object_version: '1.1'
-    mandatory: true
     resources:
       device_type:
         type: vs
@@ -66,10 +58,6 @@ objects:
         access: rw
         description: UTC offset currently in effect for device
   firmware_update:
-    object_id: 5
-    object_urn: urn:oma:lwm2m:oma:5
-    object_version: '1.1'
-    mandatory: true
     resources:
       firmware_update_delivery_method:
         type: vi
@@ -100,8 +88,6 @@ objects:
       action_paused_until_1:
         type: vo
         access: rw
-        persistent: true
-        report_on_update: true
         description: 'Timestamp until the schedule is paused (Format: YYYYMMDDHHmm, local time)'
       battery_level:
         type: vi
@@ -109,43 +95,36 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: Battery level (100% is full)
       charging_cycles:
         type: vi
         access: r
         min: 0
         max: 65535
-        report_on_update: true
         description: Number of completed charging cycles
       collisions:
         type: vi
         access: r
         min: 0
         max: 65535
-        report_on_update: true
         description: Total number of collisions
       command:
         type: vi
         access: rw
-        report_on_update: true
         description: Command to execute
       cutting_time:
         type: vi
         access: r
         min: 0
         max: 65535
-        report_on_update: true
         description: Time in hours that the cutting disc has been active
       device_type:
         type: vs
         access: r
-        report_on_update: true
         description: Device type identifier
       device_variant:
         type: vs
         access: r
-        report_on_update: true
         description: Device variant identifier
       internal_connection_state:
         type: vi
@@ -155,22 +134,18 @@ objects:
         access: r
         min: 0
         max: 65535
-        report_on_update: true
         description: Last reported error code from the mower
       mainboard_version:
         type: vs
         access: r
-        report_on_update: true
         description: 'Mainboard version (format: XX.XX)'
       manual_operation:
         type: vi
         access: r
-        report_on_update: true
         description: Manual mode status (requires physical access)
       mmi_version:
         type: vs
         access: r
-        report_on_update: true
         description: 'MMI application version (format: XX.XX)'
       mower_timer:
         type: vi
@@ -178,7 +153,6 @@ objects:
         unit: s
         min: -16777215
         max: 16777216
-        report_on_update: true
         description: Manual mowing timer (write >0=start, 0=stop, read >0=running, -16777215=schedule running)
       rf_link_quality:
         type: vi
@@ -186,43 +160,34 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: RF link quality percentage
       running_time:
         type: vi
         access: r
         min: 0
         max: 65535
-        report_on_update: true
         description: Time in hours that the wheel motors have been active
       schedule_config:
         type: vo
         access: rw
-        persistent: true
-        report_on_update: true
         description: Schedule configuration (up to 14 schedules, 7 bytes each)
       serial_number:
         type: vs
         access: r
-        report_on_update: true
         description: Mower serial number
       settings_control:
         type: vo
         access: rw
-        persistent: true
         encoding: hex
-        report_on_update: true
         description: Write settings (hex encoded custom buffer)
       settings_report:
         type: vo
         access: r
         encoding: hex
-        report_on_update: true
         description: Read settings (hex encoded custom buffer)
       source_for_next_start:
         type: vi
         access: r
-        report_on_update: true
         description: Source/reason for timestamp_next_start (no_source, daily_limit, week_timer, countdown, charging, auto_timer, frost)
       start_delay_ms:
         type: vi
@@ -230,42 +195,32 @@ objects:
       starting_points:
         type: vo
         access: rw
-        report_on_update: true
         description: Parameters for three starting points in mower binary format
       status:
         type: vi
         access: r
-        report_on_update: true
         description: Mower status (off, wait_for_safety, pause, running_mowing_timer, mowing, learning_wire, going_home, charging, error, software_update, wait_leaving_cs, leaving_cs, wait_for_new_task, startup)
       supported_starting_points:
         type: vi
         access: r
         min: 0
         max: 3
-        report_on_update: true
         description: Number of supported starting points
       supported_wires:
         type: vi
         access: r
         min: 0
         max: 255
-        report_on_update: true
         description: Bit mask for supported wire features
       timestamp_last_error_code:
         type: vo
         access: r
-        report_on_update: true
         description: Timestamp of last error code (seconds since 1970-01-01, local time)
       timestamp_next_start:
         type: vo
         access: r
-        report_on_update: true
         description: Estimated time of next automatic start (seconds since 1970-01-01, local time, 0=start now)
   lemonbeat_status_message:
-    object_id: 28173
-    object_urn: urn:oma:lwm2m:ext:28173
-    object_version: '0.1'
-    mandatory: false
     resources:
       code:
         type: vi

@@ -2,10 +2,6 @@ name: smart Dual Water Control
 protocol: gen2
 objects:
   actuator:
-    object_id: 28180
-    object_urn: urn:oma:lwm2m:x:28180:0.4
-    object_version: '0.4'
-    mandatory: false
     multi_instance: true
     resources:
       default_duration_seconds:
@@ -60,10 +56,6 @@ objects:
         access: x
         description: Reset actuator error.
   connection_status:
-    object_id: 28171
-    object_urn: urn:oma:lwm2m:x:28171
-    object_version: '1.0'
-    mandatory: false
     resources:
       online:
         type: vb
@@ -169,18 +161,12 @@ objects:
         type: vi
         access: r
   irrigation_control:
-    object_id: 28152
-    object_urn: urn:oma:lwm2m:x:28152:0.2
-    object_version: '0.2'
     resources:
       error:
         type: vi
         access: r
         description: Device error
   master_channel:
-    object_id: 30000
-    object_urn: urn:oma:lwm2m:x:30000:0.1
-    object_version: '0.1'
     multi_instance: true
     resources:
       available:
@@ -201,9 +187,6 @@ objects:
         unit: s
         description: Default time is 20 s
   schedule:
-    object_id: 28181
-    object_urn: urn:oma:lwm2m:x:28181:0.2
-    object_version: '0.2'
     multi_instance: true
     resources:
       start_offset_from:
@@ -241,9 +224,6 @@ objects:
         access: rw
         description: Magic cookie used by backend. Copied over to corresponding timeslot.
   sg_common:
-    object_id: 28183
-    object_urn: urn:oma:lwm2m:x:28183:0.6
-    object_version: '0.6'
     resources:
       be_decision_seconds:
         type: vi
@@ -326,9 +306,6 @@ objects:
         access: x
         description: Request the device to send all ipso objects.
   timeslot:
-    object_id: 28182
-    object_urn: urn:oma:lwm2m:x:28182:0.2
-    object_version: '0.2'
     multi_instance: true
     resources:
       start:

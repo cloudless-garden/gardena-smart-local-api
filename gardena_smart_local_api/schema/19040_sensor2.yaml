@@ -20,14 +20,12 @@ commands:
   force_report: 50
 objects:
   connection_status:
-    mandatory: true
     resources:
       online:
         type: vb
         access: r
         description: Indicates if the device is online (true) or offline (false)
   device:
-    mandatory: true
     resources:
       device_type:
         type: vs
@@ -70,7 +68,6 @@ objects:
         access: rw
         description: UTC offset currently in effect for device
   firmware_update:
-    mandatory: true
     resources:
       firmware_update_delivery_method:
         type: vi
@@ -102,7 +99,6 @@ objects:
         type: vo
         access: rw
         encoding: hex
-        report_on_update: true
         description: Soil auto-recognition internal state (saved/restored after firmware upgrade)
       battery_level:
         type: vi
@@ -110,37 +106,30 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: Battery level (100% is full)
       command:
         type: vi
         access: rw
-        report_on_update: true
         description: Command to execute
       error:
         type: vi
         access: r
-        report_on_update: true
         description: Sensor error status (none, eeprom)
       experimental_model_state:
         type: vi
         access: r
         min: 0
         max: 65535
-        report_on_update: true
         description: Experimental model internal state
       fatal_error_log:
         type: vo
         access: r
-        report_on_update: true
         description: Fatal error log
       frost_warning:
         type: vi
         access: r
         min: 0
         max: 1
-        report_on_update: true
-        report_interval: 3600
         description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
       measurement_interval:
         type: vi
@@ -148,8 +137,6 @@ objects:
         unit: s
         min: 10
         max: 86400
-        persistent: true
-        report_on_update: true
         description: Time interval between periodic measurements when model is final
       model_definition:
         type: vo
@@ -159,14 +146,10 @@ objects:
       model_determination_mode:
         type: vi
         access: rw
-        persistent: true
-        report_on_update: true
         description: Soil recognition logic mode (default or experimental)
       model_determination_status:
         type: vi
         access: rw
-        persistent: true
-        report_on_update: true
         description: Model determination status (default_model, determination_running, preliminary_model, final_model, determination_failed, power_up, location_change)
       raw_counts:
         type: vi
@@ -174,7 +157,6 @@ objects:
         unit: Counts
         min: 0
         max: 10000
-        report_on_update: true
         description: Raw counter values
       rf_link_quality:
         type: vi
@@ -182,7 +164,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: RF link quality percentage
       soil_moisture:
         type: vi
@@ -190,8 +171,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
-        report_interval: 3600
         description: Soil moisture percentage
       soil_moisture_experimental_model:
         type: vi
@@ -199,8 +178,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
-        report_interval: 900
         description: Soil moisture from experimental model
       soil_temperature:
         type: vi
@@ -208,29 +185,23 @@ objects:
         unit: C
         min: -30
         max: 85
-        report_on_update: true
-        report_interval: 3600
         description: Near ground or soil temperature
       soil_type_determination_result_1:
         type: vo
         access: r
         encoding: hex
-        report_on_update: true
         description: First 100 measurements as raw counts (8h 20min)
       soil_type_determination_result_2:
         type: vo
         access: r
         encoding: hex
-        report_on_update: true
         description: Next 100 measurements as raw counts (8h 20min)
       soil_type_determination_result_3:
         type: vo
         access: r
         encoding: hex
-        report_on_update: true
         description: Last 88 measurements as raw counts (7h 20min)
   lemonbeat_status_message:
-    mandatory: false
     resources:
       code:
         type: vi

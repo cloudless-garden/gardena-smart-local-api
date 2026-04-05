@@ -238,10 +238,6 @@ class IpsoObject:
     ):
         self.name = name
         self.object_instance_id = object_instance_id
-        self.object_id = object_data.get("object_id")
-        self.object_urn = object_data.get("object_urn")
-        self.object_version = object_data.get("object_version")
-        self.mandatory = object_data.get("mandatory", False)
         self.multi_instance = object_data.get("multi_instance", False)
 
         self.resources: dict[str, IpsoResource] = {}

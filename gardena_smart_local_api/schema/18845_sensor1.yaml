@@ -19,14 +19,12 @@ commands:
   test_hard_fault: 39
 objects:
   connection_status:
-    mandatory: true
     resources:
       online:
         type: vb
         access: r
         description: Indicates if the device is online (true) or offline (false)
   device:
-    mandatory: true
     resources:
       device_type:
         type: vs
@@ -69,7 +67,6 @@ objects:
         access: rw
         description: UTC offset currently in effect for device
   firmware_update:
-    mandatory: true
     resources:
       firmware_update_delivery_method:
         type: vi
@@ -103,8 +100,6 @@ objects:
         unit: C
         min: -30
         max: 85
-        report_on_update: true
-        report_interval: 3600
         description: Ambient temperature (not currently used)
       battery_level:
         type: vi
@@ -112,30 +107,24 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: Battery level (100% is full)
       command:
         type: vi
         access: rw
-        report_on_update: true
         description: Command to execute
       error:
         type: vi
         access: r
-        report_on_update: true
         description: Error status (none, eeprom, brown_out)
       fatal_error_log:
         type: vo
         access: r
-        report_on_update: true
         description: Fatal error log
       frost_warning:
         type: vi
         access: r
         min: 0
         max: 1
-        report_on_update: true
-        report_interval: 3600
         description: Frost warning if temperature falls below +5°C (1=frost, 0=no frost)
       light:
         type: vi
@@ -143,8 +132,6 @@ objects:
         unit: lx
         min: 0
         max: 200000
-        report_on_update: true
-        report_interval: 3600
         description: Light intensity in lux
       rf_link_quality:
         type: vi
@@ -152,7 +139,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
         description: RF link quality percentage
       soil_humidity:
         type: vi
@@ -160,8 +146,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
-        report_interval: 14400
         description: Soil moisture value (mean weighted)
       soil_humidity_raw_value:
         type: vi
@@ -169,8 +153,6 @@ objects:
         unit: '%'
         min: 0
         max: 100
-        report_on_update: true
-        report_interval: 14400
         description: Soil moisture value as measured
       soil_temperature:
         type: vi
@@ -178,11 +160,8 @@ objects:
         unit: C
         min: -30
         max: 85
-        report_on_update: true
-        report_interval: 3600
         description: Ground temperature
   lemonbeat_status_message:
-    mandatory: false
     resources:
       code:
         type: vi

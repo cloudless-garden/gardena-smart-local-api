@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from enum import Enum
 
 from ..messages import EgressMessageList
@@ -30,7 +31,64 @@ class TimeslotState(Enum):
         return self.name.lower()
 
 
-class Gen1WaterControl(Gen1Device, Gen1BatteryMixin, IdentifyMixin):
+class _Gen1Irrigation(Gen1Device, ABC):
+    @property
+    @abstractmethod
+    def valve_count(self) -> int: ...
+
+    @property
+    @abstractmethod
+    def valve_ids(self) -> list[int]: ...
+
+    def _build_set_watering_timer_obj(
+        self, valve_id: int, seconds: int
+    ) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name=f"watering_timer_{valve_id + 1}",
+            ),
+            seconds,
+        )
+
+    def get_watering_timer(self, valve_id: int) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name=f"watering_timer_{valve_id + 1}",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    def is_valve_open(self, valve_id: int = 0) -> bool | None:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        value = self.get_watering_timer(valve_id)
+        if value is not None:
+            return value > 0
+        return None
+
+    def build_open_valve_obj(
+        self, valve_id: int = 0, duration_seconds: int = DEFAULT_WATERING_DURATION
+    ) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        return self._build_set_watering_timer_obj(valve_id, duration_seconds)
+
+    def build_close_valve_obj(self, valve_id: int = 0) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        return self._build_set_watering_timer_obj(valve_id, 0)
+
+    @abstractmethod
+    def build_close_all_valves_obj(self) -> EgressMessageList: ...
+
+
+class Gen1WaterControl(_Gen1Irrigation, Gen1BatteryMixin, IdentifyMixin):
     @property
     def valve_count(self) -> int:
         return 1
@@ -38,52 +96,6 @@ class Gen1WaterControl(Gen1Device, Gen1BatteryMixin, IdentifyMixin):
     @property
     def valve_ids(self) -> list[int]:
         return [0]
-
-    def _build_set_watering_timer_obj(self, seconds: int) -> EgressMessageList:
-        return self.build_write_value_obj(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="watering_timer_1",
-            ),
-            seconds,
-        )
-
-    def build_open_valve_obj(
-        self, valve_id: int = 0, duration_seconds: int = DEFAULT_WATERING_DURATION
-    ) -> EgressMessageList:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        return self._build_set_watering_timer_obj(duration_seconds)
-
-    def build_close_valve_obj(self, valve_id: int = 0) -> EgressMessageList:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        return self._build_set_watering_timer_obj(0)
-
-    def build_close_all_valves_obj(self) -> EgressMessageList:
-        return self.build_close_valve_obj()
-
-    def is_valve_open(self, valve_id: int = 0) -> bool | None:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        value = self.watering_timer
-        if value is not None:
-            return value > 0
-        return None
-
-    @property
-    def watering_timer(self) -> int | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="watering_timer_1",
-            )
-        )
-        if isinstance(value, int):
-            return value
-        return None
 
     @property
     def button_config_time(self) -> int | None:
@@ -124,6 +136,9 @@ class Gen1WaterControl(Gen1Device, Gen1BatteryMixin, IdentifyMixin):
             return bool(value)
         return None
 
+    def build_close_all_valves_obj(self) -> EgressMessageList:
+        return self.build_close_valve_obj()
+
     def build_read_button_config_time_obj(self) -> EgressMessageList:
         return self.build_read_value_obj(
             IpsoPath(
@@ -142,6 +157,22 @@ class Gen1WaterControl(Gen1Device, Gen1BatteryMixin, IdentifyMixin):
             ),
             seconds,
         )
+
+
+class Gen1IrrigationControl(_Gen1Irrigation, IdentifyMixin):
+    @property
+    def valve_count(self) -> int:
+        return 6
+
+    @property
+    def valve_ids(self) -> list[int]:
+        return list(range(6))
+
+    def build_close_valve_obj(self, valve_id: int = 0) -> EgressMessageList:
+        return self._build_set_watering_timer_obj(valve_id, 0)
+
+    def build_close_all_valves_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("close_all_valves"))
 
 
 class _Gen2Irrigation(Gen2Device):

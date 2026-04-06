@@ -47,22 +47,14 @@ async def main():
                     return 1
                 assert isinstance(wc, COMPATIBLE)
 
-                if isinstance(wc, Gen1WaterControl):
-                    request = wc.build_set_watering_timer_obj(app.args.duration)
-                else:
-                    if (
-                        app.args.valve_id is not None
-                        and not 0 <= app.args.valve_id < wc.valve_count
-                    ):
-                        print(
-                            f'Valve ID "{app.args.valve_id}" out of range, '
-                            f"valid IDs: 0...{wc.valve_count - 1}"
-                        )
-                        return 1
+                try:
                     request = wc.build_open_valve_obj(
                         app.args.valve_id if app.args.valve_id is not None else 0,
                         app.args.duration,
                     )
+                except ValueError:
+                    print(f"Invalid valve ID provided: {app.args.valve_id}")
+                    return 1
 
                 result = await app.send_request(request)
 
@@ -81,22 +73,14 @@ async def main():
                     return 1
                 assert isinstance(wc, COMPATIBLE)
 
-                if isinstance(wc, Gen1WaterControl):
-                    request = wc.build_stop_watering_obj()
-                else:
-                    if (
-                        app.args.valve_id is not None
-                        and not 0 <= app.args.valve_id < wc.valve_count
-                    ):
-                        print(
-                            f'Valve ID "{app.args.valve_id}" out of range, '
-                            f"valid IDs: 0...{wc.valve_count - 1}"
-                        )
-                        return 1
-                    if app.args.valve_id is not None:
+                if app.args.valve_id is not None:
+                    try:
                         request = wc.build_close_valve_obj(app.args.valve_id)
-                    else:
-                        request = wc.build_close_all_valves_obj()
+                    except ValueError:
+                        print(f"Invalid valve ID provided: {app.args.valve_id}")
+                        return 1
+                else:
+                    request = wc.build_close_all_valves_obj()
 
                 result = await app.send_request(request)
 

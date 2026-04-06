@@ -8,6 +8,9 @@ from .gen2 import Gen2BatteryMixin, Gen2Device
 # Used to indicate that the action was initiated through WebSocket API.
 COMMAND_SOURCE = "18"
 
+# Default to 30 minutes for safety
+DEFAULT_WATERING_DURATION = 1800
+
 
 class TimeslotState(Enum):
     IDLE = 0
@@ -28,34 +31,15 @@ class TimeslotState(Enum):
 
 
 class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
-    def build_set_watering_timer_obj(self, seconds: int) -> EgressMessageList:
-        """Set the watering timer.
+    @property
+    def valve_count(self) -> int:
+        return 1
 
-        Args:
-            seconds: Duration of watering in seconds.
+    @property
+    def valve_ids(self) -> list[int]:
+        return [0]
 
-        Returns:
-            EgressMessageList ready to be sent to the local GARDENA smart API.
-
-        Example:
-            >>> Gen1WaterControl(...).build_set_watering_timer_obj(3600)
-            EgressMessageList([
-                Request(
-                    request_id="2a8166c5-d60f-4ddd-8735-29aa3661a128",
-                    op="write",
-                    entity=Entity(
-                        device="device_id",
-                        path=IpsoPath(
-                            object_name="lemonbeat",
-                            object_instance_id="0",
-                            resource_name="watering_timer_1"
-                        ),
-                        service="lemonbeatd"
-                    ),
-                    payload={"vi": 3600}
-                )
-            ])
-        """
+    def _build_set_watering_timer_obj(self, seconds: int) -> EgressMessageList:
         return self.build_write_value_obj(
             IpsoPath(
                 object_name="lemonbeat",
@@ -65,8 +49,28 @@ class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
             seconds,
         )
 
-    def build_stop_watering_obj(self) -> EgressMessageList:
-        return self.build_set_watering_timer_obj(0)
+    def build_open_valve_obj(
+        self, valve_id: int = 0, duration_seconds: int = DEFAULT_WATERING_DURATION
+    ) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        return self._build_set_watering_timer_obj(duration_seconds)
+
+    def build_close_valve_obj(self, valve_id: int = 0) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        return self._build_set_watering_timer_obj(0)
+
+    def build_close_all_valves_obj(self) -> EgressMessageList:
+        return self.build_close_valve_obj()
+
+    def is_valve_open(self, valve_id: int = 0) -> bool | None:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        value = self.watering_timer
+        if value is not None:
+            return value > 0
+        return None
 
     @property
     def watering_timer(self) -> int | None:
@@ -79,13 +83,6 @@ class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
         )
         if isinstance(value, int):
             return value
-        return None
-
-    @property
-    def is_opened(self) -> bool | None:
-        value = self.watering_timer
-        if value is not None:
-            return value > 0
         return None
 
     @property
@@ -157,8 +154,10 @@ class _Gen2Irrigation(Gen2Device):
         return list(map(int, self.get_object_instance_ids("actuator")))
 
     def build_open_valve_obj(
-        self, valve_id: int, duration_seconds: int
+        self, valve_id: int = 0, duration_seconds: int = DEFAULT_WATERING_DURATION
     ) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
         return self.build_execute_obj(
             IpsoPath(
                 object_name="actuator",
@@ -168,7 +167,9 @@ class _Gen2Irrigation(Gen2Device):
             [COMMAND_SOURCE, str(duration_seconds)],
         )
 
-    def build_close_valve_obj(self, valve_id: int) -> EgressMessageList:
+    def build_close_valve_obj(self, valve_id: int = 0) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
         return self.build_execute_obj(
             IpsoPath(
                 object_name="actuator",
@@ -188,7 +189,9 @@ class _Gen2Irrigation(Gen2Device):
             [COMMAND_SOURCE],
         )
 
-    def is_valve_open(self, valve_id: int) -> bool | None:
+    def is_valve_open(self, valve_id: int = 0) -> bool | None:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
         return self.get_timeslot_state(valve_id) == TimeslotState.RUNNING
 
     def get_timeslot_state(self, timeslot_id: int) -> TimeslotState | None:

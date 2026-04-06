@@ -130,7 +130,11 @@ class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
 class _Gen2Irrigation(Gen2Device):
     @property
     def valve_count(self) -> int:
-        return len(self.get_object_instance_ids("actuator"))
+        return len(self.valve_ids)
+
+    @property
+    def valve_ids(self) -> list[int]:
+        return list(map(int, self.get_object_instance_ids("actuator")))
 
     def build_open_valve_obj(
         self, valve_id: int, duration_seconds: int

@@ -1,9 +1,19 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
+from .errors import PowerError
 from .gen1 import Gen1Device, Gen1IdentifyMixin
 
 
 class PowerAdapter(Gen1IdentifyMixin, Gen1Device):
+    @property
+    def error(self) -> str | None:
+        if (code := self.error_code) is not None and code != 0:
+            try:
+                return str(PowerError(code))
+            except ValueError:
+                return str(code)
+        return None
+
     @property
     def power_timer(self) -> int | None:
         value = self.get_value(

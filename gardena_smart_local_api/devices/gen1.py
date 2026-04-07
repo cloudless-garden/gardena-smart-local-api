@@ -8,6 +8,13 @@ from ..resources import IpsoPath
 from .device import Device
 
 
+class _Gen1DeviceProtocol(Protocol):
+    """Used to satisfy the type checker."""
+
+    def build_command_obj(self, command: int) -> EgressMessageList: ...
+    def get_command(self, name: str) -> int: ...
+
+
 class Gen1Device(Device):
     model_definition: Gen1ModelDefinition = Field()
     service: ClassVar[str] = "lemonbeatd"
@@ -107,11 +114,6 @@ class Gen1BatteryPoweredDevice(Gen1Device):
         return self.build_command_obj(self.get_command("measure_battery"))
 
 
-class _Gen1Commands(Protocol):
-    def build_command_obj(self, command: int) -> EgressMessageList: ...
-    def get_command(self, name: str) -> int: ...
-
-
 class IdentifyMixin:
-    def build_identify_obj(self: _Gen1Commands) -> EgressMessageList:
+    def build_identify_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:
         return self.build_command_obj(self.get_command("hap_identify"))

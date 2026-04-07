@@ -2,6 +2,7 @@ from enum import Enum
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
+from .errors import MowerLastErrorCode
 from .gen1 import Gen1BatteryMixin, Gen1Device
 
 
@@ -47,6 +48,28 @@ class _Gen1Mower(Gen1Device, Gen1BatteryMixin):
                 return Gen1MowerStatus(value)
             except ValueError:
                 pass
+        return None
+
+    @property
+    def error_code(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="last_error_code",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def error(self) -> str | None:
+        if (code := self.error_code) is not None and code != 0:
+            try:
+                return str(MowerLastErrorCode(code))
+            except ValueError:
+                return str(code)
         return None
 
     def build_stop_mowing_obj(self) -> EgressMessageList:

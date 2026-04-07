@@ -40,7 +40,7 @@ async def test_power_adapter_is_off(power_adapter):
 
 @pytest.mark.asyncio
 async def test_power_adapter_error(power_adapter):
-    assert power_adapter.error == 0
+    assert power_adapter.error_code == 0
 
 
 @pytest.mark.asyncio

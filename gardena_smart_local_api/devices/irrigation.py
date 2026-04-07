@@ -2,7 +2,7 @@ from enum import Enum
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredDevice, IdentifyMixin
+from .gen1 import Gen1BatteryMixin, Gen1Device, IdentifyMixin
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
 # Used to indicate that the action was initiated through WebSocket API.
@@ -30,7 +30,7 @@ class TimeslotState(Enum):
         return self.name.lower()
 
 
-class Gen1WaterControl(IdentifyMixin, Gen1BatteryPoweredDevice):
+class Gen1WaterControl(Gen1Device, Gen1BatteryMixin, IdentifyMixin):
     @property
     def valve_count(self) -> int:
         return 1

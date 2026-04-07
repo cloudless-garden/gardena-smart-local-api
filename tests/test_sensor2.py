@@ -1,13 +1,13 @@
 import pytest
 
-from gardena_smart_local_api.devices.gen1 import Gen1BatteryPoweredDevice
+from gardena_smart_local_api.devices.gen1 import Gen1BatteryMixin
 from gardena_smart_local_api.devices.sensors import Sensor2
 
 
 @pytest.mark.asyncio
 async def test_sensor2_is_sensor(sensor2):
     assert isinstance(sensor2, Sensor2)
-    assert isinstance(sensor2, Gen1BatteryPoweredDevice)
+    assert isinstance(sensor2, Gen1BatteryMixin)
 
 
 @pytest.mark.asyncio

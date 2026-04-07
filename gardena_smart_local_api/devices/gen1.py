@@ -4,7 +4,7 @@ from pydantic import Field
 
 from ..messages import EgressMessageList, Entity, Request
 from ..model_loader import Gen1ModelDefinition
-from ..resources import IpsoPath
+from ..resources import VALUE_TYPES, IpsoPath
 from .device import Device
 
 
@@ -13,6 +13,30 @@ class _Gen1DeviceProtocol(Protocol):
 
     def build_command_obj(self, command: int) -> EgressMessageList: ...
     def get_command(self, name: str) -> int: ...
+    def get_value(self, path: IpsoPath) -> VALUE_TYPES | None: ...
+
+
+class Gen1BatteryMixin:
+    @property
+    def battery_level(self: _Gen1DeviceProtocol) -> float | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="battery_level",
+            )
+        )
+        if isinstance(value, (int, float)):
+            return float(value)
+        return None
+
+    def build_refresh_battery_level_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("measure_battery"))
+
+
+class IdentifyMixin:
+    def build_identify_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("hap_identify"))
 
 
 class Gen1Device(Device):
@@ -94,26 +118,3 @@ class Gen1Device(Device):
         if isinstance(value, int):
             return value
         return None
-
-
-class Gen1BatteryPoweredDevice(Gen1Device):
-    @property
-    def battery_level(self) -> float | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="battery_level",
-            )
-        )
-        if isinstance(value, (int, float)):
-            return float(value)
-        return None
-
-    def build_refresh_battery_level_obj(self) -> EgressMessageList:
-        return self.build_command_obj(self.get_command("measure_battery"))
-
-
-class IdentifyMixin:
-    def build_identify_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:
-        return self.build_command_obj(self.get_command("hap_identify"))

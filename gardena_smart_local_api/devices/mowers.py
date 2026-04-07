@@ -2,7 +2,7 @@ from enum import Enum
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryPoweredDevice
+from .gen1 import Gen1BatteryMixin, Gen1Device
 
 
 class Gen1MowerStatus(Enum):
@@ -30,7 +30,7 @@ class Gen1MowerStatus(Enum):
         return self.name.lower()
 
 
-class _Gen1Mower(Gen1BatteryPoweredDevice):
+class _Gen1Mower(Gen1Device, Gen1BatteryMixin):
     """Robotic lawn mower base class"""
 
     @property

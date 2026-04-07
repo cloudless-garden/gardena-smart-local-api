@@ -62,7 +62,7 @@ async def test_sensor1_frost_warning(sensor1):
 
 @pytest.mark.asyncio
 async def test_sensor1_error(sensor1):
-    assert sensor1.error == 0
+    assert sensor1.error_code == 0
 
 
 @pytest.mark.asyncio

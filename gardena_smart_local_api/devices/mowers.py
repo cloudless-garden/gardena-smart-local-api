@@ -106,6 +106,8 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
             case _Gen1MowerStatus.ERROR | _Gen1MowerStatus.ERROR_POWER_UP:
                 return MowerState.ERROR
         return MowerState.UNKNOWN
+
+    @property
     def error_code(self) -> int | None:
         value = self.get_value(
             IpsoPath(

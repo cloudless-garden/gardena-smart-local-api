@@ -1,0 +1,73 @@
+[
+  {
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "metadata": { "sequence": 1409, "source": "lemonbeatd" },
+    "payload": {
+      "3034F8EE9016028000001D02": {
+        "connection_status": {
+          "0": { "online": { "ts": 1775659993, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1775659994, "vs": "Automatic Home and Garden Pump" },
+            "error_code": { "ai": [0], "ts": 1775659994 },
+            "firmware_version": { "ts": 1775659994, "vs": "4.0.0-1.5.3" },
+            "hardware_version": { "ts": 1775659994, "vs": "0.0.6" },
+            "manufacturer": { "ts": 1775659994, "vs": "Gardena" },
+            "model_number": { "ts": 1775659994, "vs": "22538" },
+            "serial_number": { "ts": 1775659994, "vs": "00007426" },
+            "software_version": { "ts": 1775659994, "vs": "2.1.0-dev-g0928a18" },
+            "supported_binding_and_modes": { "ts": 1775659994, "vs": "U" },
+            "utc_offset": { "ts": 1775659994, "vs": "" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": { "vi": 1 },
+            "package_uri": { "vs": "" },
+            "pkg_version": { "vs": "" },
+            "state": { "vi": 0 },
+            "update_result": { "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "lemonbeat": {
+          "0": {
+            "action_paused_until_1": { "ts": 1775659994, "vo": "" },
+            "be_decision_time": { "ts": 1775659994, "vi": 480 },
+            "command": { "ts": 1775659994, "vi": 0 },
+            "dripping_alert": { "ts": 1775659994, "vi": 0 },
+            "error": { "ts": 1775659994, "vi": 2 },
+            "fatal_error_log": { "ts": 1775659994, "vo": "//////////////////////////////////////////8=" },
+            "flow_rate": { "ts": 1775659994, "vi": 100 },
+            "flow_since_last_reset": { "ts": 1775659994, "vi": 0 },
+            "flow_total": { "ts": 1775659994, "vi": 133 },
+            "frost_warning": { "ts": 1775659994, "vi": 0 },
+            "operating_mode": { "ts": 1775659994, "vi": 0 },
+            "outlet_pressure": { "ts": 1775659994, "vf": 0.0 },
+            "outlet_pressure_max": { "ts": 1775659994, "vf": 5.800000191 },
+            "outlet_temperature": { "ts": 1775659994, "vi": 20 },
+            "outlet_temperature_max": { "ts": 1775659994, "vi": 61 },
+            "outlet_temperature_min": { "ts": 1775659994, "vi": 7 },
+            "pump_mode": { "ts": 1775659994, "vi": 0 },
+            "pump_on_off": { "ts": 1775659994, "vi": 0 },
+            "pump_state": { "ts": 1775659994, "vi": 0 },
+            "rf_link_quality": { "ts": 1775659994, "vi": 100 },
+            "schedule_config": { "ts": 1775659994, "vo": "" },
+            "schedule_state": { "ts": 1775659994, "vo": "" },
+            "schedule_state_control_shorten": { "ts": 1775659994, "vo": "" },
+            "schedule_state_control_skip": { "ts": 1775659994, "vo": "" },
+            "turn_on_pressure": { "ts": 1775659994, "vf": 2.700000048 },
+            "valve_error_1": { "ts": 1775659994, "vi": 0 },
+            "watering_timer_1": { "ts": 1775659994, "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:x:31000"
+        }
+      }
+    },
+    "request_id": "epp-discovery-fixture",
+    "success": true
+  }
+]

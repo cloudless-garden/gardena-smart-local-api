@@ -33,7 +33,8 @@ async def main():
             "nargs": "?",
             "help": (
                 "Value for set-* commands or duration in seconds for start. "
-                "For set-mode use: " + ", ".join(m.name.lower() for m in PumpOperatingMode)
+                "For set-mode use: "
+                + ", ".join(m.name.lower() for m in PumpOperatingMode)
             ),
         },
     ]

@@ -19,7 +19,7 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop"),
+            "choices": ("list", "start", "stop", "status"),
             "help": "List applicable devices or start/stop watering",
         },
         {
@@ -89,6 +89,22 @@ async def main():
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
+
+            case "status":
+                if (wc := app.device) is None:
+                    return 1
+                assert isinstance(wc, COMPATIBLE)
+
+                try:
+                    status = wc.is_valve_open(
+                        app.args.valve_id if app.args.valve_id is not None else 0,
+                    )
+                except ValueError:
+                    print(f"Invalid valve ID provided: {app.args.valve_id}")
+                    return 1
+
+                print(f"Valve is open: {status}")
+                print(f"Error: {wc.error}")
 
 
 if __name__ == "__main__":

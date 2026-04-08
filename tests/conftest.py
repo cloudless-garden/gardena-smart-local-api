@@ -162,3 +162,20 @@ def power_adapter_update_event_json():
 @pytest.fixture
 def power_adapter_update_event(power_adapter_update_event_json):
     return IngressMessageList.model_validate_json(power_adapter_update_event_json)
+
+
+@pytest.fixture
+def epp_json():
+    data_file = Path(__file__).parent / "data" / "epp.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def epp_message(epp_json):
+    return IngressMessageList.model_validate_json(epp_json)
+
+
+@pytest_asyncio.fixture
+async def epp(epp_message):
+    return list((await create_devices_from_messages(epp_message)).values())[0]

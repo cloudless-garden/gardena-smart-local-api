@@ -23,6 +23,8 @@ class _DeviceProtocol(Protocol):
 
 
 class Gen2BatteryMixin:
+    """Mixin for battery-powered gen2 GARDENA smart devices."""
+
     @property
     def battery_level(self: _DeviceProtocol) -> float | None:
         value = self.get_value(
@@ -72,6 +74,8 @@ class Gen2IdentifyMixin:
 
 
 class Gen2Device(Device):
+    """Base class for gen2 GARDENA smart devices."""
+
     # connectivity_monitoring is present in every known Gen2 model schema.
     model_definition: Gen2ModelDefinition = Field()
     service: ClassVar[str] = "lwm2mserver"

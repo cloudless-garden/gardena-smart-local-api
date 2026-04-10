@@ -30,6 +30,8 @@ DEFAULT_WATERING_DURATION = 1800
 
 
 class TimeslotState(_LowerNameEnum):
+    """State of a watering timeslot."""
+
     IDLE = 0
     SCHEDULED = 1
     WILL_START = 2
@@ -234,6 +236,8 @@ class Gen1WaterControl(
     ButtonTimeMixin,
     _Gen1Irrigation,
 ):
+    """GARDENA smart Water Control (19031-20)."""
+
     _button_time_ipso_names = ("lemonbeat", "button_config_time")
 
     @property
@@ -364,11 +368,14 @@ class _Gen2Irrigation(Gen2IdentifyMixin, Gen2Device):
 class Gen2WaterControl(
     Gen2BatteryMixin, Gen2TemperatureMixin, ButtonTimeMixin, _Gen2Irrigation
 ):
+    """GARDENA smart Water Control (19033-20), Dual Water Control (19034-20)
+    and Pipeline Water Control (19050-20)."""
+
     _button_time_ipso_names = ("actuator", "default_duration_seconds")
 
 
 class Gen2IrrigationControl(_Gen2Irrigation):
-    pass
+    """GARDENA smart Irrigation Control (19035-20)."""
 
 
 class Pump(

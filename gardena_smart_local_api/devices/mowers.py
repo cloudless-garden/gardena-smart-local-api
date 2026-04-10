@@ -6,6 +6,8 @@ from .gen1 import Gen1BatteryMixin, Gen1Device
 
 
 class Gen1MowerStatus(Enum):
+    """Status of a gen1 robotic lawn mower."""
+
     PAUSED = 0
     OK_CUTTING_AUTO = 1
     OK_SEARCHING_CS = 2
@@ -69,7 +71,8 @@ class _Gen1Mower(Gen1Device, Gen1BatteryMixin):
 
 
 class Gen1Mower1(_Gen1Mower):
-    """Robotic lawn mower"""
+    """GARDENA smart SILENO (19060-20), SILENO+ (19061-20),
+    SILENO city (19066-20) and SILENO life (19113-20)."""
 
     def build_start_mowing_obj(self, seconds: int) -> EgressMessageList:
         """Start mowing for given duration.
@@ -91,7 +94,7 @@ class Gen1Mower1(_Gen1Mower):
 
 
 class Gen1Mower2(_Gen1Mower):
-    """Robotic lawn mower with LONA"""
+    """GARDENA smart SILENO city (19602-66) and SILENO life (19701-60) with LONA."""
 
     def build_start_mowing_obj(
         self, seconds: int, meters_from_cs: int = 0

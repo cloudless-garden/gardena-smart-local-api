@@ -4,6 +4,8 @@ from .gen1 import Gen1Device, Gen1IdentifyMixin
 
 
 class PowerAdapter(Gen1IdentifyMixin, Gen1Device):
+    """GARDENA smart Power Adapter (19095-20)."""
+
     @property
     def power_timer(self) -> int | None:
         value = self.get_value(

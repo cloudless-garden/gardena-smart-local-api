@@ -36,6 +36,8 @@ def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, T]:
 
 
 class Device(BaseModel):
+    """Base class for all GARDENA smart devices."""
+
     id: str
     data: dict[str, Any] = Field(repr=False)
     model_definition: ModelDefinition = Field()
@@ -307,6 +309,8 @@ class Device(BaseModel):
 
 
 class DeviceMap(RootModel[dict[str, Device]], MutableMapping):
+    """A mapping of device IDs to devices."""
+
     def __add__(self, other: "DeviceMap") -> "DeviceMap":
         return DeviceMap(self.root | other.root)
 

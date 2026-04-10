@@ -55,6 +55,8 @@ class Gen1FrostWarningMixin:
 
 
 class Gen1Device(Device):
+    """Base class for gen1 GARDENA smart devices."""
+
     model_definition: Gen1ModelDefinition = Field()
     service: ClassVar[str] = "lemonbeatd"
 

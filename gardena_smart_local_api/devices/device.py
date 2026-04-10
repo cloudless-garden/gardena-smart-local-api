@@ -346,3 +346,21 @@ def build_discovery_obj() -> EgressMessageList:
             ),
         ]
     )
+
+
+def build_inclusion_obj(service: str, instance_id: str) -> EgressMessageList:
+    return EgressMessageList(
+        [
+            Request(
+                op="execute",
+                entity=Entity(
+                    service=service,
+                    path=IpsoPath(
+                        object_name="includable_device",
+                        object_instance_id=instance_id,
+                        resource_name="include",
+                    ),
+                ),
+            )
+        ]
+    )

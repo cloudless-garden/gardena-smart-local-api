@@ -1,9 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1Device, IdentifyMixin
+from .gen1 import Gen1Device, Gen1IdentifyMixin
 
 
-class PowerAdapter(IdentifyMixin, Gen1Device):
+class PowerAdapter(Gen1IdentifyMixin, Gen1Device):
     @property
     def power_timer(self) -> int | None:
         value = self.get_value(

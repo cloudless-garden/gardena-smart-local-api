@@ -1,22 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryMixin, Gen1Device, IdentifyMixin
+from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, IdentifyMixin
 
 
-class _Sensor(Gen1Device, Gen1BatteryMixin, IdentifyMixin):
-    @property
-    def has_frost_warning(self) -> bool | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="frost_warning",
-            )
-        )
-        if isinstance(value, int):
-            return bool(value)
-        return None
-
+class _Sensor(Gen1Device, Gen1BatteryMixin, IdentifyMixin, Gen1FrostWarningMixin):
     def build_refresh_soil_moisture_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_soil_moisture"))
 

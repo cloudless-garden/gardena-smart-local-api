@@ -39,6 +39,21 @@ class IdentifyMixin:
         return self.build_command_obj(self.get_command("hap_identify"))
 
 
+class Gen1FrostWarningMixin:
+    @property
+    def has_frost_warning(self: _Gen1DeviceProtocol) -> bool | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="frost_warning",
+            )
+        )
+        if isinstance(value, int):
+            return bool(value)
+        return None
+
+
 class Gen1Device(Device):
     model_definition: Gen1ModelDefinition = Field()
     service: ClassVar[str] = "lemonbeatd"

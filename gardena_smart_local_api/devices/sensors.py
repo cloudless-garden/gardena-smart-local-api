@@ -1,9 +1,9 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, IdentifyMixin
+from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, Gen1IdentifyMixin
 
 
-class _Sensor(Gen1Device, Gen1BatteryMixin, IdentifyMixin, Gen1FrostWarningMixin):
+class _Sensor(Gen1Device, Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin):
     def build_refresh_soil_moisture_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("measure_soil_moisture"))
 

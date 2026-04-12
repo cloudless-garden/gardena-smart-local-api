@@ -3,7 +3,7 @@ from enum import Enum
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, IdentifyMixin
+from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, Gen1IdentifyMixin
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
 # Used to indicate that the action was initiated through WebSocket API.
@@ -89,7 +89,7 @@ class _Gen1Irrigation(Gen1Device, ABC):
 
 
 class Gen1WaterControl(
-    _Gen1Irrigation, Gen1BatteryMixin, IdentifyMixin, Gen1FrostWarningMixin
+    _Gen1Irrigation, Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin
 ):
     @property
     def valve_count(self) -> int:
@@ -148,7 +148,7 @@ class Gen1WaterControl(
         )
 
 
-class Gen1IrrigationControl(_Gen1Irrigation, IdentifyMixin):
+class Gen1IrrigationControl(_Gen1Irrigation, Gen1IdentifyMixin):
     @property
     def valve_count(self) -> int:
         return 6

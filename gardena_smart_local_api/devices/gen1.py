@@ -34,7 +34,7 @@ class Gen1BatteryMixin:
         return self.build_command_obj(self.get_command("measure_battery"))
 
 
-class IdentifyMixin:
+class Gen1IdentifyMixin:
     def build_identify_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:
         return self.build_command_obj(self.get_command("hap_identify"))
 

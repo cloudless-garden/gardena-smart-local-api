@@ -3,7 +3,7 @@ from enum import Enum
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
-from .gen1 import Gen1BatteryMixin, Gen1Device, IdentifyMixin
+from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, IdentifyMixin
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
 # Used to indicate that the action was initiated through WebSocket API.
@@ -88,7 +88,9 @@ class _Gen1Irrigation(Gen1Device, ABC):
     def build_close_all_valves_obj(self) -> EgressMessageList: ...
 
 
-class Gen1WaterControl(_Gen1Irrigation, Gen1BatteryMixin, IdentifyMixin):
+class Gen1WaterControl(
+    _Gen1Irrigation, Gen1BatteryMixin, IdentifyMixin, Gen1FrostWarningMixin
+):
     @property
     def valve_count(self) -> int:
         return 1
@@ -121,19 +123,6 @@ class Gen1WaterControl(_Gen1Irrigation, Gen1BatteryMixin, IdentifyMixin):
         )
         if isinstance(value, int):
             return value
-        return None
-
-    @property
-    def has_frost_warning(self) -> bool | None:
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="frost_warning",
-            )
-        )
-        if isinstance(value, int):
-            return bool(value)
         return None
 
     def build_close_all_valves_obj(self) -> EgressMessageList:

@@ -89,7 +89,7 @@ class _Gen1Irrigation(Gen1Device, ABC):
 
 
 class Gen1WaterControl(
-    _Gen1Irrigation, Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin
+    Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin, _Gen1Irrigation
 ):
     @property
     def valve_count(self) -> int:
@@ -148,7 +148,7 @@ class Gen1WaterControl(
         )
 
 
-class Gen1IrrigationControl(_Gen1Irrigation, Gen1IdentifyMixin):
+class Gen1IrrigationControl(Gen1IdentifyMixin, _Gen1Irrigation):
     @property
     def valve_count(self) -> int:
         return 6

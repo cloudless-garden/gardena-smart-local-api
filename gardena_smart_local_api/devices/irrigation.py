@@ -14,6 +14,8 @@ DEFAULT_WATERING_DURATION = 1800
 
 
 class TimeslotState(Enum):
+    """State of a watering timeslot."""
+
     IDLE = 0
     SCHEDULED = 1
     WILL_START = 2
@@ -91,6 +93,8 @@ class _Gen1Irrigation(Gen1Device, ABC):
 class Gen1WaterControl(
     Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin, _Gen1Irrigation
 ):
+    """GARDENA smart Water Control (19031-20)."""
+
     @property
     def valve_count(self) -> int:
         return 1
@@ -231,8 +235,9 @@ class _Gen2Irrigation(Gen2Device):
 
 
 class Gen2WaterControl(_Gen2Irrigation, Gen2BatteryMixin):
-    pass
+    """GARDENA smart Water Control (19033-20), Dual Water Control (19034-20)
+    and Pipeline Water Control (19050-20)."""
 
 
 class Gen2IrrigationControl(_Gen2Irrigation):
-    pass
+    """GARDENA smart Irrigation Control (19035-20)."""

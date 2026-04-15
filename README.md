@@ -24,7 +24,7 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 
 ## Installation
 
-```txt
+```
 pip install gardena-smart-local-api
 ```
 
@@ -34,48 +34,9 @@ Have a look at our [example code][examples].
 
 You can run the examples from within the repository as follows:
 
-```txt
+```
 uv sync --group examples
 uv run gardena_smart_local_api/examples/irrigation.py --help
 ```
 
 [examples]: https://github.com/cloudless-garden/gardena-smart-local-api/tree/main/gardena_smart_local_api/examples
-
-## Contributing
-
-### Commits
-
-Try to keep commits reviewable, i.e. they should only contain one logical change and generally not be too big.
-
-As we use rebase to integrate pull requests, clean commits matter. Use commands like `git commit --amend`,
-`git commit --fixup ...` and `git rebase --interactive ...` to rework your commits. Should this be too advanced for you,
-just push temporary commits and when review is done, run e.g.:
-
-```txt
-git fetch
-git rebase origin/main
-git reset origin/main
-git commit --all
-git push --force-with-lease
-```
-
-For the commit message(s), follow [these guidelines][commits]. If you are unsure how to formulate your commit messages,
-look at `git log` for inspiration.
-
-[commits]: https://cbea.ms/git-commit/
-
-### Linting
-
-```txt
-uv sync --all-groups
-uv run ruff check
-uv run ruff format --check
-uv run ty check
-```
-
-### Running Tests
-
-```txt
-uv sync --group test
-uv run python -m pytest
-```

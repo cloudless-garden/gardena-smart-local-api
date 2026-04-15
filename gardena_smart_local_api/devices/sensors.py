@@ -9,6 +9,8 @@ class _Sensor(Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin, Gen1De
 
 
 class Sensor1(_Sensor):
+    """GARDENA smart Sensor (19030-20)."""
+
     @property
     def temperature(self) -> int | None:
         value = self.get_value(
@@ -56,6 +58,8 @@ class Sensor1(_Sensor):
 
 
 class Sensor2(_Sensor):
+    """GARDENA smart Sensor II (19040-20)."""
+
     @property
     def temperature(self) -> int | None:
         value = self.get_value(

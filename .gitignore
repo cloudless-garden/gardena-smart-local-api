@@ -32,3 +32,6 @@ uv.lock
 # Linters
 .pytest_cache/
 .ruff_cache/
+
+# Docs
+docs/_build/

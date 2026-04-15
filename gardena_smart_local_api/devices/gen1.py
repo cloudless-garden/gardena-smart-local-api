@@ -6,6 +6,7 @@ from ..messages import EgressMessageList, Entity, Request
 from ..model_loader import Gen1ModelDefinition
 from ..resources import VALUE_TYPES, IpsoPath
 from .device import Device
+from .errors import Gen1Error
 
 
 class _Gen1DeviceProtocol(Protocol):
@@ -122,7 +123,7 @@ class Gen1Device(Device):
         )
 
     @property
-    def error(self) -> int | None:
+    def error_code(self) -> int | None:
         value = self.get_value(
             IpsoPath(
                 object_name="lemonbeat",
@@ -132,4 +133,13 @@ class Gen1Device(Device):
         )
         if isinstance(value, int):
             return value
+        return None
+
+    @property
+    def error(self) -> str | None:
+        if (code := self.error_code) is not None and code != 0:
+            try:
+                return str(Gen1Error(code))
+            except ValueError:
+                return str(code)
         return None

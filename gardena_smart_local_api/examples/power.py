@@ -14,8 +14,9 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "on", "off", "identify"),
-            "help": "List applicable devices, identify or turn power on/off",
+            "choices": ("list", "on", "off", "identify", "status"),
+            "help": "List applicable devices, identify, turn power on/off,"
+            " or show status",
         },
         {
             "name_or_flags": ["duration"],
@@ -66,6 +67,14 @@ async def main():
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
+
+            case "status":
+                if (pa := app.device) is None:
+                    return 1
+                assert isinstance(pa, COMPATIBLE)
+                print(f"Output enabled: {pa.is_output_enabled}")
+                if pa.error is not None:
+                    print(f"Error:          {pa.error}")
 
 
 if __name__ == "__main__":

@@ -62,6 +62,8 @@ async def main():
                 assert isinstance(mower, COMPATIBLE)
                 status = mower.status
                 print(f"Mower status: {status}")
+                if mower.error is not None:
+                    print(f"Mower error:  {mower.error}")
 
 
 if __name__ == "__main__":

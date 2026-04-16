@@ -28,7 +28,10 @@ async def main():
             if event.entity.path.object_name != "includable_device":
                 continue
 
+            service = event.entity.service
             instance_id = event.entity.path.object_instance_id
+            if service is None or instance_id is None:
+                continue
             if instance_id in seen:
                 continue
             seen.add(instance_id)
@@ -46,7 +49,7 @@ async def main():
                 continue
 
             replies = await app.send_request(
-                build_inclusion_obj(event.entity.service, instance_id)
+                build_inclusion_obj(service, instance_id)
             )
             if replies and isinstance(replies[0], Reply) and replies[0].success:
                 print(f"[green]Device {device_desc} included successfully.[/green]")

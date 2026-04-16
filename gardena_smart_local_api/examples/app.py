@@ -5,7 +5,7 @@ import signal
 import ssl
 import time
 from collections.abc import Iterable
-from typing import Self
+from typing import Self, cast
 
 import websockets
 from rich.live import Live
@@ -73,9 +73,9 @@ class ExampleApp:
         self.compatible_devices = compatible_devices
         self.ws = None
         self.devices = DeviceMap({})
-        self.events = []
+        self.events: list[Event] = []
         self.event_count = 0
-        self.replies = {}
+        self.replies: dict[str, Reply] = {}
         self._exiting = asyncio.Event()
 
     async def __aenter__(self) -> Self:
@@ -172,7 +172,7 @@ class ExampleApp:
         if self.ws is None:
             raise RuntimeError("Not connected")
         try:
-            return await asyncio.wait_for(self.ws.recv(), timeout=1.0)
+            return cast(str, await asyncio.wait_for(self.ws.recv(), timeout=1.0))
         except TimeoutError:
             pass
         return None

@@ -29,31 +29,32 @@ class Sgtin96Info:
     item_reference: str
     check_digit: str
 
+    @classmethod
+    def from_hex(cls, hex_str: str) -> "Sgtin96Info":
+        if len(hex_str) != 24:
+            raise ValueError("SGTIN96 must be 24 hex characters")
+        bits = f"{int(hex_str, 16):096b}"
+        if bits[:8] != "00110000":
+            raise ValueError("Not a valid SGTIN96 (invalid header)")
+        partition = int(bits[11:14], 2)
+        company_bits, company_digits, _, item_digits = _PARTITION_TABLE[partition]
+        company = str(int(bits[14 : 14 + company_bits], 2)).zfill(company_digits)
+        item_and_indicator = str(int(bits[14 + company_bits : 58], 2)).zfill(
+            item_digits
+        )
+        item_padded = item_and_indicator[1:]
+        item = item_padded.lstrip("0") or "0"
+        check = _gtin_checksum(company + item_padded)
+        serial = int(bits[58:96], 2)
+        return cls(
+            serial=serial,
+            gtin13=company + item_padded + check,
+            company_prefix=company,
+            item_reference=item,
+            check_digit=check,
+        )
+
     async def get_model_name(self) -> str:
         loader = await get_model_loader()
         model = loader.get_model(self.item_reference)
         return model.name if model else self.item_reference
-
-
-def parse_sgtin96(hex_str: str) -> Sgtin96Info:
-    if len(hex_str) != 24:
-        raise ValueError("SGTIN96 must be 24 hex characters")
-    bits = f"{int(hex_str, 16):096b}"
-    if bits[:8] != "00110000":
-        raise ValueError("Not a valid SGTIN96 (invalid header)")
-    partition = int(bits[11:14], 2)
-    company_bits, company_digits, _, item_digits = _PARTITION_TABLE[partition]
-    company = str(int(bits[14 : 14 + company_bits], 2)).zfill(company_digits)
-    item_and_indicator = str(int(bits[14 + company_bits : 58], 2)).zfill(item_digits)
-    item_padded = item_and_indicator[1:]
-    item = item_padded.lstrip("0") or "0"
-    check = _gtin_checksum(company + item_padded)
-    serial = int(bits[58:96], 2)
-    gtin13 = company + item_padded + check
-    return Sgtin96Info(
-        serial=serial,
-        gtin13=gtin13,
-        company_prefix=company,
-        item_reference=item,
-        check_digit=check,
-    )

@@ -7,7 +7,7 @@ from rich import print
 from gardena_smart_local_api.devices import Device, build_inclusion_obj
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import Reply
-from gardena_smart_local_api.sgtin96 import parse_sgtin96
+from gardena_smart_local_api.sgtin96 import Sgtin96Info
 
 extra_args = [
     {
@@ -46,7 +46,7 @@ async def include(app: ExampleApp) -> int:
 
         device_id = event.payload.get("identifier", {}).get("vs", instance_id)
         try:
-            info = parse_sgtin96(device_id)
+            info = Sgtin96Info.from_hex(device_id)
             name = await info.get_model_name()
             device_desc = f"[bold]{name} {info.serial:08d}[/bold]"
         except ValueError:

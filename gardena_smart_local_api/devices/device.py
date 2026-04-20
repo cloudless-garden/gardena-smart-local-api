@@ -233,6 +233,24 @@ class Device(BaseModel):
             ]
         )
 
+    def build_exclusion_obj(self) -> EgressMessageList:
+        return EgressMessageList(
+            [
+                Request(
+                    op="execute",
+                    entity=Entity(
+                        device=self.id,
+                        path=IpsoPath(
+                            object_name="device",
+                            object_instance_id="0",
+                            resource_name="factory_reset",
+                        ),
+                        service=self.service,
+                    ),
+                )
+            ]
+        )
+
     @property
     def is_online(self) -> bool | None:
         value = self.get_value(

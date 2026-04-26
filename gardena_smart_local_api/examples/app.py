@@ -25,6 +25,8 @@ from gardena_smart_local_api.messages import (
     Reply,
 )
 
+REQUEST_TIMEOUT_SECONDS = 30
+
 
 class ExampleApp:
     def __init__(
@@ -191,7 +193,7 @@ class ExampleApp:
 
         reps = IngressMessageList([])
 
-        for _ in range(10):
+        for _ in range(REQUEST_TIMEOUT_SECONDS):
             for request_id in request_ids:
                 if request_id in self.replies:
                     reps.append(self.replies.pop(request_id))

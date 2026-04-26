@@ -3,9 +3,26 @@ from enum import Enum
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from .gen1 import Gen1BatteryMixin, Gen1Device
+from .gen2 import Gen2BatteryMixin, Gen2Device
 
 
-class Gen1MowerStatus(Enum):
+class _MowerEnum(Enum):
+    def __str__(self):
+        return self.name.lower()
+
+
+class MowerState(_MowerEnum):
+    UNKNOWN = 0
+    PARKED = 1
+    LEAVING = 2
+    MOWING = 3
+    PAUSED = 4
+    RETURNING = 5
+    CHARGING = 6
+    ERROR = 7
+
+
+class Gen1MowerStatus(_MowerEnum):
     PAUSED = 0
     OK_CUTTING_AUTO = 1
     OK_SEARCHING_CS = 2
@@ -26,8 +43,27 @@ class Gen1MowerStatus(Enum):
     PARKED_DAY_LIMIT = 17
     PARKED_FROST = 18
 
-    def __str__(self):
-        return self.name.lower()
+
+class _Gen2MowerState(_MowerEnum):
+    OFF = 0
+    WAIT_FOR_SAFETYPIN = 1
+    STOPPED = 2
+    FATAL_ERROR = 3
+    PENDING_START = 4
+    PAUSED = 5
+    IN_OPERATION = 6
+    RESTRICTED = 7
+    ERROR = 8
+
+
+class _Gen2MowerActivity(_MowerEnum):
+    NONE = 0
+    CHARGING = 1
+    GOING_OUT = 2
+    MOWING = 3
+    GOING_HOME = 4
+    PARKED = 5
+    STOPPED_IN_GARDEN = 6
 
 
 class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
@@ -115,4 +151,116 @@ class Gen1Mower2(_Gen1Mower):
                 resource_name="mower_timer_with_distance",
             ),
             data,
+        )
+
+
+class Gen2Mower(Gen2BatteryMixin, Gen2Device):
+    @property
+    def _activity(self) -> _Gen2MowerActivity | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="mower_app",
+                object_instance_id="0",
+                resource_name="activity",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return _Gen2MowerActivity(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def _state(self) -> _Gen2MowerState | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="mower_app",
+                object_instance_id="0",
+                resource_name="state",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return _Gen2MowerState(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def state(self) -> MowerState:
+        match self._activity:
+            case _Gen2MowerActivity.PARKED:
+                return MowerState.PARKED
+            case _Gen2MowerActivity.GOING_OUT:
+                return MowerState.LEAVING
+            case _Gen2MowerActivity.MOWING:
+                return MowerState.MOWING
+            case _Gen2MowerActivity.GOING_HOME:
+                return MowerState.RETURNING
+            case _Gen2MowerActivity.CHARGING:
+                return MowerState.CHARGING
+            case _Gen2MowerActivity.NONE:
+                match self._state:
+                    case _Gen2MowerState.PAUSED:
+                        return MowerState.PAUSED
+                    case _Gen2MowerState.ERROR | _Gen2MowerState.FATAL_ERROR:
+                        return MowerState.ERROR
+        return MowerState.UNKNOWN
+
+    def build_start_mowing_obj(
+        self, seconds: int, zone: int | None = None
+    ) -> EgressMessageList:
+        """Start mowing for given duration.
+
+        Args:
+            seconds: Duration in seconds (0: park until next schedule).
+            zone: An optional ID of the zone to mow in.
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        resource_name = "manual_start"
+        data = [str(seconds)]
+        if zone is not None:
+            resource_name = "manual_start_in_zone"
+            data.append(str(zone))
+
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="smart_system_mower_api",
+                object_instance_id="0",
+                resource_name=resource_name,
+            ),
+            data,
+        )
+
+    def build_stop_mowing_obj(self) -> EgressMessageList:
+        """Park until further notice.
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="smart_system_mower_api",
+                object_instance_id="0",
+                resource_name="park_until_further_notice",
+            ),
+            None,
+        )
+
+    def build_pause_mowing_obj(self) -> EgressMessageList:
+        """Pause at current position.
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="mower_app",
+                object_instance_id="0",
+                resource_name="pause",
+            ),
+            None,
         )

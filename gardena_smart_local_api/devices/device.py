@@ -125,9 +125,9 @@ class Device(BaseModel):
         )
 
     def build_execute_obj(
-        self, path: IpsoPath, value: VALUE_TYPES
+        self, path: IpsoPath, value: VALUE_TYPES | None
     ) -> EgressMessageList:
-        payload = _value_to_payload(value)
+        payload = _value_to_payload(value) if value is not None else None
         return EgressMessageList(
             [
                 Request(

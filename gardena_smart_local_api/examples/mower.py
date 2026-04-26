@@ -2,11 +2,11 @@
 import asyncio
 import sys
 
-from gardena_smart_local_api.devices import Gen1Mower1, Gen1Mower2
+from gardena_smart_local_api.devices import Gen1Mower1, Gen1Mower2, Gen2Mower
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
-COMPATIBLE = (Gen1Mower1, Gen1Mower2)
+COMPATIBLE = (Gen1Mower1, Gen1Mower2, Gen2Mower)
 
 
 async def main():
@@ -14,8 +14,8 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop", "status"),
-            "help": "List applicable devices, start/stop mowing or show status",
+            "choices": ("list", "start", "stop", "pause", "status"),
+            "help": "List applicable devices, start/stop/pause mowing or show status",
         },
         {
             "name_or_flags": ["duration"],
@@ -56,12 +56,28 @@ async def main():
                         print(f"Error: {result[0].error_message}")
                     return 1
 
+            case "pause":
+                if (mower := app.device) is None:
+                    return 1
+                if not isinstance(mower, Gen2Mower):
+                    print("Pausing not supported")
+                    return 1
+                request = mower.build_pause_mowing_obj()
+                result = await app.send_request(request)
+                if result is None or not result[0].success:
+                    print("Failed to pause mowing")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+
             case "status":
                 if (mower := app.device) is None:
                     return 1
                 assert isinstance(mower, COMPATIBLE)
-                status = mower.status
-                print(f"Mower status: {status}")
+                if isinstance(mower, Gen2Mower):
+                    print(f"Mower state: {mower.state}")
+                else:
+                    print(f"Mower status: {mower.status}")
 
 
 if __name__ == "__main__":

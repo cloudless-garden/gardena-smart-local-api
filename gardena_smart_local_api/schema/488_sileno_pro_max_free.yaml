@@ -1,0 +1,784 @@
+name: smart SILENO pro/max/free
+type: Robotic lawn mower
+protocol: gen2
+objects:
+  battery:
+    resources:
+      charge_level:
+        type: vi
+        access: r
+        unit: '%'
+        description: Battery charge level
+      current:
+        type: vi
+        access: r
+        unit: mA
+        description: Battery current
+      is_charging:
+        type: vb
+        access: r
+        description: Battery is charging
+      remaining_charging_time:
+        type: vi
+        access: r
+        unit: s
+        description: Remaining charging time
+      temperature:
+        type: vi
+        access: r
+        unit: °C
+        description: Battery temperature
+      voltage:
+        type: vi
+        access: r
+        unit: mV
+        description: Battery voltage
+  ble:
+    resources:
+      all_bonds_erased__event:
+        type: vb
+        access: r
+        description: Representation of erase all paired event
+      local_bd_address:
+        type: vo
+        access: r
+        description: BLE (mac) address as byte array (6 bytes)
+      number_connected:
+        type: vi
+        access: r
+        description: Number of connected devices
+      pairable:
+        type: vb
+        access: r
+        description: State if device is pairable or not
+  calendar:
+    resources:
+      max_number_of_tasks:
+        type: vi
+        access: r
+        description: Maximum number of tasks
+      max_number_of_tasks_per_day:
+        type: vi
+        access: r
+        description: Maximum number of tasks per day
+  calendar__tasks:
+    multi_instance: true
+    resources:
+      duration:
+        type: vi
+        access: rw
+        unit: minutes
+        description: Task duration
+      mission_id:
+        type: vi
+        access: rw
+        description: Mission identifier
+      start:
+        type: vi
+        access: rw
+        unit: minutes
+        description: Start time in minutes from midnight
+      use_on_friday:
+        type: vb
+        access: rw
+        description: Execute task on Friday
+      use_on_monday:
+        type: vb
+        access: rw
+        description: Execute task on Monday
+      use_on_saturday:
+        type: vb
+        access: rw
+        description: Execute task on Saturday
+      use_on_sunday:
+        type: vb
+        access: rw
+        description: Execute task on Sunday
+      use_on_thursday:
+        type: vb
+        access: rw
+        description: Execute task on Thursday
+      use_on_tuesday:
+        type: vb
+        access: rw
+        description: Execute task on Tuesday
+      use_on_wednesday:
+        type: vb
+        access: rw
+        description: Execute task on Wednesday
+  calendar_area_composite__tasks_with_area_id:
+    multi_instance: true
+    resources:
+      area_id:
+        type: vs
+        access: rw
+        description: Area identifier
+      area_type:
+        type: vi
+        access: rw
+        description: Area type
+      duration:
+        type: vi
+        access: rw
+        unit: minutes
+        description: Task duration
+      start:
+        type: vi
+        access: rw
+        unit: minutes
+        description: Start time in minutes from midnight
+      use_on_friday:
+        type: vb
+        access: rw
+        description: Execute task on Friday
+      use_on_monday:
+        type: vb
+        access: rw
+        description: Execute task on Monday
+      use_on_saturday:
+        type: vb
+        access: rw
+        description: Execute task on Saturday
+      use_on_sunday:
+        type: vb
+        access: rw
+        description: Execute task on Sunday
+      use_on_thursday:
+        type: vb
+        access: rw
+        description: Execute task on Thursday
+      use_on_tuesday:
+        type: vb
+        access: rw
+        description: Execute task on Tuesday
+      use_on_wednesday:
+        type: vb
+        access: rw
+        description: Execute task on Wednesday
+  charging_station:
+    resources:
+      mower_in_charging_station:
+        type: vb
+        access: r
+        description: States if mower is inside charging station
+      pairing_failed__event:
+        type: vb
+        access: r
+        description: Representation of pairing failed event
+      pairing_successful__event:
+        type: vb
+        access: r
+        description: Representation of pairing successful event
+  connection_status:
+    resources:
+      online:
+        type: vb
+        access: null
+  connectivity_monitoring:
+    resources:
+      cell_id:
+        type: vi
+        access: null
+      lac:
+        type: vi
+        access: null
+      link_quality:
+        type: vi
+        access: null
+      network_bearer:
+        type: vi
+        access: null
+      radio_signal_strength:
+        type: vi
+        access: null
+      signalsnr:
+        type: vi
+        access: null
+      smcc:
+        type: vi
+        access: null
+      smnc:
+        type: vi
+        access: null
+  device:
+    resources:
+      available_power_sources:
+        type: ai
+        access: r
+        description: Available power sources
+      battery_level:
+        type: vi
+        access: r
+        unit: '%'
+        min: 0
+        max: 100
+        description: Battery level
+      battery_status:
+        type: vi
+        access: r
+        description: Battery status
+      current_time:
+        type: vt
+        access: rw
+        description: Current UNIX time
+      device_type:
+        type: vs
+        access: r
+        description: Device type
+      error_code:
+        type: ai
+        access: r
+        description: Error codes
+      firmware_version:
+        type: vs
+        access: r
+        description: Firmware version
+      hardware_version:
+        type: vs
+        access: r
+        description: Hardware version
+      manufacturer:
+        type: vs
+        access: r
+        description: Manufacturer name
+      model_number:
+        type: vs
+        access: r
+        description: Model number
+      serial_number:
+        type: vs
+        access: r
+        description: Serial number
+      software_version:
+        type: vs
+        access: r
+        description: Software version
+      supported_binding_and_modes:
+        type: vs
+        access: r
+        description: Supported binding and modes
+      timezone:
+        type: vs
+        access: rw
+        description: Timezone
+      utc_offset:
+        type: vs
+        access: rw
+        description: UTC offset
+  edge_cut:
+    resources:
+      available:
+        type: vb
+        access: r
+        description: If the EdgeCut functionality is available
+      enabled:
+        type: vb
+        access: rw
+        description: If the EdgeCut functionality is enabled
+      enabled_at_collision:
+        type: vb
+        access: rw
+        description: If the EdgeCut functionality is enabled when a collision occurs
+  epos_service:
+    resources:
+      available:
+        type: vb
+        access: null
+      connection_status:
+        type: vi
+        access: null
+      enabled:
+        type: vb
+        access: null
+      has_origin:
+        type: vb
+        access: null
+      is_correction_data_invalid:
+        type: vb
+        access: null
+      is_missing_correction_data:
+        type: vb
+        access: null
+      is_origin_settable:
+        type: vb
+        access: null
+      is_origin_valid:
+        type: vb
+        access: null
+      service_status:
+        type: vi
+        access: null
+      signal_quality:
+        type: vi
+        access: null
+  firmware_update:
+    resources:
+      firmware_update_delivery_method:
+        type: vi
+        access: rw
+        description: Firmware update delivery method
+      package_uri:
+        type: vs
+        access: rw
+        description: URI from where the device can download the firmware package
+      pkg_name:
+        type: vs
+        access: r
+        description: Package name
+      pkg_version:
+        type: vs
+        access: r
+        description: Package version
+      severity:
+        type: vi
+        access: r
+        description: Update severity
+      state:
+        type: vi
+        access: r
+        min: 0
+        max: 3
+        description: 'Firmware update state: 0=Idle, 1=Downloading, 2=Downloaded, 3=Updating'
+      update_result:
+        type: vi
+        access: r
+        min: 0
+        max: 11
+        description: Result of firmware update
+  fota:
+    resources:
+      auto_fota_enabled:
+        type: vb
+        access: null
+      available:
+        type: vb
+        access: null
+      connection_stats__connects:
+        type: vi
+        access: null
+      connection_stats__disconnects:
+        type: vi
+        access: null
+      connection_stats__disconnects_by_user:
+        type: vi
+        access: null
+      connection_stats__down_time:
+        type: vi
+        access: null
+      connection_stats__up_time:
+        type: vi
+        access: null
+      connection_status:
+        type: vi
+        access: null
+      enabled:
+        type: vb
+        access: null
+      host__host_name:
+        type: vs
+        access: null
+      host__port:
+        type: vi
+        access: null
+      last_update_check_timestamp:
+        type: vt
+        access: null
+      progress:
+        type: vi
+        access: null
+      state:
+        type: vi
+        access: null
+      update_version:
+        type: vs
+        access: null
+  gps_navigation:
+    resources:
+      available:
+        type: vb
+        access: null
+      enabled:
+        type: vb
+        access: null
+      status:
+        type: vi
+        access: null
+  lwm2m_server:
+    multi_instance: true
+    resources:
+      binding:
+        type: vs
+        access: rw
+        description: Binding mode
+      bootstrap_on_registration_failure:
+        type: vb
+        access: rw
+        description: Bootstrap on registration failure
+      lifetime:
+        type: vi
+        access: rw
+        unit: s
+        description: Lifetime of the registration
+      notification_storing_when_disabled_or_offline:
+        type: vb
+        access: rw
+        description: Notification storing when disabled or offline
+      short_server_id:
+        type: vi
+        access: r
+        min: 1
+        max: 65534
+        description: Short Server ID
+  mower_app:
+    resources:
+      activity:
+        type: vi
+        access: null
+      error:
+        type: vi
+        access: null
+      inactive_reason:
+        type: vi
+        access: null
+      is_error_confirmable:
+        type: vb
+        access: null
+      mission:
+        type: vi
+        access: null
+      mode:
+        type: vi
+        access: null
+      mowing_area_id:
+        type: vs
+        access: null
+      state:
+        type: vi
+        access: null
+  mower_insights:
+    resources:
+      battery_capacity:
+        type: vi
+        access: null
+      battery_current:
+        type: vi
+        access: null
+      battery_nr_of_charging_cycles:
+        type: vi
+        access: null
+      battery_temperature:
+        type: vi
+        access: null
+      battery_voltage:
+        type: vi
+        access: null
+      orientation_pitch:
+        type: vi
+        access: null
+      orientation_roll:
+        type: vi
+        access: null
+  obstacle_avoidance:
+    resources:
+      available:
+        type: vb
+        access: null
+      enabled:
+        type: vb
+        access: null
+      use_at_boundary:
+        type: vb
+        access: null
+  planner:
+    resources:
+      next_start_time:
+        type: vt
+        access: null
+      override__action:
+        type: vi
+        access: null
+      override__duration:
+        type: vi
+        access: null
+      override__mission_id:
+        type: vi
+        access: null
+      override__start_time:
+        type: vt
+        access: null
+      restriction_reason:
+        type: vi
+        access: null
+  planner__external_restrictions:
+    resources:
+      auto_expires:
+        type: vt
+        access: null
+      reason:
+        type: vi
+        access: null
+      release_time:
+        type: vt
+        access: null
+    multi_instance: true
+  sg_common:
+    resources:
+      duty_cycle_tracking_critical_air_time:
+        type: vb
+        access: null
+      duty_cycle_tracking_status:
+        type: vi
+        access: null
+      exclusion_requested:
+        type: vb
+        access: null
+      fatal_error_log:
+        type: vo
+        access: null
+      name:
+        type: vs
+        access: null
+      sun_data:
+        type: vo
+        access: null
+  site_map:
+    resources:
+      available:
+        type: vb
+        access: null
+      generated_map:
+        type: vo
+        access: null
+      generated_map_available:
+        type: vb
+        access: null
+      site_map:
+        type: vo
+        access: null
+      site_map_available:
+        type: vb
+        access: null
+      site_map_updated__event_crc32:
+        type: vi
+        access: null
+      user_validated_checksum:
+        type: vo
+        access: null
+      zone_map:
+        type: vo
+        access: null
+      zone_map_available:
+        type: vb
+        access: null
+      zone_map_updated__event_crc32:
+        type: vi
+        access: null
+  smart_system_mower_api:
+    resources:
+      check_operator_pin_result__event_pin_valid:
+        type: vb
+        access: null
+      current_site_id:
+        type: vi
+        access: null
+      drive_past_wire:
+        type: vi
+        access: null
+      eco_mode:
+        type: vb
+        access: null
+      frost_sensor__available:
+        type: vb
+        access: null
+      frost_sensor__enabled:
+        type: vb
+        access: null
+      lona_map_status__data_collection_started_timestamp:
+        type: vt
+        access: null
+      lona_map_status__maps_updated_timestamp:
+        type: vt
+        access: null
+      lona_map_status__progress:
+        type: vi
+        access: null
+      lona_map_status__state:
+        type: vi
+        access: null
+      lona_settings__available:
+        type: vb
+        access: null
+      lona_settings__enabled:
+        type: vb
+        access: null
+      mobile_loop__available:
+        type: vb
+        access: null
+      mobile_loop__enabled:
+        type: vb
+        access: null
+      operator_pin_updated__event_updated_pin:
+        type: vi
+        access: null
+      position__accuracy:
+        type: vi
+        access: null
+      position__heading:
+        type: vi
+        access: null
+      position__heading_accuracy:
+        type: vi
+        access: null
+      position__latitude:
+        type: vi
+        access: null
+      position__longitude:
+        type: vi
+        access: null
+      position_disclosure:
+        type: vb
+        access: null
+      sensor_control__available:
+        type: vb
+        access: null
+      sensor_control__enabled:
+        type: vb
+        access: null
+      sensor_control__sensitivity:
+        type: vi
+        access: null
+      starting_distance:
+        type: vi
+        access: null
+  smart_system_mower_api__starting_points:
+    resources:
+      distance:
+        type: vi
+        access: null
+      enabled:
+        type: vb
+        access: null
+      passage_cutting_enabled:
+        type: vb
+        access: null
+      proportion:
+        type: vi
+        access: null
+      wire:
+        type: vi
+        access: null
+    multi_instance: true
+  spot_cutting:
+    resources:
+      available:
+        type: vb
+        access: null
+      enabled:
+        type: vb
+        access: null
+      sensitivity:
+        type: vi
+        access: null
+      status:
+        type: vi
+        access: null
+  statistics:
+    resources:
+      cutting_blade_usage_time:
+        type: vi
+        access: null
+      number_of_charging_cycles:
+        type: vi
+        access: null
+      number_of_collisions:
+        type: vi
+        access: null
+      total_charging_time:
+        type: vi
+        access: null
+      total_cutting_time:
+        type: vi
+        access: null
+      total_running_time:
+        type: vi
+        access: null
+      total_searching_time:
+        type: vi
+        access: null
+  system:
+    resources:
+      apply_config_done__event:
+        type: vb
+        access: r
+        description: Apply config done event
+      apply_config_error__event:
+        type: vb
+        access: r
+        description: Apply config error event
+      config_version_string:
+        type: vs
+        access: r
+        description: Configuration version string
+      device_group:
+        type: vi
+        access: r
+        description: Device group
+      forced_sw_update_required:
+        type: vb
+        access: r
+        description: Forced software update required
+      local_hmi_available:
+        type: vb
+        access: r
+        description: Local HMI available
+      model__device_type:
+        type: vi
+        access: r
+        description: Model device type
+      model__device_variant:
+        type: vi
+        access: r
+        description: Model device variant
+      serial_number:
+        type: vi
+        access: r
+        description: Serial number
+      startup_sequence_required:
+        type: vb
+        access: r
+        description: Startup sequence required
+      sw_package_version_string:
+        type: vs
+        access: r
+        description: Software package version string
+      sw_update_required:
+        type: vb
+        access: r
+        description: Software update required
+  system_power:
+    resources:
+      mode:
+        type: vi
+        access: null
+  system_restart:
+    resources:
+      restart_reason:
+        type: vi
+        access: null
+  systematic_missions__tasks:
+    resources:
+      area_id:
+        type: vs
+        access: null
+    multi_instance: true
+  wait_for_permission_to_mow:
+    resources:
+      enabled:
+        type: vb
+        access: null
+      is_waiting_for_permission_to_mow:
+        type: vb
+        access: null
+      timeout_before_mowing_without_permission:
+        type: vi
+        access: null

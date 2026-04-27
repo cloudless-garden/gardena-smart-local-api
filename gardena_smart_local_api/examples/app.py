@@ -19,6 +19,7 @@ from gardena_smart_local_api.devices import (
 )
 from gardena_smart_local_api.messages import (
     EgressMessageList,
+    ErrorMessage,
     Event,
     IngressMessageList,
     Reply,
@@ -122,6 +123,12 @@ class ExampleApp:
                         self.replies[msg.request_id] = msg
                         if self.args.dump_json:
                             dumpfile = f"{time.monotonic_ns()}_reply.json"
+
+                    case ErrorMessage():
+                        if msg.request_id is not None:
+                            self.replies[msg.request_id] = msg
+                        if self.args.dump_json:
+                            dumpfile = f"{time.monotonic_ns()}_error.json"
 
                 if self.args.dump_json and dumpfile is not None:
                     with open(dumpfile, "w") as f:

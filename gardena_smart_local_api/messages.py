@@ -57,6 +57,7 @@ class ErrorMetadata(BaseModel):
 class ErrorMessage(BaseModel):
     payload: dict = Field(default_factory=dict)
     metadata: ErrorMetadata
+    request_id: str | None = None
     success: Literal[False]
 
     @property

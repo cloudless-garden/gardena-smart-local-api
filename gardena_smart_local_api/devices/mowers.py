@@ -22,7 +22,7 @@ class MowerState(_MowerEnum):
     ERROR = 7
 
 
-class Gen1MowerStatus(_MowerEnum):
+class _Gen1MowerStatus(_MowerEnum):
     PAUSED = 0
     OK_CUTTING_AUTO = 1
     OK_SEARCHING_CS = 2
@@ -70,7 +70,7 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
     """Robotic lawn mower base class"""
 
     @property
-    def status(self) -> Gen1MowerStatus | None:
+    def _status(self) -> _Gen1MowerStatus | None:
         value = self.get_value(
             IpsoPath(
                 object_name="lemonbeat",
@@ -80,10 +80,37 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
         )
         if isinstance(value, int):
             try:
-                return Gen1MowerStatus(value)
+                return _Gen1MowerStatus(value)
             except ValueError:
                 pass
         return None
+
+    @property
+    def state(self) -> MowerState:
+        match self._status:
+            case (
+                _Gen1MowerStatus.PAUSED
+                | _Gen1MowerStatus.PARKED_WEEK_TIMER
+                | _Gen1MowerStatus.PARKED_BY_USER
+                | _Gen1MowerStatus.PARKED_AUTOTIMER
+                | _Gen1MowerStatus.PARKED_DAY_LIMIT
+                | _Gen1MowerStatus.PARKED_FROST
+                | _Gen1MowerStatus.WAIT_POWER_UP
+                | _Gen1MowerStatus.OFF_MAIN_SWITCH
+                | _Gen1MowerStatus.WAIT
+            ):
+                return MowerState.PARKED
+            case _Gen1MowerStatus.OK_LEAVING_CS:
+                return MowerState.LEAVING
+            case _Gen1MowerStatus.OK_CUTTING_AUTO | _Gen1MowerStatus.OK_CUTTING_MANUAL:
+                return MowerState.MOWING
+            case _Gen1MowerStatus.OK_SEARCHING_CS:
+                return MowerState.RETURNING
+            case _Gen1MowerStatus.OK_CHARGING:
+                return MowerState.CHARGING
+            case _Gen1MowerStatus.ERROR | _Gen1MowerStatus.ERROR_POWER_UP:
+                return MowerState.ERROR
+        return MowerState.UNKNOWN
 
     def build_stop_mowing_obj(self) -> EgressMessageList:
         """Park until further notice.

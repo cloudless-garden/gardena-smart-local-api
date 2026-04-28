@@ -48,9 +48,7 @@ async def main():
             if answer.strip().lower() != "y":
                 continue
 
-            replies = await app.send_request(
-                build_inclusion_obj(service, instance_id)
-            )
+            replies = await app.send_request(build_inclusion_obj(service, instance_id))
             if replies and isinstance(replies[0], Reply) and replies[0].success:
                 print(f"[green]Device {device_desc} included successfully.[/green]")
                 return 0

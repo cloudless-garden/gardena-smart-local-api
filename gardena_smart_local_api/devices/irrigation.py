@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
+from ._enums import _LowerNameEnum
 from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, Gen1IdentifyMixin
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
@@ -13,7 +13,7 @@ COMMAND_SOURCE = "18"
 DEFAULT_WATERING_DURATION = 1800
 
 
-class TimeslotState(Enum):
+class TimeslotState(_LowerNameEnum):
     IDLE = 0
     SCHEDULED = 1
     WILL_START = 2
@@ -27,55 +27,37 @@ class TimeslotState(Enum):
     DELETED = 10
     REQUESTED = 11
 
-    def __str__(self):
-        return self.name.lower()
 
-
-class PumpError(Enum):
+class PumpError(_LowerNameEnum):
     NONE = 0
     PUMP_NOT_FILLED = 1
     CLEAN_GASKET = 2
     CLEAN_FINE_MESH = 3
     SMALL_LEAKAGE = 4
 
-    def __str__(self):
-        return self.name.lower()
 
-
-class PumpOperatingMode(Enum):
+class PumpOperatingMode(_LowerNameEnum):
     SCHEDULED = 0
     AUTOMATIC = 1
 
-    def __str__(self):
-        return self.name.lower()
 
-
-class PumpDrippingAlert(Enum):
+class PumpDrippingAlert(_LowerNameEnum):
     MINUTES_60 = 0
     MINUTES_2 = 1
     DRIPPING_ALERT_OFF = 2
 
-    def __str__(self):
-        return self.name.lower()
 
-
-class PumpMode(Enum):
+class PumpMode(_LowerNameEnum):
     OFF = 0
     AUTO = 1
 
-    def __str__(self):
-        return self.name.lower()
 
-
-class PumpState(Enum):
+class PumpState(_LowerNameEnum):
     PUMP_IS_JUST_STARTING = 0
     WATER_IN_THE_PUMP_BODY = 1
     NO_WATER_IN_THE_PUMP_BODY = 2
     FLOW_AFTER_5S = 3
     NO_FLOW_AFTER_5S = 4
-
-    def __str__(self):
-        return self.name.lower()
 
 
 class _Gen1Irrigation(Gen1Device, ABC):

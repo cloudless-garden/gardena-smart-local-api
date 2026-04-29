@@ -230,7 +230,7 @@ class _Gen2Irrigation(Gen2Device):
         return None
 
 
-class Gen2WaterControl(_Gen2Irrigation, Gen2BatteryMixin):
+class Gen2WaterControl(Gen2BatteryMixin, _Gen2Irrigation):
     pass
 
 

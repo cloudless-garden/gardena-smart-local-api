@@ -8,7 +8,11 @@ from .irrigation import (
     Gen1WaterControl,
     Gen2IrrigationControl,
     Gen2WaterControl,
+    OperatingMode,
+    Pump,
+    PumpState,
     TimeslotState,
+    ValveError,
 )
 from .mowers import Gen1Mower1, Gen1Mower2, Gen1MowerStatus
 from .power import PowerAdapter
@@ -24,10 +28,14 @@ __all__ = [
     "Gen1WaterControl",
     "Gen2IrrigationControl",
     "Gen2WaterControl",
+    "OperatingMode",
     "PowerAdapter",
+    "Pump",
+    "PumpState",
     "Sensor1",
     "Sensor2",
     "TimeslotState",
+    "ValveError",
     "build_discovery_obj",
     "build_inclusion_obj",
     "create_devices_from_json",

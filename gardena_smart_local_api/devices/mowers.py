@@ -1,17 +1,11 @@
-from enum import Enum
-
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
+from ._enums import _LowerNameEnum
 from .gen1 import Gen1BatteryMixin, Gen1Device
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
 
-class _MowerEnum(Enum):
-    def __str__(self):
-        return self.name.lower()
-
-
-class MowerState(_MowerEnum):
+class MowerState(_LowerNameEnum):
     UNKNOWN = 0
     PARKED = 1
     LEAVING = 2
@@ -22,7 +16,7 @@ class MowerState(_MowerEnum):
     ERROR = 7
 
 
-class _Gen1MowerStatus(_MowerEnum):
+class _Gen1MowerStatus(_LowerNameEnum):
     PAUSED = 0
     OK_CUTTING_AUTO = 1
     OK_SEARCHING_CS = 2
@@ -44,7 +38,7 @@ class _Gen1MowerStatus(_MowerEnum):
     PARKED_FROST = 18
 
 
-class _Gen2MowerState(_MowerEnum):
+class _Gen2MowerState(_LowerNameEnum):
     OFF = 0
     WAIT_FOR_SAFETYPIN = 1
     STOPPED = 2
@@ -56,7 +50,7 @@ class _Gen2MowerState(_MowerEnum):
     ERROR = 8
 
 
-class _Gen2MowerActivity(_MowerEnum):
+class _Gen2MowerActivity(_LowerNameEnum):
     NONE = 0
     CHARGING = 1
     GOING_OUT = 2

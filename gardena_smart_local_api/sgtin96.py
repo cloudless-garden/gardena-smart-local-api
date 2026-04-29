@@ -22,7 +22,7 @@ def _gtin_checksum(digits: str) -> str:
 
 
 @dataclass
-class Sgtin96Info:
+class SGTIN96Info:
     serial: int
     gtin13: str
     company_prefix: str
@@ -30,7 +30,7 @@ class Sgtin96Info:
     check_digit: str
 
     @classmethod
-    def from_hex(cls, hex_str: str) -> "Sgtin96Info":
+    def from_hex(cls, hex_str: str) -> "SGTIN96Info":
         if len(hex_str) != 24:
             raise ValueError("SGTIN96 must be 24 hex characters")
         bits = f"{int(hex_str, 16):096b}"

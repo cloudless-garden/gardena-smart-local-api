@@ -30,7 +30,7 @@ class Gen1MowerStatus(Enum):
         return self.name.lower()
 
 
-class _Gen1Mower(Gen1Device, Gen1BatteryMixin):
+class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
     """Robotic lawn mower base class"""
 
     @property

@@ -1,3 +1,5 @@
+import binascii
+
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
@@ -175,6 +177,15 @@ class Gen1Mower2(_Gen1Mower):
         )
 
 
+def build_map_header(svg_data: bytes) -> bytes:
+    svg_size = len(svg_data)
+    svg_crc = binascii.crc32(svg_data)
+    header = svg_size.to_bytes(4, "little") + svg_crc.to_bytes(4, "little")
+    header_crc = binascii.crc32(header)
+    header += header_crc.to_bytes(4, "little")
+    return header
+
+
 class Gen2Mower(Gen2BatteryMixin, Gen2Device):
     @property
     def _activity(self) -> _Gen2MowerActivity | None:
@@ -284,4 +295,47 @@ class Gen2Mower(Gen2BatteryMixin, Gen2Device):
                 resource_name="pause",
             ),
             None,
+        )
+
+
+    def build_write_site_map_obj(self, svg_data: bytes) -> EgressMessageList:
+        """Upload a site map.
+
+        Args:
+            svg_data: The SVG data of the site map.
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        header = build_map_header(svg_data)
+        data = header + svg_data
+
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="site_map",
+                object_instance_id="0",
+                resource_name="site_map",
+            ),
+            data,
+        )
+
+    def build_write_zone_map_obj(self, svg_data: bytes) -> EgressMessageList:
+        """Upload a zone map.
+
+        Args:
+            svg_data: The SVG data of the zone map.
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        header = build_map_header(svg_data)
+        data = header + svg_data
+
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="site_map",
+                object_instance_id="0",
+                resource_name="zone_map",
+            ),
+            data,
         )

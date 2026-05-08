@@ -107,7 +107,7 @@ class Gen1GuideWireLengthMixin:
         if isinstance(value, int):
             return int(value)
         return None
-    
+
 
 class Gen1IdentifyMixin:
     def build_identify_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:

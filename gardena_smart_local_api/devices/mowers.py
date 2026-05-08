@@ -1,8 +1,23 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
-from .gen1 import Gen1BatteryMixin, Gen1ChargingCyclesMixin, Gen1CuttingTimeMixin, Gen1RunningTimeMixin, Gen1CollisionsMixin, Gen1GuideWireLengthMixin, Gen1Device
-from .gen2 import Gen2BatteryMixin, Gen2ChargingCyclesMixin, Gen2CuttingTimeMixin, Gen2RunningTimeMixin, Gen2CollisionsMixin, Gen2Device
+from .gen1 import (
+    Gen1BatteryMixin,
+    Gen1ChargingCyclesMixin,
+    Gen1CollisionsMixin,
+    Gen1CuttingTimeMixin,
+    Gen1Device,
+    Gen1GuideWireLengthMixin,
+    Gen1RunningTimeMixin,
+)
+from .gen2 import (
+    Gen2BatteryMixin,
+    Gen2ChargingCyclesMixin,
+    Gen2CollisionsMixin,
+    Gen2CuttingTimeMixin,
+    Gen2Device,
+    Gen2RunningTimeMixin,
+)
 
 
 class MowerState(_LowerNameEnum):
@@ -60,7 +75,15 @@ class _Gen2MowerActivity(_LowerNameEnum):
     STOPPED_IN_GARDEN = 6
 
 
-class _Gen1Mower(Gen1BatteryMixin, Gen1ChargingCyclesMixin, Gen1CuttingTimeMixin, Gen1RunningTimeMixin, Gen1CollisionsMixin, Gen1GuideWireLengthMixin, Gen1Device):
+class _Gen1Mower(
+    Gen1BatteryMixin,
+    Gen1ChargingCyclesMixin,
+    Gen1CuttingTimeMixin,
+    Gen1RunningTimeMixin,
+    Gen1CollisionsMixin,
+    Gen1GuideWireLengthMixin,
+    Gen1Device,
+):
     """Robotic lawn mower base class"""
 
     @property
@@ -175,7 +198,14 @@ class Gen1Mower2(_Gen1Mower):
         )
 
 
-class Gen2Mower(Gen2BatteryMixin, Gen2ChargingCyclesMixin, Gen2CuttingTimeMixin, Gen2RunningTimeMixin, Gen2CollisionsMixin, Gen2Device):
+class Gen2Mower(
+    Gen2BatteryMixin,
+    Gen2ChargingCyclesMixin,
+    Gen2CuttingTimeMixin,
+    Gen2RunningTimeMixin,
+    Gen2CollisionsMixin,
+    Gen2Device,
+):
     @property
     def _activity(self) -> _Gen2MowerActivity | None:
         value = self.get_value(

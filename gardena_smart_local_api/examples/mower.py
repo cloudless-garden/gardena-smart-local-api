@@ -14,15 +14,15 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop", "pause", "status"),
-            "help": "List applicable devices, start/stop/pause mowing or show status",
+            "choices": ("list", "start", "stop", "pause", "status", "zone_map"),
+            "help": "List applicable devices, start/stop/pause mowing, show status or upload zone map",
         },
         {
-            "name_or_flags": ["duration"],
+            "name_or_flags": ["cmd_arg"],
             "nargs": "?",
             "default": 1,
-            "type": float,
-            "help": "Duration to mow in hours (default: 1h)",
+            "type": lambda v: float(v) if v.replace(".", "", 1).isdigit() else v,
+            "help": "Duration to mow in hours (default: 1h) / map SVG file",
         },
     ]
 
@@ -75,6 +75,29 @@ async def main():
                     return 1
                 assert isinstance(mower, COMPATIBLE)
                 print(f"Mower state: {mower.state}")
+
+            case "zone_map":
+                if (mower := app.device) is None:
+                    return 1
+                if not isinstance(mower, Gen2Mower):
+                    print("Zone map upload not supported")
+                    return 1
+                if not isinstance(app.args.cmd_arg, str) or not app.args.cmd_arg.endswith(".svg"):
+                    print("No map file provided")
+                    return 1
+                try:
+                    with open(app.args.cmd_arg, "rb") as f:
+                        svg_data = f.read()
+                except Exception as e:
+                    print(f"Failed to read SVG file: {e}")
+                    return 1
+                request = mower.build_write_zone_map_obj(svg_data)
+                result = await app.send_request(request)
+                if result is None or not result[0].success:
+                    print("Failed to upload zone map")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
 
 
 if __name__ == "__main__":

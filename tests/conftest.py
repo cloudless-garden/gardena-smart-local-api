@@ -179,3 +179,27 @@ def epp_message(epp_json):
 @pytest_asyncio.fixture
 async def epp(epp_message):
     return list((await create_devices_from_messages(epp_message)).values())[0]
+
+
+@pytest.fixture
+def sileno_free_json():
+    data_file = Path(__file__).parent / "data" / "sileno_free.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def sileno_free_message(sileno_free_json):
+    return IngressMessageList.model_validate_json(sileno_free_json)
+
+
+@pytest_asyncio.fixture
+async def sileno_free(sileno_free_message):
+    return list((await create_devices_from_messages(sileno_free_message)).values())[0]
+
+
+@pytest.fixture
+def zones_svg():
+    data_file = Path(__file__).parent / "data" / "zones.svg"
+    with open(data_file, "rb") as f:
+        return f.read()

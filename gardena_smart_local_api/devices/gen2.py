@@ -28,7 +28,10 @@ class Gen2BatteryMixin:
         return None
 
 
-class Gen2ChargingCyclesMixin:
+class Gen2Device(Device):
+    model_definition: Gen2ModelDefinition = Field()
+    service: ClassVar[str] = "lwm2mserver"
+
     @property
     def charging_cycles(self: _DeviceProtocol) -> int | None:
         value = self.get_value(
@@ -42,8 +45,6 @@ class Gen2ChargingCyclesMixin:
             return int(value)
         return None
 
-
-class Gen2CuttingTimeMixin:
     @property
     def cutting_time(self: _DeviceProtocol) -> int | None:
         value = self.get_value(
@@ -57,8 +58,6 @@ class Gen2CuttingTimeMixin:
             return int(value)
         return None
 
-
-class Gen2RunningTimeMixin:
     @property
     def running_time(self: _DeviceProtocol) -> int | None:
         value = self.get_value(
@@ -72,8 +71,6 @@ class Gen2RunningTimeMixin:
             return int(value)
         return None
 
-
-class Gen2CollisionsMixin:
     @property
     def collisions(self: _DeviceProtocol) -> int | None:
         value = self.get_value(
@@ -86,8 +83,3 @@ class Gen2CollisionsMixin:
         if isinstance(value, int):
             return int(value)
         return None
-
-
-class Gen2Device(Device):
-    model_definition: Gen2ModelDefinition = Field()
-    service: ClassVar[str] = "lwm2mserver"

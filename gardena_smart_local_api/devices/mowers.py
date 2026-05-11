@@ -3,20 +3,11 @@ from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
 from .gen1 import (
     Gen1BatteryMixin,
-    Gen1ChargingCyclesMixin,
-    Gen1CollisionsMixin,
-    Gen1CuttingTimeMixin,
     Gen1Device,
-    Gen1GuideWireLengthMixin,
-    Gen1RunningTimeMixin,
 )
 from .gen2 import (
     Gen2BatteryMixin,
-    Gen2ChargingCyclesMixin,
-    Gen2CollisionsMixin,
-    Gen2CuttingTimeMixin,
     Gen2Device,
-    Gen2RunningTimeMixin,
 )
 
 
@@ -77,11 +68,6 @@ class _Gen2MowerActivity(_LowerNameEnum):
 
 class _Gen1Mower(
     Gen1BatteryMixin,
-    Gen1ChargingCyclesMixin,
-    Gen1CuttingTimeMixin,
-    Gen1RunningTimeMixin,
-    Gen1CollisionsMixin,
-    Gen1GuideWireLengthMixin,
     Gen1Device,
 ):
     """Robotic lawn mower base class"""
@@ -200,10 +186,6 @@ class Gen1Mower2(_Gen1Mower):
 
 class Gen2Mower(
     Gen2BatteryMixin,
-    Gen2ChargingCyclesMixin,
-    Gen2CuttingTimeMixin,
-    Gen2RunningTimeMixin,
-    Gen2CollisionsMixin,
     Gen2Device,
 ):
     @property

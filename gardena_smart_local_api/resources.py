@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 GARDENA GmbH
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 import re
 from base64 import b64decode, b64encode
 from collections.abc import Iterator

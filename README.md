@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 GARDENA GmbH
+
+SPDX-License-Identifier: LGPL-3.0-or-later
+-->
+
 # Python library for GARDENA smart local API
 
 Enables controlling and monitoring GARDENA smart devices in the local network, without going through the cloud.
@@ -83,4 +89,10 @@ uv run ty check
 ```txt
 uv sync --group test
 uv run python -m pytest
+```
+
+### Licensing Compliance
+
+```txt
+uv run reuse lint
 ```

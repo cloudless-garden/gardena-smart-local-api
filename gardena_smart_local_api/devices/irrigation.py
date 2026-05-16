@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 GARDENA GmbH
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 from abc import ABC, abstractmethod
 
 from ..messages import EgressMessageList

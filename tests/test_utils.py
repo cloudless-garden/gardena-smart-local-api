@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 GARDENA GmbH
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 from gardena_smart_local_api.utils import deep_merge_dict
 
 

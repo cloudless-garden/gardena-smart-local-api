@@ -22,6 +22,7 @@ Repository = "https://github.com/cloudless-garden/gardena-smart-local-api"
 
 [dependency-groups]
 dev = [
+    "reuse>=6.2.0",
     "ruff>=0.15.10",
     "ty>=0.0.31",
 ]

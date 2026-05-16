@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 GARDENA GmbH
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 from dataclasses import dataclass
 
 from gardena_smart_local_api.model_loader import get_model_loader

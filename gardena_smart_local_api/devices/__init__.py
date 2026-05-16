@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2026 GARDENA GmbH
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+
 from .device import Device, DeviceMap, build_discovery_obj, build_inclusion_obj
 from .device_builder import (
     create_devices_from_json,

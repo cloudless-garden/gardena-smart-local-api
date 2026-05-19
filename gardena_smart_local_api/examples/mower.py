@@ -79,7 +79,11 @@ async def main():
                 if (mower := app.device) is None:
                     return 1
                 assert isinstance(mower, COMPATIBLE)
-                print(f"Mower state: {mower.state}")
+                state = mower.state
+                print(f"Mower state: {state}")
+                if isinstance(mower, (Gen1Mower1, Gen1Mower2)):
+                    if mower.error is not None:
+                        print(f"Mower error:  {mower.error}")
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
+from .errors import MowerLastErrorCode
 from .gen1 import Gen1BatteryMixin, Gen1Device
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
@@ -109,6 +110,28 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
             case _Gen1MowerStatus.ERROR | _Gen1MowerStatus.ERROR_POWER_UP:
                 return MowerState.ERROR
         return MowerState.UNKNOWN
+
+    @property
+    def error_code(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="last_error_code",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    @property
+    def error(self) -> str | None:
+        if (code := self.error_code) is not None and code != 0:
+            try:
+                return str(MowerLastErrorCode(code))
+            except ValueError:
+                return str(code)
+        return None
 
     def build_stop_mowing_obj(self) -> EgressMessageList:
         """Park until further notice.

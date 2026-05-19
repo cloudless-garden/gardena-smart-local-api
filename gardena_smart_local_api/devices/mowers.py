@@ -87,21 +87,26 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
     def state(self) -> MowerState:
         match self._status:
             case (
-                _Gen1MowerStatus.PAUSED
-                | _Gen1MowerStatus.PARKED_WEEK_TIMER
+                _Gen1MowerStatus.PARKED_WEEK_TIMER
                 | _Gen1MowerStatus.PARKED_BY_USER
                 | _Gen1MowerStatus.PARKED_AUTOTIMER
                 | _Gen1MowerStatus.PARKED_DAY_LIMIT
                 | _Gen1MowerStatus.PARKED_FROST
-                | _Gen1MowerStatus.WAIT_POWER_UP
-                | _Gen1MowerStatus.OFF_MAIN_SWITCH
-                | _Gen1MowerStatus.WAIT
             ):
                 return MowerState.PARKED
             case _Gen1MowerStatus.OK_LEAVING_CS:
                 return MowerState.LEAVING
             case _Gen1MowerStatus.OK_CUTTING_AUTO | _Gen1MowerStatus.OK_CUTTING_MANUAL:
                 return MowerState.MOWING
+            case (
+                _Gen1MowerStatus.PAUSED
+                | _Gen1MowerStatus.WAIT
+                | _Gen1MowerStatus.WAIT_POWER_UP
+                | _Gen1MowerStatus.WAIT_SOFTWARE_DOWNLOAD
+                | _Gen1MowerStatus.WAIT_STOP_PRESSED
+                | _Gen1MowerStatus.OFF_MAIN_SWITCH
+            ):
+                return MowerState.PAUSED
             case _Gen1MowerStatus.OK_SEARCHING_CS:
                 return MowerState.RETURNING
             case _Gen1MowerStatus.OK_CHARGING:

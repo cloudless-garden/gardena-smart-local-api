@@ -165,6 +165,7 @@ class ExampleApp:
             uri,
             ssl=ssl_context,
             additional_headers=headers,
+            open_timeout=30,
             close_timeout=0,
         )
 

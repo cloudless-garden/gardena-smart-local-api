@@ -2,7 +2,7 @@
 import asyncio
 import sys
 
-from rich import print
+from rich import print, reconfigure
 
 from gardena_smart_local_api.devices import Device, build_inclusion_obj
 from gardena_smart_local_api.examples import ExampleApp
@@ -13,8 +13,8 @@ extra_args = [
     {
         "name_or_flags": ["command"],
         "nargs": 1,
-        "choices": ("list", "include", "exclude"),
-        "help": "List included devices, include a new device, or exclude a device",
+        "choices": ("list", "include", "exclude", "info"),
+        "help": "List included devices, include/exclude a device, or show device info",
     },
 ]
 
@@ -91,7 +91,27 @@ async def exclude(app: ExampleApp) -> int:
         return 1
 
 
+async def info(app: ExampleApp) -> int:
+    device_id = app.args.device_id
+    if device_id is None:
+        print("[red]No device ID provided.[/red]")
+        return 1
+
+    if device_id not in app.devices:
+        print(f"[red]Device {device_id} not found.[/red]")
+        return 1
+
+    device = app.device
+    print(f"Serial number: {device.serial_number}")
+    print(f"SW version: {device.software_version}")
+    print(f"HW version: {device.hardware_version}")
+
+    return 0
+
+
 async def main():
+    reconfigure(highlight=False)
+
     async with ExampleApp((Device,), extra_args) as app:
         match app.args.command[0]:
             case "list":
@@ -103,6 +123,9 @@ async def main():
 
             case "exclude":
                 return await exclude(app)
+
+            case "info":
+                return await info(app)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,26 @@
+version = 1
+
+[[annotations]]
+path = [
+  "tests/data/devices.json",
+  "tests/data/epp.json",
+  "tests/data/power_adapter.json",
+  "tests/data/power_adapter_update_event.json",
+  "tests/data/sensor1.json",
+  "tests/data/sensor1_update_event.json",
+  "tests/data/sensor2.json",
+  "tests/data/sensor2_update_event.json",
+  "tests/data/single_device.json",
+  "tests/data/unknown_device.json",
+  "tests/data/update_event.json",
+  "tests/data/water_control.json",
+]
+SPDX-FileCopyrightText = "2026 GARDENA GmbH"
+SPDX-License-Identifier = "LGPL-3.0-or-later"
+
+[[annotations]]
+path = [
+  "uv.lock",
+]
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"

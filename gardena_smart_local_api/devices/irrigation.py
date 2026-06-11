@@ -271,17 +271,34 @@ class Gen2IrrigationControl(_Gen2Irrigation):
     pass
 
 
-class Pump(Gen1IdentifyMixin, Gen1FrostWarningMixin, _Gen1Irrigation):
+class Pump(Gen1IdentifyMixin, Gen1FrostWarningMixin, Gen1Device):
     @property
-    def valve_count(self) -> int:
-        return 1
+    def watering_timer(self) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="watering_timer_1",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
 
-    @property
-    def valve_ids(self) -> list[int]:
-        return [0]
+    def build_start_obj(
+        self, duration_seconds: int = DEFAULT_WATERING_DURATION
+    ) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="watering_timer_1",
+            ),
+            duration_seconds,
+        )
 
-    def build_close_all_valves_obj(self) -> EgressMessageList:
-        return self.build_close_valve_obj(valve_id=0)
+    def build_stop_obj(self) -> EgressMessageList:
+        return self.build_start_obj(0)
 
     @property
     def pump_mode(self) -> PumpMode | None:

@@ -87,20 +87,10 @@ async def test_epp_operating_mode(epp):
 
 
 @pytest.mark.asyncio
-async def test_epp_valve_count(epp):
-    assert epp.valve_count == 1
-
-
-@pytest.mark.asyncio
-async def test_epp_valve_ids(epp):
-    assert epp.valve_ids == [0]
+async def test_epp_has_no_valves(epp):
+    assert not hasattr(epp, "valve_ids")
 
 
 @pytest.mark.asyncio
 async def test_epp_watering_timer(epp):
-    assert epp.get_watering_timer(0) == 0
-
-
-@pytest.mark.asyncio
-async def test_epp_is_valve_open(epp):
-    assert epp.is_valve_open(0) is False
+    assert epp.watering_timer == 0

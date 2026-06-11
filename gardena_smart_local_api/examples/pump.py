@@ -62,7 +62,7 @@ async def main():
                 print(f"Pump state:          {pump.pump_state}")
                 print(f"Pump mode:           {pump.pump_mode}")
                 print(f"Operating mode:      {pump.operating_mode}")
-                print(f"Watering timer:      {pump.get_watering_timer(0)} s")
+                print(f"Watering timer:      {pump.watering_timer} s")
                 print()
                 print(f"Outlet pressure:     {pump.outlet_pressure} Bar")
                 print(f"Outlet pressure max: {pump.outlet_pressure_max} Bar")
@@ -82,7 +82,7 @@ async def main():
                     return 1
                 assert isinstance(pump, COMPATIBLE)
                 duration = int(app.args.value) if app.args.value is not None else 60
-                request = pump.build_open_valve_obj(0, duration)
+                request = pump.build_start_obj(duration)
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:
                     print("Failed to start pump")
@@ -94,7 +94,7 @@ async def main():
                 if (pump := app.device) is None:
                     return 1
                 assert isinstance(pump, COMPATIBLE)
-                request = pump.build_close_valve_obj(0)
+                request = pump.build_stop_obj()
                 result = await app.send_request(request)
                 if result is not None and not result[0].success:
                     print("Failed to stop pump")

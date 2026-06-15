@@ -84,6 +84,25 @@ class Device(BaseModel):
             delete_nested_key(self.data, event.entity.path)
             deep_merge_dict(self.data, nested)
 
+        self._invalidate_objects_cache(event.entity.path)
+
+    def _invalidate_objects_cache(self, path: IpsoPath) -> None:
+        cached = self.__dict__.get("objects")
+        if cached is None:
+            return
+
+        object_name = path.object_name
+        instance_id = path.object_instance_id
+        if object_name is None or instance_id is None:
+            return
+
+        object_data = self.model_definition.objects.get(object_name)
+        if not object_data or not object_data.get("multi_instance", False):
+            return
+
+        if instance_id not in cached.get(object_name, {}):
+            del self.__dict__["objects"]
+
     def get_value(self, path: IpsoPath) -> VALUE_TYPES | None:
         obj = self.data
         for key in path.segments:

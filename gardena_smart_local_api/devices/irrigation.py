@@ -245,7 +245,19 @@ class _Gen2Irrigation(Gen2Device):
     def is_valve_open(self, valve_id: int = 0) -> bool | None:
         if valve_id not in self.valve_ids:
             raise ValueError(f"Invalid valve ID {valve_id}")
-        return self.get_timeslot_state(valve_id) == TimeslotState.RUNNING
+        for timeslot_id in self.get_object_instance_ids("timeslot"):
+            if self.get_timeslot_state(int(timeslot_id)) != TimeslotState.RUNNING:
+                continue
+            actuator = self.get_value(
+                IpsoPath(
+                    object_name="timeslot",
+                    object_instance_id=timeslot_id,
+                    resource_name="actuator",
+                )
+            )
+            if actuator == valve_id:
+                return True
+        return False
 
     def get_timeslot_state(self, timeslot_id: int) -> TimeslotState | None:
         value = self.get_value(

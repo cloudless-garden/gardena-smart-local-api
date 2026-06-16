@@ -54,6 +54,70 @@ uv run gardena_smart_local_api/examples/irrigation.py --help
 
 ## Contributing
 
+### Debugging
+
+Various strategies exist to figure out why things are not working the way you want them to. This section lists some
+common ones.
+
+#### Verbose logging on the gateway
+
+websocketd:
+
+```
+mkdir -p /etc/systemd/system/websocketd.service.d
+cat << EOF > /etc/systemd/system/websocketd.service.d/debug.conf
+[Service]
+Environment=RUST_LOG=debug
+EOF
+systemctl daemon-reload && systemctl restart websocketd.service
+```
+
+lemonbeatd:
+
+```
+mkdir -p /etc/systemd/system/lemonbeatd.service.d
+cat << EOF > /etc/systemd/system/lemonbeatd.service.d/debug.conf
+[Service]
+Environment=RUST_LOG=debug
+EOF
+systemctl daemon-reload && systemctl restart lemonbeatd.service
+```
+
+lwm2mserver (add `--log-level=lwm2mserver.event=DEBUG` as a argument to lwm2mserver):
+
+```
+mkdir -p /etc/systemd/system/lwm2mserver.service.d
+cat << EOF > /etc/systemd/system/lwm2mserver.service.d/debug.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/lwm2mserver ppp0 --bind-to-device \\
+                                    --server-uri "coap://[fc00::6:100:0:0]" \\
+                                    --port 20017 \\
+                                    --lemonbeat-dongle-connection \\
+                                    --state-storage /var/lib/lwm2mserver \\
+                                    --lb-key-file /var/lib/lemonbeatd/Network_management/Network_key.json \\
+                                    --ipso-directories "\${IPSO_REGISTRY_DIR}/base" "\${IPSO_REGISTRY_DIR}/fwrolloutd" "\${IPSO_REGISTRY_DIR}/dev" \\
+                                    --log-level=lwm2mserver.event=DEBUG \\
+EOF
+systemctl daemon-reload && systemctl restart lwm2mserver.service
+```
+
+cloudadapter:
+
+```
+mkdir -p /etc/systemd/system/cloudadapter.service.d
+cat << EOF > /etc/systemd/system/cloudadapter.service.d/debug.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/cloudadapter --verbosity --debug
+EOF
+systemctl daemon-reload && systemctl restart cloudadapter.service
+```
+
+> [!TIP]
+> Cloudadapter is not needed for local usage and disabling the service saves resources. However, for reverse-engineering
+> how the services react to actions in the app, keeping the cloudadapter running and increasing its verbosity is helpful.
+
 ### Commits
 
 Try to keep commits reviewable, i.e. they should only contain one logical change and generally not be too big.

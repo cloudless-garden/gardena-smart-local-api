@@ -6,6 +6,7 @@ from typing import ClassVar, Protocol
 
 from pydantic import Field
 
+from ..messages import EgressMessageList
 from ..model_loader import Gen2ModelDefinition
 from ..resources import VALUE_TYPES, IpsoPath
 from .device import Device
@@ -35,3 +36,13 @@ class Gen2BatteryMixin:
 class Gen2Device(Device):
     model_definition: Gen2ModelDefinition = Field()
     service: ClassVar[str] = "lwm2mserver"
+
+    def build_install_firmware_update_obj(self) -> EgressMessageList:
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="update",
+            ),
+            None,
+        )

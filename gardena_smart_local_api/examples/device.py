@@ -18,8 +18,11 @@ extra_args = [
     {
         "name_or_flags": ["command"],
         "nargs": 1,
-        "choices": ("list", "include", "exclude"),
-        "help": "List included devices, include a new device, or exclude a device",
+        "choices": ("list", "info", "include", "exclude"),
+        "help": (
+            "List included devices, show device info, "
+            "include a new device, or exclude a device"
+        ),
     },
 ]
 
@@ -70,6 +73,25 @@ async def include(app: ExampleApp) -> int:
             return 1
 
 
+async def info(app: ExampleApp) -> int:
+    if (device := app.device) is None:
+        return 1
+
+    out = f"Device {device.id} ({device.model_definition.name}):\n"
+    out += f"  Manufacturer:    {device.manufacturer}\n"
+    out += f"  Serial number:   {device.serial_number}\n"
+    out += f"  Software version: {device.software_version}\n"
+    out += f"  Hardware version: {device.hardware_version}\n"
+    out += f"  Online:          {device.is_online}\n"
+    out += f"  Firmware update: {device.firmware_update_state}"
+    if (battery_level := getattr(device, "battery_level", None)) is not None:
+        out += f"\n  Battery:         {battery_level}%"
+    if (rf_link_quality := getattr(device, "rf_link_quality", None)) is not None:
+        out += f"\n  RF link quality: {rf_link_quality}%"
+    print(out)
+    return 0
+
+
 async def exclude(app: ExampleApp) -> int:
     device_id = app.args.device_id
     if device_id is None:
@@ -102,6 +124,9 @@ async def main():
             case "list":
                 app.list_devices()
                 return 0
+
+            case "info":
+                return await info(app)
 
             case "include":
                 return await include(app)

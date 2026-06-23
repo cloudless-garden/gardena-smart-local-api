@@ -12,6 +12,14 @@ from ..messages import EgressMessageList, Entity, Event, Request
 from ..model_loader import ModelDefinition, get_model_loader
 from ..resources import VALUE_TYPES, IpsoObject, IpsoPath, ValueField
 from ..utils import deep_merge_dict, delete_nested_key
+from ._enums import _LowerNameEnum
+
+
+class FirmwareUpdateState(_LowerNameEnum):
+    IDLE = 0
+    DOWNLOADING = 1
+    DOWNLOADED = 2
+    UPDATING = 3
 
 
 def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, T]:
@@ -339,6 +347,31 @@ class Device(BaseModel):
             )
         )
         return str(value) if value else None
+
+    @property
+    def firmware_update_state(self) -> FirmwareUpdateState | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="state",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return FirmwareUpdateState(value)
+            except ValueError:
+                pass
+        return None
+
+    def build_refresh_firmware_update_state_obj(self) -> EgressMessageList:
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="state",
+            )
+        )
 
     def __repr__(self) -> str:
         return (

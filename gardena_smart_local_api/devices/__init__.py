@@ -2,7 +2,13 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
-from .device import Device, DeviceMap, build_discovery_obj, build_inclusion_obj
+from .device import (
+    Device,
+    DeviceMap,
+    FirmwareUpdateState,
+    build_discovery_obj,
+    build_inclusion_obj,
+)
 from .device_builder import (
     create_devices_from_json,
     create_devices_from_messages,
@@ -27,6 +33,7 @@ from .sensors import Sensor1, Sensor2
 __all__ = [
     "Device",
     "DeviceMap",
+    "FirmwareUpdateState",
     "Gen1IrrigationControl",
     "Gen1Mower1",
     "Gen1Mower2",

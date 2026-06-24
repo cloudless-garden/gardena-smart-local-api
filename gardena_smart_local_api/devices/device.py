@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
+import re
 from collections.abc import MutableMapping
 from functools import cached_property
 from typing import Any, ClassVar, cast
@@ -370,6 +371,41 @@ class Device(BaseModel):
                 object_name="firmware_update",
                 object_instance_id="0",
                 resource_name="state",
+            )
+        )
+
+    @property
+    def available_firmware_version(self) -> str | None:
+        """Version of the pending firmware update, ``None`` if up to date."""
+        value = self.get_value(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="pkg_version",
+            )
+        )
+        return str(value) if value else None
+
+    @property
+    def available_software_version(self) -> str | None:
+        """Software version extracted from :attr:`available_firmware_version`."""
+        firmware_version = self.available_firmware_version
+        if not firmware_version:
+            return None
+        match = re.search(r"SwPkg(?:[_-][a-zA-Z0-9]+)*[_-](\d+\.\d+)", firmware_version)
+        if match:
+            return match.group(1)
+        match = re.fullmatch(r"(.+)-(.+)-(.+)", firmware_version)
+        if match:
+            return match.group(3)
+        return firmware_version
+
+    def build_refresh_available_firmware_version_obj(self) -> EgressMessageList:
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="pkg_version",
             )
         )
 

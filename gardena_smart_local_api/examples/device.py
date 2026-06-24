@@ -80,10 +80,12 @@ async def info(app: ExampleApp) -> int:
     out = f"Device {device.id} ({device.model_definition.name}):\n"
     out += f"  Manufacturer:    {device.manufacturer}\n"
     out += f"  Serial number:   {device.serial_number}\n"
-    out += f"  Software version: {device.software_version}\n"
+    out += f"  Software version: {device.software_version}"
+    if (available := device.available_software_version) is not None:
+        out += f" [yellow]→ {available} ({device.firmware_update_state})[/yellow]"
+    out += "\n"
     out += f"  Hardware version: {device.hardware_version}\n"
-    out += f"  Online:          {device.is_online}\n"
-    out += f"  Firmware update: {device.firmware_update_state}"
+    out += f"  Online:          {device.is_online}"
     if (battery_level := getattr(device, "battery_level", None)) is not None:
         out += f"\n  Battery:         {battery_level}%"
     if (rf_link_quality := getattr(device, "rf_link_quality", None)) is not None:

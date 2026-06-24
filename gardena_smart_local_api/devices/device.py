@@ -409,6 +409,16 @@ class Device(BaseModel):
             )
         )
 
+    def build_install_firmware_update_obj(self) -> EgressMessageList:
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="update",
+            ),
+            None,
+        )
+
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}(id={self.id!r}, "

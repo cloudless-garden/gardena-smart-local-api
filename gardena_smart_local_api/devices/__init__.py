@@ -5,6 +5,7 @@
 from .device import (
     Device,
     DeviceMap,
+    FirmwareUpdateResult,
     FirmwareUpdateState,
     build_discovery_obj,
     build_inclusion_obj,
@@ -33,6 +34,7 @@ from .sensors import Sensor1, Sensor2
 __all__ = [
     "Device",
     "DeviceMap",
+    "FirmwareUpdateResult",
     "FirmwareUpdateState",
     "Gen1IrrigationControl",
     "Gen1Mower1",

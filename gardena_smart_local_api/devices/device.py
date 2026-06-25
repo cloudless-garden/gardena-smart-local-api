@@ -23,6 +23,19 @@ class FirmwareUpdateState(_LowerNameEnum):
     UPDATING = 3
 
 
+class FirmwareUpdateResult(_LowerNameEnum):
+    INITIAL = 0
+    SUCCESS = 1
+    NOT_ENOUGH_FLASH = 2
+    OUT_OF_RAM = 3
+    CONNECTION_LOST = 4
+    INTEGRITY_CHECK_FAILURE = 5
+    UNSUPPORTED_PACKAGE_TYPE = 6
+    INVALID_URI = 7
+    UPDATE_FAILED = 8
+    UNSUPPORTED_PROTOCOL = 9
+
+
 def _value_to_payload[T: VALUE_TYPES](value: T) -> dict[str, T]:
     SCALAR_TYPE_MAP = {
         bool: "vb",
@@ -371,6 +384,31 @@ class Device(BaseModel):
                 object_name="firmware_update",
                 object_instance_id="0",
                 resource_name="state",
+            )
+        )
+
+    @property
+    def firmware_update_result(self) -> FirmwareUpdateResult | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="update_result",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return FirmwareUpdateResult(value)
+            except ValueError:
+                pass
+        return None
+
+    def build_refresh_firmware_update_result_obj(self) -> EgressMessageList:
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="firmware_update",
+                object_instance_id="0",
+                resource_name="update_result",
             )
         )
 

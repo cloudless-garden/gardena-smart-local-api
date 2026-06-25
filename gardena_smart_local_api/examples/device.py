@@ -9,19 +9,26 @@ import sys
 
 from rich import print
 
-from gardena_smart_local_api.devices import Device, build_inclusion_obj
+from gardena_smart_local_api.devices import (
+    Device,
+    FirmwareUpdateResult,
+    FirmwareUpdateState,
+    build_inclusion_obj,
+)
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import Reply
 from gardena_smart_local_api.sgtin96 import SGTIN96Info
+
+UPDATE_TIMEOUT_SECONDS = 600
 
 extra_args = [
     {
         "name_or_flags": ["command"],
         "nargs": 1,
-        "choices": ("list", "info", "include", "exclude"),
+        "choices": ("list", "info", "include", "exclude", "update"),
         "help": (
-            "List included devices, show device info, "
-            "include a new device, or exclude a device"
+            "List included devices, show device info, include a new device, "
+            "exclude a device, or install a firmware update"
         ),
     },
 ]
@@ -94,6 +101,52 @@ async def info(app: ExampleApp) -> int:
     return 0
 
 
+async def update(app: ExampleApp) -> int:
+    if (device := app.device) is None:
+        return 1
+
+    if (available := device.available_software_version) is None:
+        print("[green]No firmware update available.[/green]")
+        return 0
+
+    print(
+        f"Firmware update available: {device.software_version} "
+        f"[yellow]→ {available}[/yellow]"
+    )
+    answer = await prompt("Install update? [y/N] ")
+    if answer.strip().lower() != "y":
+        return 0
+
+    replies = await app.send_request(device.build_install_firmware_update_obj())
+    if not replies or not isinstance(replies[0], Reply) or not replies[0].success:
+        print("[red]Failed to trigger firmware update.[/red]")
+        return 1
+
+    print("Installing firmware update, this may take a while...")
+    last_state = None
+    started = False
+    for _ in range(UPDATE_TIMEOUT_SECONDS):
+        state = device.firmware_update_state
+        if state != last_state:
+            print(f"  State: {state}")
+            last_state = state
+        if state not in (None, FirmwareUpdateState.IDLE):
+            started = True
+        elif started and state == FirmwareUpdateState.IDLE:
+            break
+        await asyncio.sleep(1)
+    else:
+        print("[red]Timeout waiting for firmware update to finish.[/red]")
+        return 1
+
+    result = device.firmware_update_result
+    if result == FirmwareUpdateResult.SUCCESS:
+        print(f"[green]Firmware update successful ({result}).[/green]")
+        return 0
+    print(f"[red]Firmware update failed ({result}).[/red]")
+    return 1
+
+
 async def exclude(app: ExampleApp) -> int:
     device_id = app.args.device_id
     if device_id is None:
@@ -135,6 +188,9 @@ async def main():
 
             case "exclude":
                 return await exclude(app)
+
+            case "update":
+                return await update(app)
 
 
 if __name__ == "__main__":

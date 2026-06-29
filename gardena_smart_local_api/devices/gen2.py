@@ -32,6 +32,28 @@ class Gen2BatteryMixin:
         return None
 
 
+class Gen2TemperatureMixin:
+    @property
+    def temperature(self: _DeviceProtocol) -> float | None:
+        """
+        All battery driven Gen2 water controls have an ambient temperature entity.
+
+        The temperature is measured roughly every 31 minutes and every time the
+        valve changes its state. Reports are sent when the temperature difference is
+        greater than 2°C since the last report. Around the frost warning temperature of
+        4.0°C (±0.25°C hysteresis), the update occurs also when the frost warning state
+        changes.
+        """
+        value = self.get_value(
+            IpsoPath(
+                object_name="temperature",
+                object_instance_id="0",
+                resource_name="sensor_value",
+            )
+        )
+        return value if isinstance(value, float) else None
+
+
 class Gen2Device(Device):
     model_definition: Gen2ModelDefinition = Field()
     service: ClassVar[str] = "lwm2mserver"

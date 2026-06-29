@@ -14,7 +14,7 @@ from .gen1 import (
     Gen1IdentifyMixin,
     _Gen1DeviceProtocol,
 )
-from .gen2 import Gen2BatteryMixin, Gen2Device
+from .gen2 import Gen2BatteryMixin, Gen2Device, Gen2TemperatureMixin
 
 # Used to indicate that the action was initiated through WebSocket API.
 COMMAND_SOURCE = "18"
@@ -326,7 +326,7 @@ class _Gen2Irrigation(Gen2Device):
         return None
 
 
-class Gen2WaterControl(Gen2BatteryMixin, _Gen2Irrigation):
+class Gen2WaterControl(Gen2BatteryMixin, Gen2TemperatureMixin, _Gen2Irrigation):
     pass
 
 

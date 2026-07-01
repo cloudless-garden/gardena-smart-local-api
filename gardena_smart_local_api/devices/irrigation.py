@@ -7,7 +7,13 @@ from abc import ABC, abstractmethod
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
-from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, Gen1IdentifyMixin
+from .gen1 import (
+    Gen1BatteryMixin,
+    Gen1Device,
+    Gen1FrostWarningMixin,
+    Gen1IdentifyMixin,
+    _Gen1DeviceProtocol,
+)
 from .gen2 import Gen2BatteryMixin, Gen2Device
 
 # Used to indicate that the action was initiated through WebSocket API.
@@ -62,6 +68,45 @@ class PumpState(_LowerNameEnum):
     NO_WATER_IN_THE_PUMP_BODY = 2
     FLOW_AFTER_5S = 3
     NO_FLOW_AFTER_5S = 4
+
+
+class Gen1IrrigationScheduleMixin:
+    @property
+    def schedule_config(self: _Gen1DeviceProtocol) -> bytes | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="schedule_config",
+            )
+        )
+        return value if isinstance(value, bytes) else None
+
+    @property
+    def schedule_count(self: "Gen1IrrigationScheduleMixin") -> int:
+        config = self.schedule_config
+        return len(config) // 7 if config else 0
+
+    def build_refresh_schedule_config_obj(
+        self: _Gen1DeviceProtocol,
+    ) -> EgressMessageList:
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="schedule_config",
+            )
+        )
+
+    def build_clear_schedules_obj(self: _Gen1DeviceProtocol) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="schedule_config",
+            ),
+            b"",
+        )
 
 
 class _Gen1Irrigation(Gen1Device, ABC):
@@ -122,7 +167,11 @@ class _Gen1Irrigation(Gen1Device, ABC):
 
 
 class Gen1WaterControl(
-    Gen1BatteryMixin, Gen1IdentifyMixin, Gen1FrostWarningMixin, _Gen1Irrigation
+    Gen1BatteryMixin,
+    Gen1IdentifyMixin,
+    Gen1FrostWarningMixin,
+    Gen1IrrigationScheduleMixin,
+    _Gen1Irrigation,
 ):
     @property
     def valve_count(self) -> int:
@@ -181,7 +230,9 @@ class Gen1WaterControl(
         )
 
 
-class Gen1IrrigationControl(Gen1IdentifyMixin, _Gen1Irrigation):
+class Gen1IrrigationControl(
+    Gen1IdentifyMixin, Gen1IrrigationScheduleMixin, _Gen1Irrigation
+):
     @property
     def valve_count(self) -> int:
         return 6
@@ -283,7 +334,9 @@ class Gen2IrrigationControl(_Gen2Irrigation):
     pass
 
 
-class Pump(Gen1IdentifyMixin, Gen1FrostWarningMixin, Gen1Device):
+class Pump(
+    Gen1IdentifyMixin, Gen1FrostWarningMixin, Gen1IrrigationScheduleMixin, Gen1Device
+):
     @property
     def watering_timer(self) -> int | None:
         value = self.get_value(

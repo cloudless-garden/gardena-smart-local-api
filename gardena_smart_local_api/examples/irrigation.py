@@ -14,6 +14,7 @@ from gardena_smart_local_api.devices import (
     Gen2WaterControl,
     TimeslotState,
 )
+from gardena_smart_local_api.devices.irrigation import Gen1IrrigationScheduleMixin
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
@@ -30,8 +31,8 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop"),
-            "help": "List applicable devices or start/stop watering",
+            "choices": ("list", "start", "stop", "clear-schedules", "read-schedules"),
+            "help": "List devices, start/stop watering, or read/clear schedules",
         },
         {
             "name_or_flags": ["valve_id"],
@@ -100,6 +101,46 @@ async def main():
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
+
+            case "clear-schedules":
+                if (wc := app.device) is None:
+                    return 1
+                assert isinstance(wc, COMPATIBLE)
+
+                if not isinstance(wc, Gen1IrrigationScheduleMixin):
+                    print("clear-schedules only supported on Gen1 devices")
+                    return 1
+
+                result = await app.send_request(wc.build_clear_schedules_obj())
+
+                if result is None or not result[0].success:
+                    print("Failed to clear schedules")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+
+            case "read-schedules":
+                if (wc := app.device) is None:
+                    return 1
+                assert isinstance(wc, COMPATIBLE)
+
+                if not isinstance(wc, Gen1IrrigationScheduleMixin):
+                    print("read-schedules only supported on Gen1 devices")
+                    return 1
+
+                result = await app.send_request(wc.build_refresh_schedule_config_obj())
+                if result is None or not result[0].success:
+                    print("Failed to read schedules")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+
+                if wc.schedule_count == 0:
+                    print("No schedules configured")
+                else:
+                    assert wc.schedule_config is not None
+                    raw = wc.schedule_config.hex()
+                    print(f"{wc.schedule_count} schedule(s), raw: {raw}")
 
 
 if __name__ == "__main__":

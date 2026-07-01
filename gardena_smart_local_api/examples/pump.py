@@ -30,6 +30,8 @@ async def main():
                 "set-dripping-alert",
                 "reset-flow",
                 "reset-temp-min-max",
+                "read-schedules",
+                "clear-schedules",
             ),
             "help": "Command to execute",
         },
@@ -186,6 +188,35 @@ async def main():
                 if result is not None and not result[0].success:
                     print("Failed to reset temperature min/max")
                     if isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+
+            case "read-schedules":
+                if (pump := app.device) is None:
+                    return 1
+                assert isinstance(pump, COMPATIBLE)
+                request = pump.build_refresh_schedule_config_obj()
+                result = await app.send_request(request)
+                if result is None or not result[0].success:
+                    print("Failed to read schedules")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+                if pump.schedule_count == 0:
+                    print("No schedules configured")
+                else:
+                    assert pump.schedule_config is not None
+                    raw = pump.schedule_config.hex()
+                    print(f"{pump.schedule_count} schedule(s), raw: {raw}")
+
+            case "clear-schedules":
+                if (pump := app.device) is None:
+                    return 1
+                assert isinstance(pump, COMPATIBLE)
+                result = await app.send_request(pump.build_clear_schedules_obj())
+                if result is None or not result[0].success:
+                    print("Failed to clear schedules")
+                    if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 

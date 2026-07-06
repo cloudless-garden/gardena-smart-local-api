@@ -5,6 +5,7 @@
     "op": "update",
     "payload": {
       "power_timer": { "ts": 1774970419, "vi": 3597 },
+      "sun_schedule_config": { "ts": 1774970419, "vo": "AgABWgEkEg==" },
       "_urn": "urn:oma:lwm2m:x:31000"
     }
   }

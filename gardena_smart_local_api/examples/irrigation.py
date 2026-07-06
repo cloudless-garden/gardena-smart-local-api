@@ -55,12 +55,12 @@ async def main():
                 app.list_devices()
 
             case "start":
-                if (wc := app.device) is None:
+                if (irrigation_device := app.device) is None:
                     return 1
-                assert isinstance(wc, COMPATIBLE)
+                assert isinstance(irrigation_device, COMPATIBLE)
 
                 try:
-                    request = wc.build_open_valve_obj(
+                    request = irrigation_device.build_open_valve_obj(
                         app.args.valve_id if app.args.valve_id is not None else 0,
                         app.args.duration,
                     )
@@ -75,24 +75,28 @@ async def main():
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
-                if isinstance(wc, (Gen2IrrigationControl, Gen2WaterControl)):
-                    status = wc.get_timeslot_state(app.args.valve_id)
+                if isinstance(
+                    irrigation_device, (Gen2IrrigationControl, Gen2WaterControl)
+                ):
+                    status = irrigation_device.get_timeslot_state(app.args.valve_id)
                     if status == TimeslotState.ERROR:
                         print("Device refused to start watering")
 
             case "stop":
-                if (wc := app.device) is None:
+                if (irrigation_device := app.device) is None:
                     return 1
-                assert isinstance(wc, COMPATIBLE)
+                assert isinstance(irrigation_device, COMPATIBLE)
 
                 if app.args.valve_id is not None:
                     try:
-                        request = wc.build_close_valve_obj(app.args.valve_id)
+                        request = irrigation_device.build_close_valve_obj(
+                            app.args.valve_id
+                        )
                     except ValueError:
                         print(f"Invalid valve ID provided: {app.args.valve_id}")
                         return 1
                 else:
-                    request = wc.build_close_all_valves_obj()
+                    request = irrigation_device.build_close_all_valves_obj()
 
                 result = await app.send_request(request)
 
@@ -103,15 +107,17 @@ async def main():
                     return 1
 
             case "clear-schedules":
-                if (wc := app.device) is None:
+                if (irrigation_device := app.device) is None:
                     return 1
-                assert isinstance(wc, COMPATIBLE)
+                assert isinstance(irrigation_device, COMPATIBLE)
 
-                if not isinstance(wc, Gen1IrrigationScheduleMixin):
+                if not isinstance(irrigation_device, Gen1IrrigationScheduleMixin):
                     print("clear-schedules only supported on Gen1 devices")
                     return 1
 
-                result = await app.send_request(wc.build_clear_schedules_obj())
+                result = await app.send_request(
+                    irrigation_device.build_clear_schedules_obj()
+                )
 
                 if result is None or not result[0].success:
                     print("Failed to clear schedules")
@@ -120,27 +126,29 @@ async def main():
                     return 1
 
             case "read-schedules":
-                if (wc := app.device) is None:
+                if (irrigation_device := app.device) is None:
                     return 1
-                assert isinstance(wc, COMPATIBLE)
+                assert isinstance(irrigation_device, COMPATIBLE)
 
-                if not isinstance(wc, Gen1IrrigationScheduleMixin):
+                if not isinstance(irrigation_device, Gen1IrrigationScheduleMixin):
                     print("read-schedules only supported on Gen1 devices")
                     return 1
 
-                result = await app.send_request(wc.build_refresh_schedule_config_obj())
+                result = await app.send_request(
+                    irrigation_device.build_refresh_schedule_config_obj()
+                )
                 if result is None or not result[0].success:
                     print("Failed to read schedules")
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1
 
-                if wc.schedule_count == 0:
+                if irrigation_device.schedule_count == 0:
                     print("No schedules configured")
                 else:
-                    assert wc.schedule_config is not None
-                    raw = wc.schedule_config.hex()
-                    print(f"{wc.schedule_count} schedule(s), raw: {raw}")
+                    assert irrigation_device.schedule_config is not None
+                    raw = irrigation_device.schedule_config.hex()
+                    print(f"{irrigation_device.schedule_count} schedule(s), raw: {raw}")
 
 
 if __name__ == "__main__":

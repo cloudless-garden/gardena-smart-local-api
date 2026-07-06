@@ -39,3 +39,38 @@ class PowerAdapter(Gen1IdentifyMixin, Gen1Device):
 
     def build_disable_output_obj(self) -> EgressMessageList:
         return self.build_enable_output_obj(0)
+
+    @property
+    def sun_schedule_config(self) -> bytes | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="sun_schedule_config",
+            )
+        )
+        return value if isinstance(value, bytes) else None
+
+    @property
+    def schedule_count(self) -> int:
+        config = self.sun_schedule_config
+        return len(config) // 7 if config else 0
+
+    def build_refresh_sun_schedule_config_obj(self) -> EgressMessageList:
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="sun_schedule_config",
+            )
+        )
+
+    def build_clear_schedules_obj(self) -> EgressMessageList:
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="sun_schedule_config",
+            ),
+            b"",
+        )

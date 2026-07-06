@@ -19,7 +19,14 @@ async def main():
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "on", "off", "identify"),
+            "choices": (
+                "list",
+                "on",
+                "off",
+                "identify",
+                "read-schedules",
+                "clear-schedules",
+            ),
             "help": "List applicable devices, identify or turn power on/off",
         },
         {
@@ -68,6 +75,35 @@ async def main():
                 result = await app.send_request(request)
                 if result is None or not result[0].success:
                     print("Failed to identify")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+
+            case "read-schedules":
+                if (pa := app.device) is None:
+                    return 1
+                assert isinstance(pa, COMPATIBLE)
+                request = pa.build_refresh_sun_schedule_config_obj()
+                result = await app.send_request(request)
+                if result is None or not result[0].success:
+                    print("Failed to read schedules")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+                if pa.schedule_count == 0:
+                    print("No schedules configured")
+                else:
+                    assert pa.sun_schedule_config is not None
+                    raw = pa.sun_schedule_config.hex()
+                    print(f"{pa.schedule_count} schedule(s), raw: {raw}")
+
+            case "clear-schedules":
+                if (pa := app.device) is None:
+                    return 1
+                assert isinstance(pa, COMPATIBLE)
+                result = await app.send_request(pa.build_clear_schedules_obj())
+                if result is None or not result[0].success:
+                    print("Failed to clear schedules")
                     if result is not None and isinstance(result[0], ErrorMessage):
                         print(f"Error: {result[0].error_message}")
                     return 1

@@ -78,6 +78,41 @@ async def test_power_adapter_build_disable_output(power_adapter):
 
 
 @pytest.mark.asyncio
+async def test_power_adapter_no_schedules(power_adapter):
+    assert power_adapter.sun_schedule_config == b""
+    assert power_adapter.schedule_count == 0
+
+
+@pytest.mark.asyncio
+async def test_power_adapter_schedule_count(power_adapter, power_adapter_update_event):
+    event = power_adapter_update_event[0]
+    power_adapter.update_data(event)
+    assert power_adapter.sun_schedule_config == bytes.fromhex("0200015a012412")
+    assert power_adapter.schedule_count == 1
+
+
+@pytest.mark.asyncio
+async def test_power_adapter_build_refresh_sun_schedule_config(power_adapter):
+    request = power_adapter.build_refresh_sun_schedule_config_obj().root[0]
+    assert request.op == "read"
+    assert request.entity.device == power_adapter.id
+    assert request.entity.path.object_name == "lemonbeat"
+    assert request.entity.path.object_instance_id == "0"
+    assert request.entity.path.resource_name == "sun_schedule_config"
+
+
+@pytest.mark.asyncio
+async def test_power_adapter_build_clear_schedules(power_adapter):
+    request = power_adapter.build_clear_schedules_obj().root[0]
+    assert request.op == "write"
+    assert request.entity.device == power_adapter.id
+    assert request.entity.path.object_name == "lemonbeat"
+    assert request.entity.path.object_instance_id == "0"
+    assert request.entity.path.resource_name == "sun_schedule_config"
+    assert request.payload == {"vo": ""}
+
+
+@pytest.mark.asyncio
 async def test_power_adapter_build_identify(power_adapter):
     request = power_adapter.build_identify_obj().root[0]
     assert request.op == "write"

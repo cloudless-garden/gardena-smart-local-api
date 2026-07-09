@@ -13,14 +13,50 @@ from gardena_smart_local_api.utils.schedules import (
     SunScheduleEntry,
     TimeOffset,
     Weekday,
+    gen1_schedule_config_to_base64,
+    gen1_sun_schedule_config_to_base64,
     parse_gen1_schedule_config,
     parse_gen1_sun_schedule_config,
 )
 
-# Real lemonbeat/schedule_config payload captured from a gateway.
 SCHEDULE_CONFIG_B64 = "BX8GMh4ABAJ/BAoFAAQEfwYZGQABA38GABkAAAB/BAAFAAABfwQFBQAB"
-# Real lemonbeat/sun_schedule_config payload captured from a gateway.
 SUN_SCHEDULE_CONFIG_B64 = "YD6gWAH/P6AZoB0B/z9wEnAWAf8/AA/gDwH/PyAh4CMB/z8="
+
+# Real schedule_config payloads captured from gateways, one per device type.
+SCHEDULE_CONFIG_B64_BY_DEVICE = {
+    "power_adapter": (
+        "GAgXAAUAACIIFxQFAAAECBcoBQAABRAAAQUAABkQABQFAAAWEAAoBQAAFBABAAUAABAQ"
+        "ARQFAAASEAEoBQAAGhACAAUAAAwQAhQFAAAVEAIoBQAACBADAAUAACAQAxQFAAABEAMo"
+        "BQAAHRAEAAUAACMQBBQFAAAGEAQoBQAACxAFAAUAAAAQBRQFAAAbEAUoBQAADhAGAAUA"
+        "AAMQBhQFAAAKEAYoBQAADxAHAAUAABcQBxQFAAAeEAcoBQAABxAUAAUAAB8QFBQFAAAC"
+        "EBQoBQAAExAVAAUAABEQFRQFAAAhEBUoBQAADRAWAAUAAAkQFhQFAAAcEBYoBQAA"
+    ),
+    "automatic_pump": (
+        "gH8LHgUAAIF/CygFAACCAQsyBQAAg38MAAUAAIQBDAoFAACFAQwUBQAAhgEMHgUAAId/"
+        "DCgFAACIAQwyBQAAiX8NAAUAAIoBDQoFAACLfw0UBQAAjAENHgUAAI1/DSgFAACOAQ0y"
+        "BQAAj38OAAUAAJABDgoFAACRfw4UBQAAkn8OKAoAAJN/DwAFAACUAQ8KBQAAlX8PFAUA"
+        "AJYBDx4FAACXfw8oBQAAmAEPMgUAAJl/EAAFAACaARAKBQAAm38QFAUAAJwBEB4FAACd"
+        "fxAoBQAAngEQMgUAAJ9/EQAKAACgAREPBQAAoQERGQQAAA=="
+    ),
+    "robotic_lawnmower": (
+        "AAEIALgBAAEBFAB4AAACAggAuAEAAwIUAHgAAAQECAC4AQAFBBQAeAAABggIALgBAAcI"
+        "FAB4AAAIEAgAuAEACRAUAHgAAAogCAC4AQALIBQAeAAADEAIALgBAA1AFAB4AAA="
+    ),
+    "water_control": (
+        "gH8AAAEAAIF/AB4BAACCfwUAAQAAg38FHgEAAIR/BgABAACFfwYeAQAAhn8HAAEAAId/"
+        "Bx4BAACIfwgAAQAAiX8IHgEAAIp/CQABAACLfwkeAQAAjH8KAAEAAI1/Ch4BAACOfwsA"
+        "AQAAj38LHgEAAJB/DAABAACRfwweAQAAkn8NAAEAAJN/DR4BAACUfw4AAQAAlX8OHgEA"
+        "AJZ/DwABAACXfxEAAQAAmH8RHgEAAJl/Eh4BAACafxMAAQAAm38THgEAAJx/FAABAACd"
+        "fxQeAQAAnn8VAAEAAJ9/FR4BAACgfxYAAQAAoX8WHgEAAKJ/FwABAACjfxceAQAA"
+    ),
+    "irrigation_control": (
+        "gD4HAAMAAIF/CgADAACCfwsAAwAAg38MAAMAAIR/DQADAACFfw4AAwAAhn8PAAMAAId/"
+        "EAADAACIfxEAAwAAiX8SAAMAAIp/EwADAACLPgcKAwABjH8KCgMAAY1/CwoDAAGOPgwK"
+        "BAABj38NCgMAAZA+DgoEAAGRPhAKBAABkn8SCgMAAZM+EwoEAAGUPgcUBAAClT4KFAQA"
+        "ApY+DBQEAAKXPg4UBAACmD4QFAQAApk+ExQEAAKaPgceBAADmz4KHgQAA5w+DB4EAAOd"
+        "Pg4eBAADnj4QHgQAA58+Ex4EAAOgPggAHgAEoT4UAB4ABKI+CAAeAAWjPhQAHgAF"
+    ),
+}
 
 
 def test_schedule_entry_from_bytes():
@@ -72,6 +108,18 @@ def test_parse_schedule_config_real_gateway_payload():
         ScheduleEntry(0, Weekday(0x7F), 4, 0, 5, action=0),
         ScheduleEntry(1, Weekday(0x7F), 4, 5, 5, action=1),
     ]
+
+
+def test_schedule_config_to_base64_round_trip():
+    entries = parse_gen1_schedule_config(base64.b64decode(SCHEDULE_CONFIG_B64))
+    assert gen1_schedule_config_to_base64(entries) == SCHEDULE_CONFIG_B64
+
+
+@pytest.mark.parametrize("device", sorted(SCHEDULE_CONFIG_B64_BY_DEVICE))
+def test_schedule_config_to_base64_round_trip_real_devices(device):
+    config_b64 = SCHEDULE_CONFIG_B64_BY_DEVICE[device]
+    entries = parse_gen1_schedule_config(base64.b64decode(config_b64))
+    assert gen1_schedule_config_to_base64(entries) == config_b64
 
 
 def test_sun_schedule_entry_from_bytes_wrong_size():
@@ -129,3 +177,8 @@ def test_parse_sun_schedule_config_real_gateway_payload():
             flag=False,
         ),
     ]
+
+
+def test_sun_schedule_config_to_base64_round_trip():
+    entries = parse_gen1_sun_schedule_config(base64.b64decode(SUN_SCHEDULE_CONFIG_B64))
+    assert gen1_sun_schedule_config_to_base64(entries) == SUN_SCHEDULE_CONFIG_B64

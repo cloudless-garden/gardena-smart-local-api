@@ -19,6 +19,7 @@ no longer use these lemonbeat paths and have a different schedule format
 that this module does not (yet) support.
 """
 
+import base64
 from dataclasses import dataclass
 from enum import IntEnum, IntFlag
 
@@ -81,6 +82,20 @@ class ScheduleEntry:
             action=data[6],
         )
 
+    def to_bytes(self) -> bytes:
+        return (
+            bytes(
+                [
+                    self.schedule_id,
+                    int(self.weekdays),
+                    self.start_hour,
+                    self.start_minute,
+                ]
+            )
+            + self.duration_minutes.to_bytes(2, byteorder="little")
+            + bytes([self.action])
+        )
+
 
 def parse_gen1_schedule_config(config: bytes) -> list[ScheduleEntry]:
     """Parse a Gen1 `schedule_config` byte blob into individual schedule entries."""
@@ -94,6 +109,16 @@ def parse_gen1_schedule_config(config: bytes) -> list[ScheduleEntry]:
     ]
 
 
+def build_gen1_schedule_config(entries: list[ScheduleEntry]) -> bytes:
+    """Encode schedule entries into a Gen1 `schedule_config` byte blob."""
+    return b"".join(entry.to_bytes() for entry in entries)
+
+
+def gen1_schedule_config_to_base64(entries: list[ScheduleEntry]) -> str:
+    """Encode schedule entries into the base64 string used in the gateway JSON."""
+    return base64.b64encode(build_gen1_schedule_config(entries)).decode()
+
+
 @dataclass
 class TimeOffset:
     point: OffsetPoint
@@ -103,6 +128,10 @@ class TimeOffset:
     def from_bytes(cls, data: bytes) -> "TimeOffset":
         raw = int.from_bytes(data, byteorder="little")
         return cls(point=OffsetPoint(raw & 0b11), minutes=raw >> 4)
+
+    def to_bytes(self) -> bytes:
+        raw = (self.minutes << 4) | self.point
+        return raw.to_bytes(2, byteorder="little")
 
 
 @dataclass
@@ -135,6 +164,19 @@ class SunScheduleEntry:
             flag=bool(mid & 0x80),
         )
 
+    def to_bytes(self) -> bytes:
+        mid = (0x80 if self.flag else 0) | (self.action_id << 4) | self.cycle
+        recurrence = 0
+        for bit, name in enumerate(_RECURRENCE_DAY_ORDER):
+            if self.weekdays & Weekday[name]:
+                recurrence |= (1 << bit) | (1 << (bit + 7))
+        return (
+            self.start.to_bytes()
+            + self.stop.to_bytes()
+            + bytes([mid])
+            + recurrence.to_bytes(2, byteorder="little")
+        )
+
 
 def parse_gen1_sun_schedule_config(config: bytes) -> list[SunScheduleEntry]:
     """Parse a Gen1 `sun_schedule_config` byte blob into individual schedule entries."""
@@ -147,3 +189,13 @@ def parse_gen1_sun_schedule_config(config: bytes) -> list[SunScheduleEntry]:
         SunScheduleEntry.from_bytes(config[i : i + SUN_SCHEDULE_ENTRY_SIZE])
         for i in range(0, len(config), SUN_SCHEDULE_ENTRY_SIZE)
     ]
+
+
+def build_gen1_sun_schedule_config(entries: list[SunScheduleEntry]) -> bytes:
+    """Encode sun schedule entries into a Gen1 `sun_schedule_config` byte blob."""
+    return b"".join(entry.to_bytes() for entry in entries)
+
+
+def gen1_sun_schedule_config_to_base64(entries: list[SunScheduleEntry]) -> str:
+    """Encode sun schedule entries into the base64 string used in the gateway JSON."""
+    return base64.b64encode(build_gen1_sun_schedule_config(entries)).decode()

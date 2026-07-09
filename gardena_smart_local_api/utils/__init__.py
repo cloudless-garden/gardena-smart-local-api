@@ -4,7 +4,7 @@
 
 from typing import Any
 
-from .resources import IpsoPath
+from ..resources import IpsoPath
 
 
 def deep_merge_dict(target: dict[str, Any], source: dict[str, Any]) -> None:

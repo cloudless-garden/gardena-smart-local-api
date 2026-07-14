@@ -61,7 +61,7 @@ class ExampleApp:
             "-j",
             "--dump-json",
             action="store_true",
-            help="Save received messages to JSON files in the current directory",
+            help="Save sent/received messages to JSON files in the current directory",
         )
         parser.add_argument(
             "-w",
@@ -191,6 +191,9 @@ class ExampleApp:
         return None
 
     async def send_request(self, reqs: EgressMessageList) -> IngressMessageList | None:
+        if self.args.dump_json:
+            with open(f"{time.monotonic_ns()}_request.json", "w") as f:
+                f.write(reqs.model_dump_json(exclude_none=True, indent=2) + "\n")
         await self.send(str(reqs))
 
         request_ids = {m.request_id for m in reqs}

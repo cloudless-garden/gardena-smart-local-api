@@ -138,7 +138,7 @@ class ExampleApp:
 
                 if self.args.dump_json and dumpfile is not None:
                     with open(dumpfile, "w") as f:
-                        f.write(msg.model_dump_json(exclude_none=True, indent=2))
+                        f.write(msg.model_dump_json(exclude_none=True, indent=2) + "\n")
 
     async def _device_updater(self):
         while not self._exiting.is_set():

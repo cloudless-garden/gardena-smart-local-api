@@ -79,7 +79,14 @@ async def main():
                 if (mower := app.device) is None:
                     return 1
                 assert isinstance(mower, COMPATIBLE)
-                print(f"Mower state: {mower.state}")
+                print(f"Mower State: {mower.state}")
+                print(f"Battery Level: {mower.battery_level}%")
+                print(f"Charging Cycles: {mower.charging_cycles}")
+                print(f"Cutting Time: {mower.cutting_time}h")
+                print(f"Running Time: {mower.running_time}h")
+                print(f"Collisions: {mower.collisions}")
+                print(f"Guide Wire Length: {mower.guide_wire_length}m")
+                print(f"RF Link Quality: {mower.rf_link_quality}%")
 
 
 if __name__ == "__main__":

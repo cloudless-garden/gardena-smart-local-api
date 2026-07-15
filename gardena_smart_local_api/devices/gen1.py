@@ -108,6 +108,71 @@ class Gen1Device(Device):
         return EgressMessageList([request])
 
     @property
+    def charging_cycles(self: _Gen1DeviceProtocol) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="charging_cycles",
+            )
+        )
+        if isinstance(value, int):
+            return int(value)
+        return None
+
+    @property
+    def cutting_time(self: _Gen1DeviceProtocol) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="cutting_time",
+            )
+        )
+        if isinstance(value, int):
+            return int(value)
+        return None
+
+    @property
+    def running_time(self: _Gen1DeviceProtocol) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="running_time",
+            )
+        )
+        if isinstance(value, int):
+            return int(value)
+        return None
+
+    @property
+    def collisions(self: _Gen1DeviceProtocol) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="collisions",
+            )
+        )
+        if isinstance(value, int):
+            return int(value)
+        return None
+
+    @property
+    def guide_wire_length(self: _Gen1DeviceProtocol) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="guide_wire_length",
+            )
+        )
+        if isinstance(value, int):
+            return int(value)
+        return None
+
+    @property
     def rf_link_quality(self) -> int | None:
         value = self.get_value(
             IpsoPath(

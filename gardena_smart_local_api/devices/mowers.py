@@ -5,8 +5,14 @@
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
-from .gen1 import Gen1BatteryMixin, Gen1Device
-from .gen2 import Gen2BatteryMixin, Gen2Device
+from .gen1 import (
+    Gen1BatteryMixin,
+    Gen1Device,
+)
+from .gen2 import (
+    Gen2BatteryMixin,
+    Gen2Device,
+)
 
 
 class MowerState(_LowerNameEnum):
@@ -64,7 +70,10 @@ class _Gen2MowerActivity(_LowerNameEnum):
     STOPPED_IN_GARDEN = 6
 
 
-class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
+class _Gen1Mower(
+    Gen1BatteryMixin,
+    Gen1Device,
+):
     """Robotic lawn mower base class"""
 
     @property
@@ -184,7 +193,10 @@ class Gen1Mower2(_Gen1Mower):
         )
 
 
-class Gen2Mower(Gen2BatteryMixin, Gen2Device):
+class Gen2Mower(
+    Gen2BatteryMixin,
+    Gen2Device,
+):
     @property
     def _activity(self) -> _Gen2MowerActivity | None:
         value = self.get_value(

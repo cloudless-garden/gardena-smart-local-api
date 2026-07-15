@@ -257,6 +257,47 @@ class _Gen2Irrigation(Gen2Device):
     def valve_ids(self) -> list[int]:
         return list(map(int, self.get_object_instance_ids("actuator")))
 
+    def get_button_config_time(self, valve_id: int = 0) -> int | None:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        value = self.get_value(
+            IpsoPath(
+                object_name="actuator",
+                object_instance_id=str(valve_id),
+                resource_name="default_duration_seconds",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    def build_refresh_button_config_time_obj(
+        self, valve_id: int = 0
+    ) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        return self.build_read_value_obj(
+            IpsoPath(
+                object_name="actuator",
+                object_instance_id=str(valve_id),
+                resource_name="default_duration_seconds",
+            )
+        )
+
+    def build_set_button_config_time_obj(
+        self, seconds: int, valve_id: int = 0
+    ) -> EgressMessageList:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="actuator",
+                object_instance_id=str(valve_id),
+                resource_name="default_duration_seconds",
+            ),
+            seconds,
+        )
+
     def build_open_valve_obj(
         self, valve_id: int = 0, duration_seconds: int = DEFAULT_WATERING_DURATION
     ) -> EgressMessageList:

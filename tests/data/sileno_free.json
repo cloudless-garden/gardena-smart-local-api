@@ -1,0 +1,1531 @@
+[
+  {
+    "payload": {
+      "3034F8319C007A000000149B": {
+        "battery": {
+          "0": {
+            "remaining_charging_time": {
+              "ts": 1777382375,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31418:1.0"
+        },
+        "ble": {
+          "0": {
+            "all_bonds_erased__event": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "local_bd_address": {
+              "ts": 1777302338,
+              "vo": "6AaQ3MRK"
+            },
+            "number_connected": {
+              "ts": 1777391673,
+              "vi": 0
+            },
+            "pairable": {
+              "ts": 1777391587,
+              "vb": false
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31429:1.0"
+        },
+        "calendar": {
+          "0": {
+            "max_number_of_tasks": {
+              "ts": 1777302334,
+              "vi": 15
+            },
+            "max_number_of_tasks_per_day": {
+              "ts": 1777302334,
+              "vi": 15
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31402:0.1"
+        },
+        "calendar_area_composite__tasks_with_area_id": {
+          "0": {
+            "area_id": {
+              "ts": 1777321416,
+              "vs": "1"
+            },
+            "duration": {
+              "ts": 1777321416,
+              "vi": 32400
+            },
+            "start": {
+              "ts": 1777321416,
+              "vi": 32404
+            },
+            "use_on_friday": {
+              "ts": 1777321416,
+              "vb": true
+            },
+            "use_on_monday": {
+              "ts": 1777321416,
+              "vb": true
+            },
+            "use_on_saturday": {
+              "ts": 1777321416,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777321416,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777321416,
+              "vb": true
+            },
+            "use_on_tuesday": {
+              "ts": 1777321416,
+              "vb": true
+            },
+            "use_on_wednesday": {
+              "ts": 1777321416,
+              "vb": true
+            }
+          },
+          "1": {
+            "area_id": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302334,
+              "vb": false
+            }
+          },
+          "10": {
+            "area_id": {
+              "ts": 1777302336,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302336,
+              "vb": false
+            }
+          },
+          "11": {
+            "area_id": {
+              "ts": 1777302336,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302336,
+              "vb": false
+            }
+          },
+          "12": {
+            "area_id": {
+              "ts": 1777302336,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302336,
+              "vb": false
+            }
+          },
+          "13": {
+            "area_id": {
+              "ts": 1777302336,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302336,
+              "vb": false
+            }
+          },
+          "14": {
+            "area_id": {
+              "ts": 1777302337,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302337,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302337,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302337,
+              "vb": false
+            }
+          },
+          "2": {
+            "area_id": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302334,
+              "vb": false
+            }
+          },
+          "3": {
+            "area_id": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302334,
+              "vb": false
+            }
+          },
+          "4": {
+            "area_id": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302334,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302334,
+              "vb": false
+            }
+          },
+          "5": {
+            "area_id": {
+              "ts": 1777302335,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302335,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302335,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302335,
+              "vb": false
+            }
+          },
+          "6": {
+            "area_id": {
+              "ts": 1777302335,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302335,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302335,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302335,
+              "vb": false
+            }
+          },
+          "7": {
+            "area_id": {
+              "ts": 1777302335,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302335,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302335,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302335,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302335,
+              "vb": false
+            }
+          },
+          "8": {
+            "area_id": {
+              "ts": 1777302336,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302336,
+              "vb": false
+            }
+          },
+          "9": {
+            "area_id": {
+              "ts": 1777302336,
+              "vs": ""
+            },
+            "duration": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "start": {
+              "ts": 1777302336,
+              "vi": 0
+            },
+            "use_on_friday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_monday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_saturday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_sunday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_thursday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_tuesday": {
+              "ts": 1777302336,
+              "vb": false
+            },
+            "use_on_wednesday": {
+              "ts": 1777302336,
+              "vb": false
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31509:0.1"
+        },
+        "charging_station": {
+          "0": {
+            "mower_in_charging_station": {
+              "ts": 1777391281,
+              "vb": false
+            },
+            "pairing_failed__event": {
+              "ts": 1750097741,
+              "vb": true
+            },
+            "pairing_successful__event": {
+              "ts": 1754163027,
+              "vb": true
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31411:1.0"
+        },
+        "connection_status": {
+          "0": {
+            "online": {
+              "ts": 1777391124,
+              "vb": true
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "connectivity_monitoring": {
+          "0": {
+            "cell_id": {
+              "ts": 1777302325,
+              "vi": 0
+            },
+            "lac": {
+              "ts": 1777302325,
+              "vi": 0
+            },
+            "link_quality": {
+              "ts": 1777314537,
+              "vi": 2
+            },
+            "network_bearer": {
+              "ts": 1777302325,
+              "vi": 40
+            },
+            "radio_signal_strength": {
+              "ts": 1777314537,
+              "vi": -60
+            },
+            "signalsnr": {
+              "ts": 1777302325,
+              "vi": 0
+            },
+            "smcc": {
+              "ts": 1777302325,
+              "vi": 0
+            },
+            "smnc": {
+              "ts": 1777302325,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:oma:4:1.2"
+        },
+        "device": {
+          "0": {
+            "available_power_sources": {
+              "ai": [
+                1
+              ],
+              "ts": 1777302325
+            },
+            "battery_level": {
+              "ts": 1777392531,
+              "vi": 85
+            },
+            "battery_status": {
+              "ts": 1777391281,
+              "vi": 0
+            },
+            "current_time": {
+              "ts": 1777391110,
+              "vt": 1777398308
+            },
+            "device_type": {
+              "ts": 1777302325,
+              "vs": "Mower CBT11"
+            },
+            "error_code": {
+              "ai": [
+                0
+              ],
+              "ts": 1777302325
+            },
+            "firmware_version": {
+              "ts": 1777302325,
+              "vs": "0.0.0-3.7.0"
+            },
+            "hardware_version": {
+              "ts": 1777302325,
+              "vs": "0.5.0"
+            },
+            "manufacturer": {
+              "ts": 1777302325,
+              "vs": "Gardena"
+            },
+            "model_number": {
+              "ts": 1777302325,
+              "vs": "488"
+            },
+            "serial_number": {
+              "ts": 1777302325,
+              "vs": "00005275"
+            },
+            "software_version": {
+              "ts": 1777302325,
+              "vs": "36.12_Com-App-T11_82.4"
+            },
+            "supported_binding_and_modes": {
+              "ts": 1777302325,
+              "vs": "U"
+            },
+            "timezone": {
+              "ts": 1777302325,
+              "vs": "CET-1CEST,M3.5.0,M10.5.0/3"
+            },
+            "utc_offset": {
+              "ts": 1777302325,
+              "vs": ""
+            }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3"
+        },
+        "edge_cut": {
+          "0": {
+            "available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "enabled": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "enabled_at_collision": {
+              "ts": 1777302339,
+              "vb": false
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31431:1.0"
+        },
+        "epos_service": {
+          "0": {
+            "available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "connection_status": {
+              "ts": 1777391116,
+              "vi": 3
+            },
+            "enabled": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "has_origin": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "is_correction_data_invalid": {
+              "ts": 1777391124,
+              "vb": false
+            },
+            "is_missing_correction_data": {
+              "ts": 1777391124,
+              "vb": false
+            },
+            "is_origin_settable": {
+              "ts": 1777391131,
+              "vb": true
+            },
+            "is_origin_valid": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "service_status": {
+              "ts": 1777391121,
+              "vi": 1
+            },
+            "signal_quality": {
+              "ts": 1777302339,
+              "vi": 1
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31430:3.0"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": {
+              "ts": 1777302334,
+              "vi": 1
+            },
+            "package_uri": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "pkg_name": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "pkg_version": {
+              "ts": 1777302334,
+              "vs": ""
+            },
+            "severity": {
+              "ts": 1777302334,
+              "vi": 2
+            },
+            "state": {
+              "ts": 1777302334,
+              "vi": 0
+            },
+            "update_result": {
+              "ts": 1777302334,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "fota": {
+          "0": {
+            "host__host_name": {
+              "ts": 1777302338,
+              "vs": "fota.husqvarna.net"
+            },
+            "host__port": {
+              "ts": 1777302338,
+              "vi": 443
+            },
+            "progress": {
+              "ts": 1777302338,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31425:3.0"
+        },
+        "gps_navigation": {
+          "0": {
+            "available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "enabled": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "status": {
+              "ts": 1777302339,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31426:1.0"
+        },
+        "lwm2m_server": {
+          "1": {
+            "binding": {
+              "ts": 1741349383,
+              "vs": "U"
+            },
+            "lifetime": {
+              "ts": 1741349383,
+              "vi": 86400
+            },
+            "notification_storing_when_disabled_or_offline": {
+              "ts": 1741349383,
+              "vb": false
+            },
+            "short_server_id": {
+              "ts": 1741349383,
+              "vi": 1
+            }
+          },
+          "_urn": "urn:oma:lwm2m:oma:1:1.1"
+        },
+        "mower_app": {
+          "0": {
+            "activity": {
+              "ts": 1777392924,
+              "vi": 0
+            },
+            "error": {
+              "ts": 1777380391,
+              "vi": 0
+            },
+            "inactive_reason": {
+              "ts": 1777392047,
+              "vi": 0
+            },
+            "is_error_confirmable": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "mission": {
+              "ts": 1777391273,
+              "vi": 2333
+            },
+            "mode": {
+              "ts": 1777365950,
+              "vi": 0
+            },
+            "mowing_area_id": {
+              "ts": 1777392035,
+              "vs": "1"
+            },
+            "state": {
+              "ts": 1777392924,
+              "vi": 5
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31400:3.0"
+        },
+        "mower_insights": {
+          "0": {
+            "battery_capacity": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "battery_current": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "battery_nr_of_charging_cycles": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "battery_temperature": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "battery_voltage": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "orientation_pitch": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "orientation_roll": {
+              "ts": 1777302339,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31428:0.1"
+        },
+        "obstacle_avoidance": {
+          "0": {
+            "available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "enabled": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "use_at_boundary": {
+              "ts": 1777302339,
+              "vb": false
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31424:1.0"
+        },
+        "planner": {
+          "0": {
+            "next_start_time": {
+              "ts": 1777391273,
+              "vt": 0
+            },
+            "override__action": {
+              "ts": 1777391273,
+              "vi": 2
+            },
+            "override__duration": {
+              "ts": 1777391273,
+              "vi": 3600
+            },
+            "override__mission_id": {
+              "ts": 1777391273,
+              "vi": 2333
+            },
+            "override__start_time": {
+              "ts": 1777391273,
+              "vt": 1777398472
+            },
+            "restriction_reason": {
+              "ts": 1777391273,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31401:1.0"
+        },
+        "planner__external_restrictions": {
+          "0": {
+            "auto_expires": {
+              "ts": 1741946655,
+              "vt": 0
+            },
+            "reason": {
+              "ts": 1741946655,
+              "vi": 0
+            },
+            "release_time": {
+              "ts": 1741946655,
+              "vt": 0
+            }
+          },
+          "1": {
+            "auto_expires": {
+              "ts": 1741946656,
+              "vt": 0
+            },
+            "reason": {
+              "ts": 1741946656,
+              "vi": 0
+            },
+            "release_time": {
+              "ts": 1741946656,
+              "vt": 0
+            }
+          },
+          "2": {
+            "auto_expires": {
+              "ts": 1741946656,
+              "vt": 0
+            },
+            "reason": {
+              "ts": 1741946656,
+              "vi": 0
+            },
+            "release_time": {
+              "ts": 1741946656,
+              "vt": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31501:0.1"
+        },
+        "sg_common": {
+          "0": {
+            "duty_cycle_tracking_critical_air_time": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "duty_cycle_tracking_status": {
+              "ts": 1777302337,
+              "vi": 0
+            },
+            "exclusion_requested": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "fatal_error_log": {
+              "ts": 1777302337,
+              "vo": ""
+            },
+            "name": {
+              "ts": 1777302337,
+              "vs": ""
+            },
+            "sun_data": {
+              "ts": 1777302337,
+              "vo": ""
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:28183:0.6"
+        },
+        "site_map": {
+          "0": {
+            "site_map_updated__event_crc32": {
+              "ts": 1777391673,
+              "vi": 4162204109
+            },
+            "zone_map_updated__event_crc32": {
+              "ts": 1777391670,
+              "vi": 3586292211
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31417:2.0"
+        },
+        "smart_system_mower_api": {
+          "0": {
+            "check_operator_pin_result__event_pin_valid": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "current_site_id": {
+              "ts": 1777302339,
+              "vi": 32612
+            },
+            "drive_past_wire": {
+              "ts": 1777302339,
+              "vi": 350
+            },
+            "eco_mode": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "frost_sensor__available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "frost_sensor__enabled": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "lona_map_status__data_collection_started_timestamp": {
+              "ts": 1777302339,
+              "vt": 0
+            },
+            "lona_map_status__maps_updated_timestamp": {
+              "ts": 1777302339,
+              "vt": 0
+            },
+            "lona_map_status__progress": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "lona_map_status__state": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "lona_settings__available": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "lona_settings__enabled": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "mobile_loop__available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "mobile_loop__enabled": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "operator_pin_updated__event_updated_pin": {
+              "ts": 1777302339,
+              "vi": 0
+            },
+            "position__accuracy": {
+              "ts": 1777392947,
+              "vi": 64
+            },
+            "position__heading": {
+              "ts": 1777392947,
+              "vi": 2373
+            },
+            "position__heading_accuracy": {
+              "ts": 1777392947,
+              "vi": 16
+            },
+            "position__latitude": {
+              "ts": 1777392947,
+              "vi": 472365727
+            },
+            "position__longitude": {
+              "ts": 1777392947,
+              "vi": 87752468
+            },
+            "position_disclosure": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "sensor_control__available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "sensor_control__enabled": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "sensor_control__sensitivity": {
+              "ts": 1777302339,
+              "vi": 1
+            },
+            "starting_distance": {
+              "ts": 1777302339,
+              "vi": 2500
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31416:4.0"
+        },
+        "smart_system_mower_api__starting_points": {
+          "0": {
+            "distance": {
+              "ts": 1777302337,
+              "vi": 500
+            },
+            "enabled": {
+              "ts": 1777302337,
+              "vb": true
+            },
+            "passage_cutting_enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "proportion": {
+              "ts": 1777302337,
+              "vi": 20
+            },
+            "wire": {
+              "ts": 1777302337,
+              "vi": 2
+            }
+          },
+          "1": {
+            "distance": {
+              "ts": 1777302337,
+              "vi": 500
+            },
+            "enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "passage_cutting_enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "proportion": {
+              "ts": 1777302337,
+              "vi": 20
+            },
+            "wire": {
+              "ts": 1777302337,
+              "vi": 2
+            }
+          },
+          "2": {
+            "distance": {
+              "ts": 1777302337,
+              "vi": 500
+            },
+            "enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "passage_cutting_enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "proportion": {
+              "ts": 1777302337,
+              "vi": 20
+            },
+            "wire": {
+              "ts": 1777302337,
+              "vi": 2
+            }
+          },
+          "3": {
+            "distance": {
+              "ts": 1777302337,
+              "vi": 500
+            },
+            "enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "passage_cutting_enabled": {
+              "ts": 1777302337,
+              "vb": false
+            },
+            "proportion": {
+              "ts": 1777302337,
+              "vi": 20
+            },
+            "wire": {
+              "ts": 1777302337,
+              "vi": 2
+            }
+          },
+          "4": {
+            "distance": {
+              "ts": 1777302338,
+              "vi": 500
+            },
+            "enabled": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "passage_cutting_enabled": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "proportion": {
+              "ts": 1777302338,
+              "vi": 20
+            },
+            "wire": {
+              "ts": 1777302338,
+              "vi": 2
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31507:0.1"
+        },
+        "spot_cutting": {
+          "0": {
+            "available": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "enabled": {
+              "ts": 1777302339,
+              "vb": true
+            },
+            "sensitivity": {
+              "ts": 1777302339,
+              "vi": 1
+            },
+            "status": {
+              "ts": 1777392924,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31434:1.0"
+        },
+        "statistics": {
+          "0": {
+            "cutting_blade_usage_time": {
+              "ts": 1777392924,
+              "vi": 2170945
+            },
+            "number_of_charging_cycles": {
+              "ts": 1777302340,
+              "vi": 207
+            },
+            "number_of_collisions": {
+              "ts": 1777392924,
+              "vi": 50552
+            },
+            "total_charging_time": {
+              "ts": 1777320040,
+              "vi": 1354068
+            },
+            "total_cutting_time": {
+              "ts": 1777392924,
+              "vi": 2170945
+            },
+            "total_running_time": {
+              "ts": 1777392924,
+              "vi": 2384283
+            },
+            "total_searching_time": {
+              "ts": 1777380550,
+              "vi": 86948
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31408:1.0"
+        },
+        "system": {
+          "0": {
+            "apply_config_done__event": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "apply_config_error__event": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "config_version_string": {
+              "ts": 1777302338,
+              "vs": "5461692-07X_SmartSILENOfree1500-CfgPkg_82.4"
+            },
+            "device_group": {
+              "ts": 1777302338,
+              "vi": 10
+            },
+            "forced_sw_update_required": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "local_hmi_available": {
+              "ts": 1777302338,
+              "vb": false
+            },
+            "model__device_type": {
+              "ts": 1777302338,
+              "vi": 38
+            },
+            "model__device_variant": {
+              "ts": 1777302338,
+              "vi": 7
+            },
+            "serial_number": {
+              "ts": 1777302338,
+              "vi": 250475431
+            },
+            "startup_sequence_required": {
+              "ts": 1777302338,
+              "vb": true
+            },
+            "sw_package_version_string": {
+              "ts": 1777302338,
+              "vs": "5487193-05A_P14.2E-SwPkg_82.13"
+            },
+            "sw_update_required": {
+              "ts": 1777302338,
+              "vb": false
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31403:2.0"
+        },
+        "system_power": {
+          "0": {
+            "mode": {
+              "ts": 1777391110,
+              "vi": 1
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31415:0.1"
+        },
+        "system_restart": {
+          "0": {
+            "restart_reason": {
+              "ts": 1777302337,
+              "vi": 0
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31427:0.1"
+        },
+        "wait_for_permission_to_mow": {
+          "0": {
+            "enabled": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "is_waiting_for_permission_to_mow": {
+              "ts": 1777302339,
+              "vb": false
+            },
+            "timeout_before_mowing_without_permission": {
+              "ts": 1777302339,
+              "vi": 60
+            }
+          },
+          "_urn": "urn:oma:lwm2m:x:31432:1.0"
+        }
+      }
+    },
+    "request_id": "f61af8ce-ddb1-4b46-a3ce-86e42a5b0754",
+    "success": true
+  }
+]

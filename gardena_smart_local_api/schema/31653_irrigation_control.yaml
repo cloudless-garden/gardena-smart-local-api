@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
-name: Irrigation Control
+name: smart Irrigation Control
 protocol: gen1
 commands:
   measure_rf_link: 7

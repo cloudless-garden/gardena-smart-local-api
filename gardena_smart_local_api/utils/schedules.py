@@ -47,13 +47,13 @@ class Gen1Weekday(IntFlag):
     SATURDAY = 0x40
 
 
-class OffsetPoint(IntEnum):
+class Gen1OffsetPoint(IntEnum):
     MIDNIGHT = 0
     SUNRISE = 1
     SUNSET = 2
 
 
-class ScheduleCycle(IntEnum):
+class Gen1ScheduleCycle(IntEnum):
     CYCLE_12D = 0
     CYCLE_14D = 1
     CYCLE_15D = 2
@@ -120,13 +120,13 @@ def gen1_schedule_config_to_base64(entries: list[ScheduleEntry]) -> str:
 
 @dataclass
 class TimeOffset:
-    point: OffsetPoint
+    point: Gen1OffsetPoint
     minutes: int
 
     @classmethod
     def from_bytes(cls, data: bytes) -> "TimeOffset":
         raw = int.from_bytes(data, byteorder="little")
-        return cls(point=OffsetPoint(raw & 0b11), minutes=raw >> 4)
+        return cls(point=Gen1OffsetPoint(raw & 0b11), minutes=raw >> 4)
 
     def to_bytes(self) -> bytes:
         raw = (self.minutes << 4) | self.point
@@ -138,7 +138,7 @@ class SunScheduleEntry:
     start: TimeOffset
     stop: TimeOffset
     weekdays: Gen1Weekday
-    cycle: ScheduleCycle
+    cycle: Gen1ScheduleCycle
     action_id: int
     flag: bool
 
@@ -158,7 +158,7 @@ class SunScheduleEntry:
             start=TimeOffset.from_bytes(data[0:2]),
             stop=TimeOffset.from_bytes(data[2:4]),
             weekdays=weekdays,
-            cycle=ScheduleCycle(mid & 0x0F),
+            cycle=Gen1ScheduleCycle(mid & 0x0F),
             action_id=(mid & 0x70) >> 4,
             flag=bool(mid & 0x80),
         )

@@ -15,6 +15,7 @@ from .device_builder import (
     create_devices_from_messages,
 )
 from .irrigation import (
+    ButtonTimeDevice,
     Gen1IrrigationControl,
     Gen1WaterControl,
     Gen2IrrigationControl,
@@ -32,6 +33,7 @@ from .power import PowerAdapter
 from .sensors import Sensor1, Sensor2
 
 __all__ = [
+    "ButtonTimeDevice",
     "Device",
     "DeviceMap",
     "FirmwareUpdateResult",

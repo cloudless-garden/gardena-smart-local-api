@@ -4,7 +4,7 @@
 
 """Parse and build the raw byte blobs Gen1 devices use for schedules.
 
-Gen1 gateways expose schedules as opaque, base64-encoded byte blobs,
+Gen1 devices expose schedules as opaque, base64-encoded byte blobs,
 in one of two formats:
 
 - `schedule_config`: fixed weekday + time-of-day + duration entries.
@@ -15,8 +15,7 @@ in one of two formats:
   Used by :class:`~gardena_smart_local_api.devices.PowerAdapter`.
 
 Gen2 devices (`Gen2WaterControl`, `Gen2IrrigationControl`, `Gen2Mower`, ...)
-no longer use these lemonbeat paths and have a different schedule format
-that this module does not (yet) support.
+do have a different schedule format that this module does not (yet) support.
 """
 
 import base64
@@ -38,7 +37,7 @@ _RECURRENCE_DAY_ORDER = [
 ]
 
 
-class Weekday(IntFlag):
+class Gen1Weekday(IntFlag):
     SUNDAY = 0x01
     MONDAY = 0x02
     TUESDAY = 0x04
@@ -63,7 +62,7 @@ class ScheduleCycle(IntEnum):
 @dataclass
 class ScheduleEntry:
     schedule_id: int
-    weekdays: Weekday
+    weekdays: Gen1Weekday
     start_hour: int
     start_minute: int
     duration_minutes: int
@@ -75,7 +74,7 @@ class ScheduleEntry:
             raise ValueError(f"Schedule entry must be {SCHEDULE_ENTRY_SIZE} bytes")
         return cls(
             schedule_id=data[0],
-            weekdays=Weekday(data[1]),
+            weekdays=Gen1Weekday(data[1]),
             start_hour=data[2],
             start_minute=data[3],
             duration_minutes=int.from_bytes(data[4:6], byteorder="little"),
@@ -138,7 +137,7 @@ class TimeOffset:
 class SunScheduleEntry:
     start: TimeOffset
     stop: TimeOffset
-    weekdays: Weekday
+    weekdays: Gen1Weekday
     cycle: ScheduleCycle
     action_id: int
     flag: bool
@@ -151,10 +150,10 @@ class SunScheduleEntry:
             )
         mid = data[4]
         recurrence = int.from_bytes(data[5:7], byteorder="little")
-        weekdays = Weekday(0)
+        weekdays = Gen1Weekday(0)
         for bit, name in enumerate(_RECURRENCE_DAY_ORDER):
             if recurrence & (1 << bit) and recurrence & (1 << (bit + 7)):
-                weekdays |= Weekday[name]
+                weekdays |= Gen1Weekday[name]
         return cls(
             start=TimeOffset.from_bytes(data[0:2]),
             stop=TimeOffset.from_bytes(data[2:4]),
@@ -168,7 +167,7 @@ class SunScheduleEntry:
         mid = (0x80 if self.flag else 0) | (self.action_id << 4) | self.cycle
         recurrence = 0
         for bit, name in enumerate(_RECURRENCE_DAY_ORDER):
-            if self.weekdays & Weekday[name]:
+            if self.weekdays & Gen1Weekday[name]:
                 recurrence |= (1 << bit) | (1 << (bit + 7))
         return (
             self.start.to_bytes()

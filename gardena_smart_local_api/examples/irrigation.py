@@ -26,6 +26,8 @@ COMPATIBLE = (
     Gen2WaterControl,
 )
 
+DEFAULT_START_DURATION = 60
+
 
 async def main():
     extra_args = [
@@ -52,8 +54,10 @@ async def main():
         {
             "name_or_flags": ["duration"],
             "nargs": "?",
+            "default": DEFAULT_START_DURATION,
             "type": int,
-            "help": "Duration to water in seconds (start, default: 60s) or button "
+            "help": "Duration to water in seconds "
+            f"(start, default: {DEFAULT_START_DURATION}s) or button "
             "time in seconds (set-button-time, required)",
         },
     ]
@@ -69,9 +73,15 @@ async def main():
                 assert isinstance(irrigation_device, COMPATIBLE)
 
                 try:
+                    valve_id = app.args.valve_id if app.args.valve_id is not None else 0
+                    duration_seconds = (
+                        app.args.duration
+                        if app.args.duration is not None
+                        else DEFAULT_START_DURATION
+                    )
                     request = irrigation_device.build_open_valve_obj(
-                        app.args.valve_id if app.args.valve_id is not None else 0,
-                        app.args.duration if app.args.duration is not None else 60,
+                        valve_id,
+                        duration_seconds,
                     )
                 except ValueError:
                     print(f"Invalid valve ID provided: {app.args.valve_id}")

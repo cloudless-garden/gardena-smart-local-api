@@ -8,7 +8,7 @@ import asyncio
 import sys
 
 from gardena_smart_local_api.devices import (
-    ButtonTimeDevice,
+    ButtonTimeMixin,
     Gen1IrrigationControl,
     Gen1WaterControl,
     Gen2IrrigationControl,
@@ -164,7 +164,7 @@ async def main():
                     return 1
                 assert isinstance(irrigation_device, COMPATIBLE)
 
-                if isinstance(irrigation_device, ButtonTimeDevice):
+                if isinstance(irrigation_device, ButtonTimeMixin):
                     # Query one specific valve if given, else all valves.
                     if app.args.valve_id is not None:
                         valve_ids = [app.args.valve_id]
@@ -196,7 +196,7 @@ async def main():
                                 print(f"Error: {r.error_message}")
                     return 1
 
-                if isinstance(irrigation_device, ButtonTimeDevice):
+                if isinstance(irrigation_device, ButtonTimeMixin):
                     for valve_id in irrigation_device.valve_ids:
                         button_time = irrigation_device.get_button_config_time(valve_id)
                         print(f"Valve {valve_id} button time: {button_time}s")
@@ -215,7 +215,7 @@ async def main():
 
                 valve_id = app.args.valve_id if app.args.valve_id is not None else 0
 
-                if isinstance(irrigation_device, ButtonTimeDevice):
+                if isinstance(irrigation_device, ButtonTimeMixin):
                     try:
                         request = irrigation_device.build_set_button_config_time_obj(
                             app.args.duration, valve_id

@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 from abc import ABC, abstractmethod
-from typing import Protocol, runtime_checkable
+from typing import ClassVar, Protocol
 
 from ..messages import EgressMessageList
-from ..resources import IpsoPath
+from ..resources import VALUE_TYPES, IpsoPath
 from ._enums import _LowerNameEnum
 from .gen1 import (
     Gen1BatteryMixin,
@@ -110,6 +110,60 @@ class Gen1IrrigationScheduleMixin:
         )
 
 
+class _ButtonTimeDeviceProtocol(Protocol):
+    """Used to satisfy the type checker."""
+
+    _button_time_ipso_names: ClassVar[tuple[str, str]]
+
+    @property
+    def valve_ids(self) -> list[int]: ...
+    def get_value(self, path: IpsoPath) -> VALUE_TYPES | None: ...
+    def build_read_value_obj(self, path: IpsoPath) -> EgressMessageList: ...
+    def build_write_value_obj(
+        self, path: IpsoPath, value: VALUE_TYPES
+    ) -> EgressMessageList: ...
+    def _button_config_time_path(self, valve_id: int) -> IpsoPath: ...
+
+
+class ButtonTimeMixin:
+    """Devices with a manual button whose default watering duration is configurable."""
+
+    # (object_name, resource_name) of the button time resource.
+    _button_time_ipso_names: ClassVar[tuple[str, str]]
+
+    def _button_config_time_path(
+        self: _ButtonTimeDeviceProtocol, valve_id: int
+    ) -> IpsoPath:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        object_name, resource_name = self._button_time_ipso_names
+        return IpsoPath(
+            object_name=object_name,
+            object_instance_id=str(valve_id),
+            resource_name=resource_name,
+        )
+
+    def get_button_config_time(
+        self: _ButtonTimeDeviceProtocol, valve_id: int = 0
+    ) -> int | None:
+        value = self.get_value(self._button_config_time_path(valve_id))
+        if isinstance(value, int):
+            return value
+        return None
+
+    def build_refresh_button_config_time_obj(
+        self: _ButtonTimeDeviceProtocol, valve_id: int = 0
+    ) -> EgressMessageList:
+        return self.build_read_value_obj(self._button_config_time_path(valve_id))
+
+    def build_set_button_config_time_obj(
+        self: _ButtonTimeDeviceProtocol, seconds: int, valve_id: int = 0
+    ) -> EgressMessageList:
+        return self.build_write_value_obj(
+            self._button_config_time_path(valve_id), seconds
+        )
+
+
 class _Gen1Irrigation(Gen1Device, ABC):
     @property
     @abstractmethod
@@ -172,8 +226,11 @@ class Gen1WaterControl(
     Gen1IdentifyMixin,
     Gen1FrostWarningMixin,
     Gen1IrrigationScheduleMixin,
+    ButtonTimeMixin,
     _Gen1Irrigation,
 ):
+    _button_time_ipso_names = ("lemonbeat", "button_config_time")
+
     @property
     def valve_count(self) -> int:
         return 1
@@ -185,20 +242,6 @@ class Gen1WaterControl(
     @property
     def button_config_time(self) -> int | None:
         return self.get_button_config_time()
-
-    def get_button_config_time(self, valve_id: int = 0) -> int | None:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        value = self.get_value(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="button_config_time",
-            )
-        )
-        if isinstance(value, int):
-            return value
-        return None
 
     @property
     def temperature(self) -> int | None:
@@ -215,33 +258,6 @@ class Gen1WaterControl(
 
     def build_close_all_valves_obj(self) -> EgressMessageList:
         return self.build_close_valve_obj()
-
-    def build_refresh_button_config_time_obj(
-        self, valve_id: int = 0
-    ) -> EgressMessageList:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        return self.build_read_value_obj(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="button_config_time",
-            )
-        )
-
-    def build_set_button_config_time_obj(
-        self, seconds: int, valve_id: int = 0
-    ) -> EgressMessageList:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        return self.build_write_value_obj(
-            IpsoPath(
-                object_name="lemonbeat",
-                object_instance_id="0",
-                resource_name="button_config_time",
-            ),
-            seconds,
-        )
 
 
 class Gen1IrrigationControl(
@@ -260,21 +276,6 @@ class Gen1IrrigationControl(
 
     def build_close_all_valves_obj(self) -> EgressMessageList:
         return self.build_command_obj(self.get_command("close_all_valves"))
-
-
-@runtime_checkable
-class ButtonTimeDevice(Protocol):
-    """Devices that support reading/writing the button configuration time."""
-
-    @property
-    def valve_ids(self) -> list[int]: ...
-    def get_button_config_time(self, valve_id: int = 0) -> int | None: ...
-    def build_refresh_button_config_time_obj(
-        self, valve_id: int = 0
-    ) -> EgressMessageList: ...
-    def build_set_button_config_time_obj(
-        self, seconds: int, valve_id: int = 0
-    ) -> EgressMessageList: ...
 
 
 class _Gen2Irrigation(Gen2Device):
@@ -355,47 +356,10 @@ class _Gen2Irrigation(Gen2Device):
         return None
 
 
-class Gen2WaterControl(Gen2BatteryMixin, Gen2TemperatureMixin, _Gen2Irrigation):
-    def get_button_config_time(self, valve_id: int = 0) -> int | None:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        value = self.get_value(
-            IpsoPath(
-                object_name="actuator",
-                object_instance_id=str(valve_id),
-                resource_name="default_duration_seconds",
-            )
-        )
-        if isinstance(value, int):
-            return value
-        return None
-
-    def build_refresh_button_config_time_obj(
-        self, valve_id: int = 0
-    ) -> EgressMessageList:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        return self.build_read_value_obj(
-            IpsoPath(
-                object_name="actuator",
-                object_instance_id=str(valve_id),
-                resource_name="default_duration_seconds",
-            )
-        )
-
-    def build_set_button_config_time_obj(
-        self, seconds: int, valve_id: int = 0
-    ) -> EgressMessageList:
-        if valve_id not in self.valve_ids:
-            raise ValueError(f"Invalid valve ID {valve_id}")
-        return self.build_write_value_obj(
-            IpsoPath(
-                object_name="actuator",
-                object_instance_id=str(valve_id),
-                resource_name="default_duration_seconds",
-            ),
-            seconds,
-        )
+class Gen2WaterControl(
+    Gen2BatteryMixin, Gen2TemperatureMixin, ButtonTimeMixin, _Gen2Irrigation
+):
+    _button_time_ipso_names = ("actuator", "default_duration_seconds")
 
 
 class Gen2IrrigationControl(_Gen2Irrigation):

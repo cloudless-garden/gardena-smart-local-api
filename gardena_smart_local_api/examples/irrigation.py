@@ -8,6 +8,7 @@ import asyncio
 import sys
 
 from gardena_smart_local_api.devices import (
+    ButtonTimeMixin,
     Gen1IrrigationControl,
     Gen1WaterControl,
     Gen2IrrigationControl,
@@ -25,13 +26,23 @@ COMPATIBLE = (
     Gen2WaterControl,
 )
 
+DEFAULT_START_DURATION = 60
+
 
 async def main():
     extra_args = [
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop", "clear-schedules", "read-schedules"),
+            "choices": (
+                "list",
+                "start",
+                "stop",
+                "clear-schedules",
+                "read-schedules",
+                "read-button-time",
+                "set-button-time",
+            ),
             "help": "List devices, start/stop watering, or read/clear schedules",
         },
         {
@@ -43,9 +54,11 @@ async def main():
         {
             "name_or_flags": ["duration"],
             "nargs": "?",
-            "default": 60,
+            "default": DEFAULT_START_DURATION,
             "type": int,
-            "help": "Duration to water in seconds (default: 60s)",
+            "help": "Duration to water in seconds "
+            f"(start, default: {DEFAULT_START_DURATION}s) or button "
+            "time in seconds (set-button-time, required)",
         },
     ]
 
@@ -60,9 +73,15 @@ async def main():
                 assert isinstance(irrigation_device, COMPATIBLE)
 
                 try:
+                    valve_id = app.args.valve_id if app.args.valve_id is not None else 0
+                    duration_seconds = (
+                        app.args.duration
+                        if app.args.duration is not None
+                        else DEFAULT_START_DURATION
+                    )
                     request = irrigation_device.build_open_valve_obj(
-                        app.args.valve_id if app.args.valve_id is not None else 0,
-                        app.args.duration,
+                        valve_id,
+                        duration_seconds,
                     )
                 except ValueError:
                     print(f"Invalid valve ID provided: {app.args.valve_id}")
@@ -149,6 +168,81 @@ async def main():
                     assert irrigation_device.schedule_config is not None
                     raw = irrigation_device.schedule_config.hex()
                     print(f"{irrigation_device.schedule_count} schedule(s), raw: {raw}")
+
+            case "read-button-time":
+                if (irrigation_device := app.device) is None:
+                    return 1
+                assert isinstance(irrigation_device, COMPATIBLE)
+
+                if isinstance(irrigation_device, ButtonTimeMixin):
+                    # Query one specific valve if given, else all valves.
+                    if app.args.valve_id is not None:
+                        valve_ids = [app.args.valve_id]
+                    else:
+                        valve_ids = irrigation_device.valve_ids
+                    try:
+                        requests = [
+                            irrigation_device.build_refresh_button_config_time_obj(
+                                valve_id
+                            )
+                            for valve_id in valve_ids
+                        ]
+                    except ValueError:
+                        print(f"Invalid valve ID provided: {app.args.valve_id}")
+                        return 1
+                    request = requests[0]
+                    for r in requests[1:]:
+                        request = request + r
+                else:
+                    print("read-button-time not supported on this device")
+                    return 1
+
+                result = await app.send_request(request)
+                if result is None or not all(r.success for r in result):
+                    print("Failed to read button time")
+                    if result is not None:
+                        for r in result:
+                            if isinstance(r, ErrorMessage):
+                                print(f"Error: {r.error_message}")
+                    return 1
+
+                if isinstance(irrigation_device, ButtonTimeMixin):
+                    for valve_id in irrigation_device.valve_ids:
+                        button_time = irrigation_device.get_button_config_time(valve_id)
+                        print(f"Valve {valve_id} button time: {button_time}s")
+
+            case "set-button-time":
+                if (irrigation_device := app.device) is None:
+                    return 1
+                assert isinstance(irrigation_device, COMPATIBLE)
+
+                if app.args.duration is None:
+                    print(
+                        "set-button-time requires a valve ID and duration: "
+                        "set-button-time <valve_id> <duration in seconds>"
+                    )
+                    return 1
+
+                valve_id = app.args.valve_id if app.args.valve_id is not None else 0
+
+                if isinstance(irrigation_device, ButtonTimeMixin):
+                    try:
+                        request = irrigation_device.build_set_button_config_time_obj(
+                            app.args.duration, valve_id
+                        )
+                    except ValueError:
+                        print(f"Invalid valve ID provided: {app.args.valve_id}")
+                        return 1
+                else:
+                    print("set-button-time not supported on this device")
+                    return 1
+
+                result = await app.send_request(request)
+                if result is None or not result[0].success:
+                    print("Failed to set button time")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
 
 
 if __name__ == "__main__":

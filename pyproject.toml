@@ -11,10 +11,12 @@ packages = ["gardena_smart_local_api"]
 
 [project]
 name = "gardena-smart-local-api"
-version = "0.1.0"
+version = "0.1.1"
 description = "Library to interact with the local GARDENA smart API."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "LGPL-3.0-or-later"
+license-files = ["LICENSES/LGPL-3.0-or-later.txt"]
 dependencies = [
     "aiofile>=3.9",
     "pydantic>=2.0",

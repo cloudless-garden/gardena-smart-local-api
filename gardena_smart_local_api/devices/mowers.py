@@ -2,11 +2,19 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
+import struct
+from typing import Any
+
+from pydantic import BaseModel, model_validator
+
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
 from ._enums import _LowerNameEnum
 from .gen1 import Gen1BatteryMixin, Gen1Device
 from .gen2 import Gen2BatteryMixin, Gen2Device
+
+_LAT_LONG_SCALE = 1e-7
+_HEADING_SCALE = 0.1
 
 
 class MowerState(_LowerNameEnum):
@@ -156,8 +164,70 @@ class Gen1Mower1(_Gen1Mower):
         )
 
 
+class Gen1MowerPosition(BaseModel):
+    latitude: float
+    longitude: float
+    heading: float | None
+    lona_is_ready: bool
+    gnss_latitude: float
+    gnss_longitude: float
+    gnss_horizontal_accuracy: int
+    compass_heading: float
+    compass_is_calibrated: bool
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_from_bytes(cls, data: Any) -> Any:
+        """Allow deserialization from the raw 26-byte position payload."""
+        if isinstance(data, bytes):
+            try:
+                (
+                    gnss_latitude,
+                    gnss_longitude,
+                    gnss_horizontal_accuracy,
+                    real_time_latitude,
+                    real_time_longitude,
+                    real_time_heading,
+                    real_time_is_ready,
+                    compass_heading,
+                    compass_is_calibrated,
+                ) = struct.Struct(">2iI2ih?h?").unpack(data)
+            except struct.error as err:
+                raise ValueError("Invalid position data") from err
+            return {
+                "latitude": real_time_latitude * _LAT_LONG_SCALE,
+                "longitude": real_time_longitude * _LAT_LONG_SCALE,
+                "heading": real_time_heading * _HEADING_SCALE
+                if real_time_is_ready or compass_is_calibrated
+                else None,
+                "lona_is_ready": real_time_is_ready,
+                "gnss_latitude": gnss_latitude * _LAT_LONG_SCALE,
+                "gnss_longitude": gnss_longitude * _LAT_LONG_SCALE,
+                "gnss_horizontal_accuracy": gnss_horizontal_accuracy,
+                "compass_heading": compass_heading * _HEADING_SCALE,
+                "compass_is_calibrated": compass_is_calibrated,
+            }
+        return data
+
+
 class Gen1Mower2(_Gen1Mower):
     """Robotic lawn mower with LONA"""
+
+    @property
+    def position(self) -> Gen1MowerPosition | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="position",
+            )
+        )
+        if isinstance(value, bytes):
+            try:
+                return Gen1MowerPosition.model_validate(value)
+            except ValueError:
+                pass
+        return None
 
     def build_start_mowing_obj(
         self, seconds: int, meters_from_cs: int = 0
@@ -181,6 +251,35 @@ class Gen1Mower2(_Gen1Mower):
                 resource_name="mower_timer_with_distance",
             ),
             data,
+        )
+
+    def build_start_position_reporting_obj(self, seconds: int) -> EgressMessageList:
+        """Start position reporting for given duration.
+
+        Args:
+            seconds: Duration in seconds (0: stop reporting).
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        MIN_TIMEOUT = 0
+        MAX_TIMEOUT = 3600
+        if seconds < MIN_TIMEOUT:
+            raise ValueError(
+                f"Duration must be greater than or equal to {MIN_TIMEOUT} seconds"
+            )
+        elif seconds > MAX_TIMEOUT:
+            raise ValueError(
+                f"Duration must be less than or equal to {MAX_TIMEOUT} seconds"
+            )
+
+        return self.build_write_value_obj(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="position_timer",
+            ),
+            seconds,
         )
 
 

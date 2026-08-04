@@ -7,6 +7,9 @@
 import asyncio
 import sys
 
+from rich.live import Live
+from rich.text import Text
+
 from gardena_smart_local_api.devices import Gen1Mower1, Gen1Mower2, Gen2Mower
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
@@ -14,12 +17,29 @@ from gardena_smart_local_api.messages import ErrorMessage
 COMPATIBLE = (Gen1Mower1, Gen1Mower2, Gen2Mower)
 
 
+async def _display_position(mower: Gen1Mower2):
+    with Live(auto_refresh=False) as live:
+        while True:
+            await asyncio.sleep(0.5)
+            position = mower.position
+            if position is None:
+                out = "Mower position: unknown"
+            else:
+                out = (
+                    f"Mower position: {position.latitude:.7f}, {position.longitude:.7f}"
+                )
+                if position.heading is not None:
+                    out += f", heading: {position.heading:.1f}°"
+            live.update(Text(out))
+            live.refresh()
+
+
 async def main():
     extra_args = [
         {
             "name_or_flags": ["command"],
             "nargs": 1,
-            "choices": ("list", "start", "stop", "pause", "status"),
+            "choices": ("list", "start", "stop", "pause", "status", "position"),
             "help": "List applicable devices, start/stop/pause mowing or show status",
         },
         {
@@ -27,7 +47,8 @@ async def main():
             "nargs": "?",
             "default": 1,
             "type": float,
-            "help": "Duration to mow in hours (default: 1h)",
+            "help": "Duration to mow in hours, or to report position in"
+            " seconds (default: 1)",
         },
     ]
 
@@ -80,6 +101,32 @@ async def main():
                     return 1
                 assert isinstance(mower, COMPATIBLE)
                 print(f"Mower state: {mower.state}")
+
+            case "position":
+                if (mower := app.device) is None:
+                    return 1
+                assert isinstance(mower, COMPATIBLE)
+                if not isinstance(mower, Gen1Mower2):
+                    print("Position reporting not supported")
+                    return 1
+
+                request = mower.build_start_position_reporting_obj(
+                    int(app.args.duration)
+                )
+                result = await app.send_request(request)
+                if result is None or not result[0].success:
+                    print("Failed to start position reporting")
+                    if result is not None and isinstance(result[0], ErrorMessage):
+                        print(f"Error: {result[0].error_message}")
+                    return 1
+
+                print(f"Displaying position for {app.args.duration}s")
+                try:
+                    await asyncio.wait_for(
+                        _display_position(mower), timeout=app.args.duration
+                    )
+                except TimeoutError:
+                    pass
 
 
 if __name__ == "__main__":

@@ -1,0 +1,17 @@
+[
+  {
+    "payload": {
+      "position__latitude": { "ts": 1785247342, "vi": 473637230 },
+      "position__accuracy": { "ts": 1785247342, "vi": 500 },
+      "position__longitude": { "ts": 1785247342, "vi": 85120620 },
+      "position__heading": { "ts": 1785247342, "vi": 2356 },
+      "position__heading_accuracy": { "ts": 1785247342, "vi": 500 },
+      "_urn": "urn:oma:lwm2m:x:31416:4.0"
+    },
+    "entity": {
+      "path": "smart_system_mower_api/0",
+      "device": "3034F8EE901267500000A445"
+    },
+    "op": "update"
+  }
+]

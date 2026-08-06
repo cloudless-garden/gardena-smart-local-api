@@ -1,0 +1,103 @@
+[
+  {
+    "payload": {
+      "3034F8EE901267500000A445": {
+        "connection_status": {
+          "0": { "online": { "ts": 1775477076, "vb": true } },
+          "_urn": "urn:oma:lwm2m:x:28171"
+        },
+        "data_download": {
+          "0": {
+            "checksum": { "vi": 0 },
+            "content_tag": { "vi": 0 },
+            "slot": { "vi": 0 },
+            "status": { "vi": 0 }
+          },
+          "_urn": "urn:oma:lwm2m:x:28174"
+        },
+        "device": {
+          "0": {
+            "device_type": { "ts": 1782815321, "vs": "Robotics Lawnmower" },
+            "error_code": { "ai": [ 0 ], "ts": 1782815321 },
+            "firmware_version": { "ts": 1782815321, "vs": "4.0.0-1.5.3" },
+            "hardware_version": { "ts": 1782815321, "vs": "1.0.0" },
+            "manufacturer": { "ts": 1782815321, "vs": "Gardena" },
+            "model_number": { "ts": 1782815321, "vs": "53988" },
+            "serial_number": { "ts": 1782815321, "vs": "202211111111" },
+            "software_version": { "ts": 1782815321, "vs": "2.6.0" },
+            "supported_binding_and_modes": { "ts": 1782815321, "vs": "U" },
+            "utc_offset": { "ts": 1783593379, "vs": "UTC+02:00" }
+          },
+          "_urn": "urn:oma:lwm2m:oma:3:1.1"
+        },
+        "firmware_update": {
+          "0": {
+            "firmware_update_delivery_method": { "vi": 1 },
+            "package_uri": { "vs": "" },
+            "pkg_version": { "vs": "" },
+            "state": { "vi": 0 },
+            "update_result": { "vi": 1 }
+          },
+          "_urn": "urn:oma:lwm2m:oma:5:1.1"
+        },
+        "lemonbeat": {
+          "0": {
+            "action_paused_until_1": { "ts": 1783498430, "vo": "sgcBAQAA" },
+            "battery_level": { "ts": 1784890686, "vi": 72 },
+            "charging_cycles": { "ts": 1784887207, "vi": 499 },
+            "collisions": { "ts": 1784889568, "vi": 597 },
+            "command": { "ts": 1782815321, "vi": null },
+            "cutting_time": { "ts": 1784889568, "vi": 716 },
+            "data_download": { "ts": 1784897516, "vo": "AAABAgAAAAAAABwrusgCAAABBAAAAAAAAAAokX4C" },
+            "data_download_int": { "ts": 1782815321, "vo": "" },
+            "device_type": { "ts": 1782815321, "vs": "14" },
+            "device_variant": { "ts": 1782815321, "vs": "14" },
+            "guide_wire_length": { "ts": 1782815322, "vi": 0 },
+            "internal_connection_state": { "ts": 1784897516, "vi": 4 },
+            "last_error_code": { "ts": 1782818659, "vi": 15 },
+            "lona": { "ts": 1782815321, "vo": "Cf8ACAAAWwIvDQ==" },
+            "lona_control": { "ts": 1785232274, "vo": "AQ==" },
+            "lona_mcu_boot_fw_version": { "ts": 1782815326, "vo": "AAIBAc28r7A=" },
+            "lona_mcu_fw_version": { "ts": 1782815326, "vo": "AgsAAAAAAAA=" },
+            "lona_status": { "ts": 1784897706, "vo": "AAAAAAAAAAAAAAEH" },
+            "mainboard_version": { "ts": 1782815322, "vs": "41.6" },
+            "manual_operation": { "ts": 1782815322, "vi": 0 },
+            "mmi_version": { "ts": 1782815321, "vs": "41.5" },
+            "mower_timer_with_distance": { "ts": 1784889424, "vo": "AAAAAAAA" },
+            "onboard_temperature": { "ts": 1714395984, "vf": null },
+            "position": { "ts": 1785232294, "vo": "HDscoAUS63AAAAnEHDsgiAUS71gIyAEIygE=" },
+            "position_timer": { "ts": 1785232295, "vi": 0 },
+            "position_update_interval": { "ts": 1782815321, "vi": 3000 },
+            "rf_link_quality": { "ts": 1785243002, "vi": 95 },
+            "running_time": { "ts": 1784889568, "vi": 767 },
+            "schedule_config": { "ts": 1784007310, "vo": "gCAMAPAAAA==" },
+            "serial_number": { "ts": 1782815321, "vs": "221111111" },
+            "settings_control": { "ts": 1775737321, "vo": "AAD/AAAAAAAAADweAAAHAAAA" },
+            "settings_report": { "ts": 1782815322, "vo": "////////////ADweAAAHAAAA" },
+            "source_for_next_start": { "ts": 1784889423, "vi": 3 },
+            "start_delay_ms": { "ts": 1782815321, "vi": 0 },
+            "starting_points": { "ts": 1782815322, "vo": "AgEAMgAAAgEAMgAAAgEAMgAA" },
+            "status": { "ts": 1784897515, "vi": 8 },
+            "supported_starting_points": { "ts": 1782815321, "vi": 3 },
+            "supported_wires": { "ts": 1782815321, "vi": 4 },
+            "timestamp_last_error_code": { "ts": 1782818659, "vo": "akPDgg==" },
+            "timestamp_next_start": { "ts": 1784889423, "vo": "amyOQA==" }
+          },
+          "_urn": "urn:oma:lwm2m:x:31000"
+        },
+        "lemonbeat_status_message": {
+          "0": {
+            "code": { "ts": 1783593379, "vi": 11 },
+            "data": { "ts": 1783593379, "vs": "" },
+            "level": { "ts": 1783593379, "vi": 1 },
+            "type": { "ts": 1783593379, "vi": 101 }
+          },
+          "_urn": "urn:oma:lwm2m:x:28173"
+        }
+      }
+    },
+    "entity": { "path": "devices", "service": "lemonbeatd" },
+    "request_id": "0daa07cc-e75a-4e3b-9982-f89bbc0fe488",
+    "success": true
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "payload": {
+      "_urn": "urn:oma:lwm2m:x:31000",
+      "position": { "ts": 1785246926, "vo": "HDshbgUS1mwAAAH0HDshbgUS1mwAAAAI/AA=" }
+    },
+    "entity": {
+      "path": "lemonbeat/0",
+      "device": "3035C33A8834B92F1663C77B"
+    },
+    "op": "update"
+  }
+]

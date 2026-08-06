@@ -183,3 +183,67 @@ def epp_message(epp_json):
 @pytest_asyncio.fixture
 async def epp(epp_message):
     return list((await create_devices_from_messages(epp_message)).values())[0]
+
+
+@pytest.fixture
+def mower_gen1_lona_json():
+    data_file = Path(__file__).parent / "data" / "mower_gen1_lona.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def mower_gen1_lona_message(mower_gen1_lona_json):
+    return IngressMessageList.model_validate_json(mower_gen1_lona_json)
+
+
+@pytest_asyncio.fixture
+async def mower_gen1_lona(mower_gen1_lona_message):
+    return (
+        list((await create_devices_from_messages(mower_gen1_lona_message)).values())
+    )[0]
+
+
+@pytest.fixture
+def mower_gen2_json():
+    data_file = Path(__file__).parent / "data" / "mower_gen2.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def mower_gen2_message(mower_gen2_json):
+    return IngressMessageList.model_validate_json(mower_gen2_json)
+
+
+@pytest_asyncio.fixture
+async def mower_gen2(mower_gen2_message):
+    return list((await create_devices_from_messages(mower_gen2_message)).values())[0]
+
+
+@pytest.fixture
+def mower_gen1_lona_position_update_event_json():
+    data_file = (
+        Path(__file__).parent / "data" / "mower_gen1_lona_position_update_event.json"
+    )
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def mower_gen1_lona_position_update_event(mower_gen1_lona_position_update_event_json):
+    return IngressMessageList.model_validate_json(
+        mower_gen1_lona_position_update_event_json
+    )
+
+
+@pytest.fixture
+def mower_gen2_position_update_event_json():
+    data_file = Path(__file__).parent / "data" / "mower_gen2_position_update_event.json"
+    with open(data_file) as f:
+        return f.read()
+
+
+@pytest.fixture
+def mower_gen2_position_update_event(mower_gen2_position_update_event_json):
+    return IngressMessageList.model_validate_json(mower_gen2_position_update_event_json)

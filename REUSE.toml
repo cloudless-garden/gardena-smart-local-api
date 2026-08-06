@@ -4,6 +4,10 @@ version = 1
 path = [
   "tests/data/devices.json",
   "tests/data/epp.json",
+  "tests/data/mower_gen1_lona_position_update_event.json",
+  "tests/data/mower_gen1_lona.json",
+  "tests/data/mower_gen2_position_update_event.json",
+  "tests/data/mower_gen2.json",
   "tests/data/power_adapter_update_event.json",
   "tests/data/power_adapter.json",
   "tests/data/sensor1_update_event.json",

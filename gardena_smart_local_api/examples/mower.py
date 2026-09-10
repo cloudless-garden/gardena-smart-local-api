@@ -17,7 +17,7 @@ from gardena_smart_local_api.messages import ErrorMessage
 COMPATIBLE = (Gen1Mower1, Gen1Mower2, Gen2Mower)
 
 
-async def _display_position(mower: Gen1Mower2):
+async def _display_position(mower: Gen1Mower2 | Gen2Mower):
     with Live(auto_refresh=False) as live:
         while True:
             await asyncio.sleep(0.5)
@@ -106,13 +106,13 @@ async def main():
                 if (mower := app.device) is None:
                     return 1
                 assert isinstance(mower, COMPATIBLE)
-                if not isinstance(mower, Gen1Mower2):
+                if isinstance(mower, Gen1Mower1):
                     print("Position reporting not supported")
                     return 1
-
-                request = mower.build_start_position_reporting_obj(
-                    int(app.args.duration)
-                )
+                duration = int(app.args.duration)
+                if isinstance(mower, Gen2Mower) and duration < 60:
+                    duration = 60
+                request = mower.build_start_position_reporting_obj(duration)
                 result = await app.send_request(request)
                 if result is None or not result[0].success:
                     print("Failed to start position reporting")

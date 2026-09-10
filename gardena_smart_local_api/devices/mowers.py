@@ -283,6 +283,31 @@ class Gen1Mower2(_Gen1Mower):
         )
 
 
+class Gen2MowerPosition(BaseModel):
+    latitude: float
+    longitude: float
+    accuracy: int
+    heading: float
+    heading_accuracy: float
+
+    @classmethod
+    def from_raw(
+        cls,
+        latitude: int,
+        longitude: int,
+        accuracy: int,
+        heading: int,
+        heading_accuracy: int,
+    ) -> "Gen2MowerPosition":
+        return cls(
+            latitude=latitude * _LAT_LONG_SCALE,
+            longitude=longitude * _LAT_LONG_SCALE,
+            accuracy=accuracy,
+            heading=heading * _HEADING_SCALE,
+            heading_accuracy=heading_accuracy * _HEADING_SCALE,
+        )
+
+
 class Gen2Mower(Gen2BatteryMixin, Gen2Device):
     @property
     def _activity(self) -> _Gen2MowerActivity | None:
@@ -336,6 +361,35 @@ class Gen2Mower(Gen2BatteryMixin, Gen2Device):
                     case _Gen2MowerState.ERROR | _Gen2MowerState.FATAL_ERROR:
                         return MowerState.ERROR
         return MowerState.UNKNOWN
+
+    @property
+    def position(self) -> Gen2MowerPosition | None:
+        def raw_value(resource_name: str) -> int | None:
+            value = self.get_value(
+                IpsoPath(
+                    object_name="smart_system_mower_api",
+                    object_instance_id="0",
+                    resource_name=resource_name,
+                )
+            )
+            return value if isinstance(value, int) else None
+
+        latitude = raw_value("position__latitude")
+        longitude = raw_value("position__longitude")
+        accuracy = raw_value("position__accuracy")
+        heading = raw_value("position__heading")
+        heading_accuracy = raw_value("position__heading_accuracy")
+        if (
+            latitude is None
+            or longitude is None
+            or accuracy is None
+            or heading is None
+            or heading_accuracy is None
+        ):
+            return None
+        return Gen2MowerPosition.from_raw(
+            latitude, longitude, accuracy, heading, heading_accuracy
+        )
 
     def build_start_mowing_obj(
         self, seconds: int, zone: int | None = None
@@ -392,4 +446,34 @@ class Gen2Mower(Gen2BatteryMixin, Gen2Device):
                 resource_name="pause",
             ),
             None,
+        )
+
+    def build_start_position_reporting_obj(self, seconds: int) -> EgressMessageList:
+        """Start position reporting for given duration.
+
+        Args:
+            seconds: Duration in seconds.
+
+        Returns:
+            EgressMessageList ready to be sent to the local GARDENA smart API.
+        """
+        INTERVAL = 3  # seconds, same value as GARDENA app
+        MIN_TIMEOUT = 60
+        MAX_TIMEOUT = 3600
+        if seconds < MIN_TIMEOUT:
+            raise ValueError(
+                f"Duration must be greater than or equal to {MIN_TIMEOUT} seconds"
+            )
+        elif seconds > MAX_TIMEOUT:
+            raise ValueError(
+                f"Duration must be less than or equal to {MAX_TIMEOUT} seconds"
+            )
+
+        return self.build_execute_obj(
+            IpsoPath(
+                object_name="smart_system_mower_api",
+                object_instance_id="0",
+                resource_name="start_position_timer",
+            ),
+            [str(seconds), str(INTERVAL)],
         )

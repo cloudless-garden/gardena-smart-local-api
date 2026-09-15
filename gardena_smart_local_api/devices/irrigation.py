@@ -52,6 +52,24 @@ class PumpError(_LowerNameEnum):
     SMALL_LEAKAGE = 4
 
 
+class WaterControlValveError(_LowerNameEnum):
+    NONE = 0
+    VALVE_BROKEN = 1
+    FROST_PREVENTS_STARTING = 2
+    LOW_BATTERY_PREVENTS_STARTING = 3
+    VALVE_POWER_SUPPLY_FAILED = 4
+
+
+class IrrigationControlValveError(_LowerNameEnum):
+    NONE = 0
+    EXCEEDED_VALVES_LIMIT = 1
+    VALVE_NOT_CONNECTED = 2
+    EXCEEDED_CURRENT = 3
+    EXCEEDED_TOTAL_CURRENT = 4
+    MASTER_VALVE = 5
+    DURATION_TOO_SHORT = 6
+
+
 class PumpOperatingMode(_LowerNameEnum):
     SCHEDULED = 0
     AUTOMATIC = 1
@@ -210,6 +228,23 @@ class _Gen1Irrigation(Gen1Device, ABC):
             return value != 0
         return None
 
+    def _get_valve_error_code(self, valve_id: int) -> int | None:
+        if valve_id not in self.valve_ids:
+            raise ValueError(f"Invalid valve ID {valve_id}")
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name=f"valve_error_{valve_id + 1}",
+            )
+        )
+        if isinstance(value, int):
+            return value
+        return None
+
+    def build_reset_all_valve_errors_obj(self) -> EgressMessageList:
+        return self.build_command_obj(self.get_command("reset_all_valve_errors"))
+
     def build_open_valve_obj(
         self, valve_id: int = 0, duration_seconds: int = DEFAULT_WATERING_DURATION
     ) -> EgressMessageList:
@@ -261,6 +296,15 @@ class Gen1WaterControl(
             return value
         return None
 
+    def get_valve_error(self, valve_id: int = 0) -> WaterControlValveError | None:
+        code = self._get_valve_error_code(valve_id)
+        if code is not None:
+            try:
+                return WaterControlValveError(code)
+            except ValueError:
+                pass
+        return None
+
     def build_close_all_valves_obj(self) -> EgressMessageList:
         return self.build_close_valve_obj()
 
@@ -275,6 +319,17 @@ class Gen1IrrigationControl(
     @property
     def valve_ids(self) -> list[int]:
         return list(range(6))
+
+    # valve_error_1 to valve_error_6 belong to the six valves. valve_error_0 is
+    # not documented, so it is not exposed.
+    def get_valve_error(self, valve_id: int = 0) -> IrrigationControlValveError | None:
+        code = self._get_valve_error_code(valve_id)
+        if code is not None:
+            try:
+                return IrrigationControlValveError(code)
+            except ValueError:
+                pass
+        return None
 
     def build_close_valve_obj(self, valve_id: int = 0) -> EgressMessageList:
         return self._build_set_watering_timer_obj(valve_id, 0)

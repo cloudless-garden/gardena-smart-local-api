@@ -20,6 +20,7 @@ from .irrigation import (
     Gen1WaterControl,
     Gen2IrrigationControl,
     Gen2WaterControl,
+    IrrigationControlValveError,
     Pump,
     PumpDrippingAlert,
     PumpError,
@@ -27,6 +28,7 @@ from .irrigation import (
     PumpOperatingMode,
     PumpState,
     TimeslotState,
+    WaterControlValveError,
 )
 from .mowers import Gen1Mower1, Gen1Mower2, Gen2Mower, MowerState
 from .power import PowerAdapter
@@ -45,6 +47,7 @@ __all__ = [
     "Gen2IrrigationControl",
     "Gen2Mower",
     "Gen2WaterControl",
+    "IrrigationControlValveError",
     "MowerState",
     "PowerAdapter",
     "Pump",
@@ -56,6 +59,7 @@ __all__ = [
     "Sensor1",
     "Sensor2",
     "TimeslotState",
+    "WaterControlValveError",
     "build_discovery_obj",
     "build_inclusion_obj",
     "create_devices_from_json",

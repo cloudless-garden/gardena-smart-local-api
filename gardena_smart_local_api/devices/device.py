@@ -432,11 +432,14 @@ class Device(BaseModel):
             return None
         match = re.search(r"SwPkg(?:[_-][a-zA-Z0-9]+)*[_-](\d+\.\d+)", firmware_version)
         if match:
-            return match.group(1)
-        match = re.fullmatch(r"(.+)-(.+)-(.+)", firmware_version)
-        if match:
-            return match.group(3)
-        return firmware_version
+            version = match.group(1)
+        else:
+            match = re.fullmatch(r"(.+)-(.+)-(.+)", firmware_version)
+            version = match.group(3) if match else firmware_version
+        # Gen2 devices announce the pending version with build metadata, for
+        # example "1.3.2+0", while the installed version has none. Drop it so
+        # both can be compared.
+        return version.split("+", 1)[0]
 
     def build_refresh_available_firmware_version_obj(self) -> EgressMessageList:
         return self.build_read_value_obj(

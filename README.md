@@ -52,14 +52,6 @@ uv run gardena_smart_local_api/examples/irrigation.py --help
 
 [examples]: https://github.com/cloudless-garden/gardena-smart-local-api/tree/main/gardena_smart_local_api/examples
 
-## Star History
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=cloudless-garden/gardena-smart-local-api&type=Date&theme=dark" />
-  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=cloudless-garden/gardena-smart-local-api&type=Date" />
-  <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=cloudless-garden/gardena-smart-local-api&type=Date" />
-</picture>
-
 ## Contributing
 
 ### Debugging

@@ -4,6 +4,7 @@
 
 from ..messages import EgressMessageList
 from ..resources import IpsoPath
+from .errors import Sensor2Error
 from .gen1 import Gen1BatteryMixin, Gen1Device, Gen1FrostWarningMixin, Gen1IdentifyMixin
 
 
@@ -60,6 +61,15 @@ class Sensor1(_Sensor):
 
 
 class Sensor2(_Sensor):
+    @property
+    def error(self) -> str | None:
+        if (code := self.error_code) is not None and code != 0:
+            try:
+                return str(Sensor2Error(code))
+            except ValueError:
+                return str(code)
+        return None
+
     @property
     def temperature(self) -> int | None:
         value = self.get_value(

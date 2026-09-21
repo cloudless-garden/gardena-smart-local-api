@@ -35,7 +35,7 @@ Enables controlling and monitoring GARDENA smart devices in the local network, w
 
 ## Installation
 
-```txt
+```
 pip install gardena-smart-local-api
 ```
 
@@ -45,7 +45,7 @@ Have a look at our [example code][examples].
 
 You can run the examples from within the repository as follows:
 
-```txt
+```
 uv sync --group examples
 uv run gardena_smart_local_api/examples/irrigation.py --help
 ```

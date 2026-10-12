@@ -6,8 +6,8 @@ import asyncio
 from pathlib import Path
 from typing import Any, Literal
 
+import aiofiles
 import yaml
-from aiofile import async_open
 from pydantic import BaseModel, Field
 
 DEFAULT_SCHEMA_DIR = Path(__file__).parent / "schema"
@@ -70,7 +70,7 @@ class ModelLoader:
         )
         for model_file in model_files:
             model_number = model_file.stem.split("_")[0]
-            async with async_open(model_file, mode="r") as f:
+            async with aiofiles.open(model_file) as f:
                 data = yaml.safe_load(await f.read())
             self._models[model_number] = self.parse_model_definition(model_number, data)
 

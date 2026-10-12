@@ -59,6 +59,17 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ github.token }}
 
+  lockfile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Check the lock file is up to date
+        run: uv lock --check
+
   package:
     runs-on: ubuntu-24.04
     steps:

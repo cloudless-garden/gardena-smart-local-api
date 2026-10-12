@@ -18,7 +18,7 @@ requires-python = ">=3.12"
 license = "LGPL-3.0-or-later"
 license-files = ["LICENSES/LGPL-3.0-or-later.txt"]
 dependencies = [
-    "aiofile>=3.9",
+    "aiofiles>=24.1",
     "pydantic>=2.0",
     "pyyaml>=6.0",
 ]

@@ -7,6 +7,8 @@ import pytest
 from gardena_smart_local_api.devices.gen1 import Gen1BatteryMixin
 from gardena_smart_local_api.devices.sensors import Sensor2
 
+from .conftest import build_delete_event
+
 
 @pytest.mark.asyncio
 async def test_sensor2_is_sensor(sensor2):
@@ -74,3 +76,23 @@ async def test_sensor2_update_event(sensor2, sensor2_update_event):
     event = sensor2_update_event[0]
     sensor2.update_data(event)
     assert sensor2.soil_moisture == 42
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("attribute", "resource_name"),
+    [("temperature", "soil_temperature"), ("soil_moisture", "soil_moisture")],
+)
+async def test_sensor2_returns_none_when_resource_missing(
+    sensor2, attribute, resource_name
+):
+    sensor2.update_data(build_delete_event(sensor2.id, f"lemonbeat/0/{resource_name}"))
+    assert getattr(sensor2, attribute) is None
+
+
+@pytest.mark.asyncio
+async def test_sensor2_build_refresh_temperature_obj(sensor2):
+    request = sensor2.build_refresh_temperature_obj().root[0]
+    assert request.op == "write"
+    assert request.entity.path.resource_name == "command"
+    assert request.payload == {"vi": sensor2.get_command("measure_soil_temperature")}

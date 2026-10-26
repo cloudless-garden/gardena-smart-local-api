@@ -9,7 +9,16 @@ import pytest
 import pytest_asyncio
 
 from gardena_smart_local_api.devices import create_devices_from_messages
-from gardena_smart_local_api.messages import IngressMessageList
+from gardena_smart_local_api.messages import Entity, Event, IngressMessageList
+from gardena_smart_local_api.resources import IpsoPath
+
+
+def build_delete_event(device_id: str, resource_path: str) -> Event:
+    """Build a delete Event for a single resource, e.g. "lemonbeat/0/power_timer"."""
+    return Event(
+        entity=Entity(path=IpsoPath.model_validate(resource_path), device=device_id),
+        op="delete",
+    )
 
 
 @pytest.fixture

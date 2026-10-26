@@ -2,7 +2,8 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
-from gardena_smart_local_api.utils import deep_merge_dict
+from gardena_smart_local_api.resources import IpsoPath
+from gardena_smart_local_api.utils import deep_merge_dict, delete_nested_key
 
 
 def test_deep_merge_dict_simple_merge():
@@ -73,3 +74,82 @@ def test_deep_merge_dict_with_lists():
     source = {"a": [4, 5]}
     deep_merge_dict(target, source)
     assert target == {"a": [4, 5]}
+
+
+def test_delete_nested_key_removes_leaf_and_prunes_empty_parents():
+    data = {"lemonbeat": {"0": {"battery_level": {"vi": 42}}}}
+    delete_nested_key(
+        data,
+        IpsoPath(
+            object_name="lemonbeat",
+            object_instance_id="0",
+            resource_name="battery_level",
+        ),
+    )
+    assert data == {}
+
+
+def test_delete_nested_key_keeps_parent_with_remaining_siblings():
+    data = {
+        "lemonbeat": {
+            "0": {"battery_level": {"vi": 42}, "rf_link_quality": {"vi": 100}}
+        }
+    }
+    delete_nested_key(
+        data,
+        IpsoPath(
+            object_name="lemonbeat",
+            object_instance_id="0",
+            resource_name="battery_level",
+        ),
+    )
+    assert data == {"lemonbeat": {"0": {"rf_link_quality": {"vi": 100}}}}
+
+
+def test_delete_nested_key_missing_key_is_noop():
+    data = {"lemonbeat": {"0": {"battery_level": {"vi": 42}}}}
+    delete_nested_key(
+        data,
+        IpsoPath(
+            object_name="lemonbeat", object_instance_id="0", resource_name="unknown"
+        ),
+    )
+    assert data == {"lemonbeat": {"0": {"battery_level": {"vi": 42}}}}
+
+
+def test_delete_nested_key_non_dict_in_path_is_noop():
+    data = {"lemonbeat": "not a dict"}
+    delete_nested_key(
+        data,
+        IpsoPath(
+            object_name="lemonbeat",
+            object_instance_id="0",
+            resource_name="battery_level",
+        ),
+    )
+    assert data == {"lemonbeat": "not a dict"}
+
+
+def test_delete_nested_key_non_dict_leaf_parent_is_noop():
+    data = {"lemonbeat": {"0": "leaf_value"}}
+    delete_nested_key(
+        data,
+        IpsoPath(
+            object_name="lemonbeat",
+            object_instance_id="0",
+            resource_name="battery_level",
+        ),
+    )
+    assert data == {"lemonbeat": {"0": "leaf_value"}}
+
+
+def test_delete_nested_key_empty_segments_is_noop():
+    data = {"a": 1}
+    delete_nested_key(data, IpsoPath())
+    assert data == {"a": 1}
+
+
+def test_delete_nested_key_top_level_key():
+    data = {"a": 1, "b": 2}
+    delete_nested_key(data, IpsoPath(object_name="a"))
+    assert data == {"b": 2}

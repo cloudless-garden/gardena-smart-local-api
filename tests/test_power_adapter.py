@@ -7,6 +7,8 @@ import pytest
 from gardena_smart_local_api.devices.gen1 import Gen1Device
 from gardena_smart_local_api.devices.power import PowerAdapter
 
+from .conftest import build_delete_event
+
 
 @pytest.mark.asyncio
 async def test_power_adapter_is_power_adapter(power_adapter):
@@ -53,6 +55,15 @@ async def test_power_adapter_update_event(power_adapter, power_adapter_update_ev
     power_adapter.update_data(event)
     assert power_adapter.power_timer == 3597
     assert power_adapter.is_output_enabled is True
+
+
+@pytest.mark.asyncio
+async def test_power_adapter_power_timer_missing_returns_none(power_adapter):
+    power_adapter.update_data(
+        build_delete_event(power_adapter.id, "lemonbeat/0/power_timer")
+    )
+    assert power_adapter.power_timer is None
+    assert power_adapter.is_output_enabled is None
 
 
 @pytest.mark.asyncio

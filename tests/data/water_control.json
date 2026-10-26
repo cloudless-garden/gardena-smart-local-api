@@ -48,7 +48,10 @@
             },
             "frost_warning": { "ts": 1769328850, "vi": 0 },
             "rf_link_quality": { "ts": 1770161548, "vi": 100 },
-            "schedule_config": { "ts": 1769328850, "vo": "" },
+            "schedule_config": {
+              "ts": 1769328850,
+              "vo": "gH8AAAEAAIF/AB4BAACCfwUAAQAAg38FHgEAAIR/BgABAACFfwYeAQAAhn8HAAEAAId/Bx4BAACIfwgAAQAAiX8IHgEAAIp/CQABAACLfwkeAQAAjH8KAAEAAI1/Ch4BAACOfwsAAQAAj38LHgEAAJB/DAABAACRfwweAQAAkn8NAAEAAJN/DR4BAACUfw4AAQAAlX8OHgEAAJZ/DwABAACXfxEAAQAAmH8RHgEAAJl/Eh4BAACafxMAAQAAm38THgEAAJx/FAABAACdfxQeAQAAnn8VAAEAAJ9/FR4BAACgfxYAAQAAoX8WHgEAAKJ/FwABAACjfxceAQAA"
+            },
             "schedule_state": { "ts": 1769328850, "vo": "" },
             "schedule_state_control_shorten": { "ts": 1769328850, "vo": "" },
             "schedule_state_control_skip": { "ts": 1769328850, "vo": "" },

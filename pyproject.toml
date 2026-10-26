@@ -42,7 +42,6 @@ test = [
 examples = [
     "gardena-smart-local-api",
     "rich",
-    "websockets",
 ]
 
 [tool.uv]

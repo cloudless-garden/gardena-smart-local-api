@@ -47,7 +47,7 @@ async def include(app: ExampleApp) -> int:
         if not app.events:
             await asyncio.sleep(0.1)
             continue
-        event = app.events.pop(0)
+        event = app.events.popleft()
         if event.entity.path.object_name != "includable_device":
             continue
 

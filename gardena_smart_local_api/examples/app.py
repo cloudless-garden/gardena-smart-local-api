@@ -4,23 +4,20 @@
 
 import argparse
 import asyncio
-import base64
+import contextlib
 import signal
-import ssl
+import sys
 import time
+from collections import deque
 from collections.abc import Iterable
-from typing import Self, cast
+from typing import Self
 
-import websockets
+import aiohttp
 from rich.live import Live
 from rich.text import Text
 
-from gardena_smart_local_api.devices import (
-    Device,
-    DeviceMap,
-    build_discovery_obj,
-    create_devices_from_messages,
-)
+from gardena_smart_local_api.client import AuthenticationError, GatewayClient
+from gardena_smart_local_api.devices import Device, DeviceMap
 from gardena_smart_local_api.messages import (
     EgressMessageList,
     ErrorMessage,
@@ -30,6 +27,9 @@ from gardena_smart_local_api.messages import (
 )
 
 REQUEST_TIMEOUT_SECONDS = 30
+
+# How many events for commands to read are kept; the oldest are dropped.
+MAX_KEPT_EVENTS = 1000
 
 
 class ExampleApp:
@@ -50,6 +50,13 @@ class ExampleApp:
             "--password",
             required=True,
             help="First 8 characters of ID found on the back of the gateway",
+        )
+        parser.add_argument(
+            "-f",
+            "--fingerprint",
+            required=False,
+            help="SHA-256 fingerprint of the gateway certificate, to only talk to "
+            "that gateway. Printed on a connect without it",
         )
         parser.add_argument(
             "-d",
@@ -78,16 +85,48 @@ class ExampleApp:
 
         self.parser = parser
         self.compatible_devices = compatible_devices
-        self.ws = None
+        self.client: GatewayClient | None = None
+        self._event_task: asyncio.Task[None] | None = None
         self.devices = DeviceMap({})
-        self.events: list[Event] = []
+        self.events: deque[Event] = deque(maxlen=MAX_KEPT_EVENTS)
         self.event_count = 0
-        self.replies: dict[str, Reply] = {}
-        self._exiting = asyncio.Event()
 
     async def __aenter__(self) -> Self:
-        await self.connect()
-        self.devices = await self.discover_devices()
+        self.args = self.parser.parse_args()
+        try:
+            self.client = GatewayClient(
+                self.args.gateway,
+                8443,
+                self.args.password,
+                fingerprint=self.args.fingerprint,
+                queue_messages=True,
+            )
+        except ValueError as err:
+            raise SystemExit(f"Invalid --fingerprint: {err}") from err
+        try:
+            await self.client.connect()
+        except AuthenticationError as err:
+            raise SystemExit(f"{err}. Check the password.") from err
+        except aiohttp.ServerFingerprintMismatch as err:
+            raise SystemExit(
+                "The gateway certificate does not match --fingerprint. "
+                "The password was not sent."
+            ) from err
+        if self.args.fingerprint is None:
+            # Without a fingerprint any certificate is accepted, so the
+            # password goes to whoever answers.
+            print(
+                f"Gateway certificate fingerprint: {self.client.fingerprint}\n"
+                "Pass it with --fingerprint to only talk to this gateway.",
+                file=sys.stderr,
+            )
+        # Consume events from here on, so none are missed while discovering.
+        self._event_task = asyncio.create_task(self._consume_events())
+        try:
+            self.devices = await self.client.discover_devices(REQUEST_TIMEOUT_SECONDS)
+        except BaseException:
+            await self._shutdown()
+            raise
         return self
 
     async def __aexit__(self, *args):
@@ -105,120 +144,75 @@ class ExampleApp:
                     )
                     live.refresh()
 
-        self._exiting.set()
-        await self._receive_task
-        await self._device_updater_task
-        await self.disconnect()
+        await self._shutdown()
 
-    async def _receiver(self):
-        while not self._exiting.is_set():
-            raw = await self.receive()
-            if raw is None:
-                continue
-            msgs = IngressMessageList.model_validate_json(raw)
-            for msg in msgs:
-                dumpfile = None
-                match msg:
-                    case Event():
-                        self.event_count += 1
-                        self.events.append(msg)
-                        if self.args.dump_json:
-                            dumpfile = f"{time.monotonic_ns()}_event.json"
-
-                    case Reply():
-                        self.replies[msg.request_id] = msg
-                        if self.args.dump_json:
-                            dumpfile = f"{time.monotonic_ns()}_reply.json"
-
-                    case ErrorMessage():
-                        if msg.request_id is not None:
-                            self.replies[msg.request_id] = msg
-                        if self.args.dump_json:
-                            dumpfile = f"{time.monotonic_ns()}_error.json"
-
-                if self.args.dump_json and dumpfile is not None:
-                    with open(dumpfile, "w") as f:
-                        f.write(msg.model_dump_json(exclude_none=True, indent=2) + "\n")
-
-    async def _device_updater(self):
-        while not self._exiting.is_set():
-            for event in self.events[:]:
-                if event.op == "update":
-                    device_id = event.entity.device
-                    if device_id in self.devices:
-                        self.devices[device_id].update_data(event)
-                        self.events.remove(event)
-            await asyncio.sleep(0.5)
-
-    async def connect(self):
-        self.args = self.parser.parse_args()
-        uri = f"wss://{self.args.gateway}:8443"
-        password = self.args.password
-        auth = base64.b64encode(f"_:{password}".encode()).decode("ascii")
-        headers = {"Authorization": f"Basic {auth}"}
-
-        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
-
-        self.ws = await websockets.connect(
-            uri,
-            ssl=ssl_context,
-            additional_headers=headers,
-            close_timeout=0,
-        )
-
-        self._receive_task = asyncio.create_task(self._receiver())
-        self._device_updater_task = asyncio.create_task(self._device_updater())
-
-    async def disconnect(self):
-        if self.ws is not None:
-            await self.ws.close()
-            self.ws = None
-
-    async def send(self, data: str):
-        if self.ws is None:
-            raise RuntimeError("Not connected")
-        await self.ws.send(data)
-
-    async def receive(self) -> str | None:
-        if self.ws is None:
-            raise RuntimeError("Not connected")
+    async def _shutdown(self) -> None:
         try:
-            return cast(str, await asyncio.wait_for(self.ws.recv(), timeout=1.0))
-        except TimeoutError:
-            pass
-        return None
+            if self._event_task is not None:
+                self._event_task.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await self._event_task
+        finally:
+            # Disconnect even if the event task died with an exception.
+            self._event_task = None
+            if self.client is not None:
+                await self.client.disconnect()
+                self.client = None
+
+    async def _consume_events(self) -> None:
+        assert self.client is not None
+        while True:
+            message = await self.client.messages.get()
+            # Replies to requests nobody waits for and errors also end up here.
+            if not isinstance(message, Event):
+                if self.args.dump_json:
+                    kind = "error" if isinstance(message, ErrorMessage) else "reply"
+                    self._dump(message, kind)
+                continue
+
+            self.event_count += 1
+            if self.args.dump_json:
+                self._dump(message, "event")
+
+            # Apply updates to known devices; queue the rest (e.g. includable
+            # devices) in self.events for commands to read.
+            device_id = message.entity.device
+            if (
+                message.op == "update"
+                and device_id is not None
+                and device_id in self.devices
+            ):
+                self.devices[device_id].update_data(message)
+            else:
+                self.events.append(message)
+
+    def _dump(
+        self, message: EgressMessageList | Event | Reply | ErrorMessage, kind: str
+    ):
+        with open(f"{time.monotonic_ns()}_{kind}.json", "w") as f:
+            f.write(message.model_dump_json(exclude_none=True, indent=2) + "\n")
 
     async def send_request(self, reqs: EgressMessageList) -> IngressMessageList | None:
+        if self.client is None:
+            raise RuntimeError("Not connected")
         if self.args.dump_json:
-            with open(f"{time.monotonic_ns()}_request.json", "w") as f:
-                f.write(reqs.model_dump_json(exclude_none=True, indent=2) + "\n")
-        await self.send(str(reqs))
+            self._dump(reqs, "request")
 
-        request_ids = {m.request_id for m in reqs}
-
-        reps = IngressMessageList([])
-
-        for _ in range(REQUEST_TIMEOUT_SECONDS):
-            for request_id in request_ids:
-                if request_id in self.replies:
-                    reps.append(self.replies.pop(request_id))
-            if len(reps) == len(reqs):
-                break
-            await asyncio.sleep(1)
-        else:
+        # Waits for the replies to these requests, they are not put on the queue.
+        try:
+            replies = await self.client.send_request(
+                reqs, timeout=REQUEST_TIMEOUT_SECONDS
+            )
+        except TimeoutError:
             print("Timeout receiving reply for command")
             return None
 
-        return reps
-
-    async def discover_devices(self) -> DeviceMap:
-        discovery = build_discovery_obj()
-        replies = await self.send_request(discovery)
-        if replies is None:
-            return DeviceMap({})
-        return await create_devices_from_messages(replies)
+        if self.args.dump_json:
+            for reply in replies:
+                self._dump(
+                    reply, "error" if isinstance(reply, ErrorMessage) else "reply"
+                )
+        return replies
 
     def list_devices(self):
         for dev_id, device in self.devices.items():

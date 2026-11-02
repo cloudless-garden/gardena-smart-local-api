@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 import asyncio
+import datetime
 import hashlib
 import json
 from typing import cast
@@ -11,12 +12,17 @@ from unittest.mock import AsyncMock, MagicMock
 import aiohttp
 import pytest
 import pytest_asyncio
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.x509.oid import NameOID
 
 import gardena_smart_local_api.client.gateway as client_module
 from gardena_smart_local_api.client import (
     AuthenticationError,
     DiscoveryError,
     GatewayClient,
+    hostname_from_certificate,
 )
 from gardena_smart_local_api.devices import build_discovery_obj
 from gardena_smart_local_api.messages import (
@@ -1067,3 +1073,50 @@ async def test_binary_frame_that_is_not_utf8_is_skipped(connected_client) -> Non
     event = await _next_event(client)
     assert isinstance(event, Event)
     assert client.connected
+
+
+def _certificate(*dns_names: str) -> bytes:
+    key = ec.generate_private_key(ec.SECP256R1())
+    name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "gateway")])
+    builder = (
+        x509.CertificateBuilder()
+        .subject_name(name)
+        .issuer_name(name)
+        .public_key(key.public_key())
+        .serial_number(1)
+        .not_valid_before(datetime.datetime(2026, 1, 1))
+        .not_valid_after(datetime.datetime(2036, 1, 1))
+    )
+    if dns_names:
+        builder = builder.add_extension(
+            x509.SubjectAlternativeName([x509.DNSName(n) for n in dns_names]),
+            critical=False,
+        )
+    return builder.sign(key, hashes.SHA256()).public_bytes(serialization.Encoding.DER)
+
+
+def test_hostname_is_the_mdns_name_without_local() -> None:
+    certificate = _certificate("localhost", "GARDENA-1a2b3c.local")
+
+    assert hostname_from_certificate(certificate) == "GARDENA-1a2b3c"
+
+
+@pytest.mark.parametrize("dns_names", [(), ("localhost",)])
+def test_hostname_is_none_without_an_mdns_name(dns_names: tuple[str, ...]) -> None:
+    assert hostname_from_certificate(_certificate(*dns_names)) is None
+
+
+@pytest.mark.asyncio
+async def test_hostname_is_available_after_connect(
+    fake_session: _FakeSession, fake_ws: _FakeWS
+) -> None:
+    fake_ws.certificate = _certificate("GARDENA-1a2b3c.local")
+    client = GatewayClient(
+        "gateway.local", 8443, "secret", session=_as_session(fake_session)
+    )
+    assert client.hostname is None
+
+    await client.connect()
+    await client.disconnect()
+
+    assert client.hostname == "GARDENA-1a2b3c"

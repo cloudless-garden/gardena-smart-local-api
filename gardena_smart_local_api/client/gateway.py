@@ -18,7 +18,11 @@ from pydantic import TypeAdapter, ValidationError
 
 from ..devices import DeviceMap, build_discovery_obj, create_devices_from_messages
 from ..messages import EgressMessageList, ErrorMessage, Event, IngressMessageList, Reply
-from .certificate import no_verify_ssl_context, parse_fingerprint
+from .certificate import (
+    hostname_from_certificate,
+    no_verify_ssl_context,
+    parse_fingerprint,
+)
 from .errors import AuthenticationError, DiscoveryError
 from .replies import PendingReplies
 
@@ -187,6 +191,17 @@ class GatewayClient:
         if self._certificate is None:
             return None
         return hashlib.sha256(self._certificate).hexdigest()
+
+    @property
+    def certificate_hostname(self) -> str | None:
+        """The gateway's mDNS hostname (e.g. ``GARDENA-123456``) from `certificate`.
+
+        None before the first connection, or if the certificate has no such
+        name (older firmware).
+        """
+        if self._certificate is None:
+            return None
+        return hostname_from_certificate(self._certificate)
 
     async def __aenter__(self) -> Self:
         await self.connect()

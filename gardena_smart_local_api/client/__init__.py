@@ -14,7 +14,11 @@ reuses it. Without one (the CLI examples), the client creates and owns a
 session.
 """
 
-from .certificate import hostname_from_certificate
+from .certificate import (
+    fetch_certificate,
+    fingerprint_from_certificate,
+    hostname_from_certificate,
+)
 from .errors import AuthenticationError, DiscoveryError
 from .gateway import GatewayClient
 
@@ -22,5 +26,7 @@ __all__ = [
     "AuthenticationError",
     "DiscoveryError",
     "GatewayClient",
+    "fetch_certificate",
+    "fingerprint_from_certificate",
     "hostname_from_certificate",
 ]

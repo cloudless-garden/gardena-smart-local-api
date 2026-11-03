@@ -6,6 +6,7 @@ import asyncio
 import datetime
 import hashlib
 import json
+import ssl
 from typing import cast
 from unittest.mock import AsyncMock, MagicMock
 
@@ -22,6 +23,8 @@ from gardena_smart_local_api.client import (
     AuthenticationError,
     DiscoveryError,
     GatewayClient,
+    fetch_certificate,
+    fingerprint_from_certificate,
     hostname_from_certificate,
 )
 from gardena_smart_local_api.devices import build_discovery_obj
@@ -1075,7 +1078,9 @@ async def test_binary_frame_that_is_not_utf8_is_skipped(connected_client) -> Non
     assert client.connected
 
 
-def _certificate(*dns_names: str) -> bytes:
+def _self_signed(
+    *dns_names: str,
+) -> tuple[ec.EllipticCurvePrivateKey, x509.Certificate]:
     key = ec.generate_private_key(ec.SECP256R1())
     name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "gateway")])
     builder = (
@@ -1092,7 +1097,12 @@ def _certificate(*dns_names: str) -> bytes:
             x509.SubjectAlternativeName([x509.DNSName(n) for n in dns_names]),
             critical=False,
         )
-    return builder.sign(key, hashes.SHA256()).public_bytes(serialization.Encoding.DER)
+    return key, builder.sign(key, hashes.SHA256())
+
+
+def _certificate(*dns_names: str) -> bytes:
+    _, certificate = _self_signed(*dns_names)
+    return certificate.public_bytes(serialization.Encoding.DER)
 
 
 def test_hostname_is_the_mdns_name_without_local() -> None:
@@ -1120,3 +1130,70 @@ async def test_hostname_is_available_after_connect(
     await client.disconnect()
 
     assert client.hostname == "GARDENA-1a2b3c"
+
+
+@pytest_asyncio.fixture
+async def tls_server(tmp_path):
+    key, certificate = _self_signed("GARDENA-1a2b3c.local")
+    cert_file = tmp_path / "cert.pem"
+    key_file = tmp_path / "key.pem"
+    cert_file.write_bytes(certificate.public_bytes(serialization.Encoding.PEM))
+    key_file.write_bytes(
+        key.private_bytes(
+            serialization.Encoding.PEM,
+            serialization.PrivateFormat.PKCS8,
+            serialization.NoEncryption(),
+        )
+    )
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.load_cert_chain(cert_file, key_file)
+    server = await asyncio.start_server(
+        lambda reader, writer: writer.close(), "127.0.0.1", 0, ssl=context
+    )
+    port = server.sockets[0].getsockname()[1]
+    yield port, certificate.public_bytes(serialization.Encoding.DER)
+    server.close()
+    await server.wait_closed()
+
+
+@pytest.mark.asyncio
+async def test_fetch_certificate_returns_the_presented_certificate(tls_server) -> None:
+    port, der = tls_server
+
+    assert await fetch_certificate("127.0.0.1", port) == der
+
+
+@pytest.mark.asyncio
+async def test_fetch_certificate_raises_when_the_gateway_is_unreachable() -> None:
+    server = await asyncio.start_server(lambda r, w: None, "127.0.0.1", 0)
+    port = server.sockets[0].getsockname()[1]
+    server.close()
+    await server.wait_closed()
+
+    with pytest.raises(OSError):
+        await fetch_certificate("127.0.0.1", port)
+
+
+@pytest.mark.asyncio
+async def test_fetch_certificate_times_out_without_a_handshake() -> None:
+    async def silent(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
+        await reader.read()  # never answers the handshake, returns when we hang up
+        # server.wait_closed() waits for open connections since Python 3.12.1.
+        writer.close()
+
+    server = await asyncio.start_server(silent, "127.0.0.1", 0)
+    port = server.sockets[0].getsockname()[1]
+
+    try:
+        with pytest.raises(TimeoutError):
+            await fetch_certificate("127.0.0.1", port, timeout=0.05)
+    finally:
+        server.close()
+        await server.wait_closed()
+
+
+def test_fingerprint_is_the_sha256_of_the_certificate() -> None:
+    assert (
+        fingerprint_from_certificate(b"gateway-certificate")
+        == hashlib.sha256(b"gateway-certificate").hexdigest()
+    )

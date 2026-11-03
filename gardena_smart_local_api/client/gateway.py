@@ -5,7 +5,6 @@
 import asyncio
 import base64
 import contextlib
-import hashlib
 import logging
 import ssl
 from collections.abc import Awaitable, Callable
@@ -17,6 +16,7 @@ import aiohttp
 from ..devices import DeviceMap, build_discovery_obj, create_devices_from_messages
 from ..messages import EgressMessageList, ErrorMessage, Event, IngressMessageList, Reply
 from .certificate import (
+    fingerprint_from_certificate,
     hostname_from_certificate,
     no_verify_ssl_context,
     parse_fingerprint,
@@ -152,7 +152,7 @@ class GatewayClient:
         """
         if self._certificate is None:
             return None
-        return hashlib.sha256(self._certificate).hexdigest()
+        return fingerprint_from_certificate(self._certificate)
 
     @property
     def hostname(self) -> str | None:

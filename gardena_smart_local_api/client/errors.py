@@ -10,18 +10,27 @@ class AuthenticationError(Exception):
     """The gateway rejected the configured password (HTTP 401)."""
 
 
-class DiscoveryError(Exception):
+class RequestError(Exception):
+    """The gateway answered a request with an error or reported it as failed.
+
+    `replies` holds all replies of the request, in the order of its messages,
+    so the caller can tell which messages took effect.
+    """
+
+    def __init__(self, message: str, replies: IngressMessageList) -> None:
+        super().__init__(message)
+        self.replies = replies
+
+
+class DiscoveryError(RequestError):
     """The gateway answered a discovery request with an error.
 
-    `replies` holds all replies of the discovery, in the order of its
-    requests. `devices` holds the devices of the discovery requests that
-    succeeded. It is not the full list, so a device missing from it may still
-    exist.
+    `devices` holds the devices of the discovery requests that succeeded. It
+    is not the full list, so a device missing from it may still exist.
     """
 
     def __init__(
         self, message: str, replies: IngressMessageList, devices: DeviceMap
     ) -> None:
-        super().__init__(message)
-        self.replies = replies
+        super().__init__(message, replies)
         self.devices = devices

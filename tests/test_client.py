@@ -23,6 +23,7 @@ from gardena_smart_local_api.client import (
     AuthenticationError,
     DiscoveryError,
     GatewayClient,
+    RequestError,
     fetch_certificate,
     fingerprint_from_certificate,
     hostname_from_certificate,
@@ -33,6 +34,7 @@ from gardena_smart_local_api.messages import (
     Entity,
     ErrorMessage,
     Event,
+    IngressMessageList,
     Reply,
     Request,
 )
@@ -259,7 +261,9 @@ async def test_send_request_returns_the_replies_in_request_order(
 
 
 @pytest.mark.asyncio
-async def test_send_request_resolves_on_error_message(connected_client) -> None:
+async def test_send_request_raises_with_the_error_of_the_gateway(
+    connected_client,
+) -> None:
     client, ws = connected_client
 
     task = asyncio.ensure_future(client.send_request(_request("req-2"), timeout=1))
@@ -269,9 +273,10 @@ async def test_send_request_resolves_on_error_message(connected_client) -> None:
         '"metadata": {"error_source": "gateway"}, "payload": {"vs": "not allowed"}}]'
     )
 
-    replies = await task
+    with pytest.raises(RequestError, match="not allowed") as raised:
+        await task
+    replies = raised.value.replies
     assert len(replies) == 1
-    assert replies[0].success is False
     assert replies[0].error_message == "not allowed"
 
 
@@ -329,7 +334,7 @@ async def test_send_request_rejects_a_timeout_that_is_not_positive(
 async def test_send_request_without_wait_does_not_block(connected_client) -> None:
     client, ws = connected_client
 
-    result = await client.send_request(_request("req-4"))
+    result = await client.send_request(_request("req-4"), timeout=None)
 
     assert len(result) == 0
     assert ws.sent
@@ -1059,6 +1064,80 @@ async def test_disconnect_from_on_event_raises_instead_of_deadlocking(
 
 
 @pytest.mark.asyncio
+async def test_waiting_send_request_from_on_event_raises_instead_of_stalling(
+    fake_session: _FakeSession, fake_ws: _FakeWS
+) -> None:
+    errors: list[RuntimeError] = []
+
+    async def on_event(event) -> None:
+        try:
+            await client.send_request(_request("req-in-event"))
+        except RuntimeError as err:
+            errors.append(err)
+        await client.send_request(_request("req-sent-only"), timeout=None)
+
+    client = GatewayClient(
+        "gateway.local",
+        8443,
+        "secret",
+        on_event=on_event,
+        session=_as_session(fake_session),
+    )
+    await client.connect()
+    fake_ws.push(
+        '[{"op": "update", "payload": {}, "entity": {"device": "dev-1", '
+        '"path": {"object_name": "lemonbeat", "object_instance_id": "0", '
+        '"resource_name": "command"}}}]'
+    )
+    for _ in range(20):
+        if errors:
+            break
+        await asyncio.sleep(0.01)
+    await asyncio.sleep(0)
+    await client.disconnect()
+
+    assert len(errors) == 1
+    assert "timeout=None" in str(errors[0])
+    assert any("req-sent-only" in sent for sent in fake_ws.sent)
+
+
+@pytest.mark.asyncio
+async def test_send_request_can_wait_in_a_task_started_from_on_event(
+    fake_session: _FakeSession, fake_ws: _FakeWS
+) -> None:
+    waiting: list[asyncio.Task[IngressMessageList]] = []
+
+    def on_event(event) -> None:
+        waiting.append(
+            asyncio.create_task(client.send_request(_request("req-task"), timeout=1))
+        )
+
+    client = GatewayClient(
+        "gateway.local",
+        8443,
+        "secret",
+        on_event=on_event,
+        session=_as_session(fake_session),
+    )
+    await client.connect()
+    fake_ws.push(
+        '[{"op": "update", "payload": {}, "entity": {"device": "dev-1", '
+        '"path": {"object_name": "lemonbeat", "object_instance_id": "0", '
+        '"resource_name": "command"}}}]'
+    )
+    for _ in range(20):
+        if fake_ws.sent:
+            break
+        await asyncio.sleep(0.01)
+    fake_ws.push('[{"request_id": "req-task", "success": true, "payload": {}}]')
+
+    replies = await asyncio.wait_for(waiting[0], timeout=1)
+    await client.disconnect()
+
+    assert [reply.request_id for reply in replies] == ["req-task"]
+
+
+@pytest.mark.asyncio
 async def test_disconnect_can_be_started_as_a_task_from_on_event(
     fake_session: _FakeSession, fake_ws: _FakeWS
 ) -> None:
@@ -1422,3 +1501,55 @@ def test_fingerprint_is_the_sha256_of_the_certificate() -> None:
         fingerprint_from_certificate(b"gateway-certificate")
         == hashlib.sha256(b"gateway-certificate").hexdigest()
     )
+
+
+@pytest.mark.asyncio
+async def test_send_request_waits_for_the_replies_by_default(connected_client) -> None:
+    client, ws = connected_client
+
+    task = asyncio.ensure_future(client.send_request(_request("req-7")))
+    await asyncio.sleep(0)
+    assert not task.done()
+    ws.push('[{"request_id": "req-7", "success": true, "payload": {}}]')
+
+    replies = await task
+    assert [reply.request_id for reply in replies] == ["req-7"]
+
+
+@pytest.mark.asyncio
+async def test_send_request_raises_on_an_unsuccessful_reply(connected_client) -> None:
+    client, ws = connected_client
+
+    task = asyncio.ensure_future(client.send_request(_request("req-9"), timeout=1))
+    await asyncio.sleep(0)
+    ws.push('[{"request_id": "req-9", "success": false, "payload": {}}]')
+
+    with pytest.raises(RequestError):
+        await task
+
+
+@pytest.mark.asyncio
+async def test_request_error_carries_all_replies_in_request_order(
+    connected_client,
+) -> None:
+    client, ws = connected_client
+    request = EgressMessageList(
+        [_request("req-11").root[0], _request("req-12").root[0]]
+    )
+
+    task = asyncio.ensure_future(client.send_request(request, timeout=1))
+    await asyncio.sleep(0)
+    ws.push(
+        '[{"request_id": "req-12", "success": false, "payload": {}}, '
+        '{"request_id": "req-11", "success": true, "payload": {}}]'
+    )
+
+    with pytest.raises(RequestError) as raised:
+        await task
+    replies = raised.value.replies
+    assert [reply.request_id for reply in replies] == ["req-11", "req-12"]
+    assert [reply.success for reply in replies] == [True, False]
+
+
+def test_discovery_error_is_a_request_error() -> None:
+    assert issubclass(DiscoveryError, RequestError)

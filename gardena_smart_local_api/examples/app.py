@@ -16,7 +16,12 @@ import aiohttp
 from rich.live import Live
 from rich.text import Text
 
-from gardena_smart_local_api.client import AuthenticationError, GatewayClient
+from gardena_smart_local_api.client import (
+    AuthenticationError,
+    DiscoveryError,
+    GatewayClient,
+    RequestError,
+)
 from gardena_smart_local_api.devices import Device, DeviceMap
 from gardena_smart_local_api.messages import (
     EgressMessageList,
@@ -124,6 +129,9 @@ class ExampleApp:
         self._event_task = asyncio.create_task(self._consume_events())
         try:
             self.devices = await self.client.discover_devices(REQUEST_TIMEOUT_SECONDS)
+        except DiscoveryError as err:
+            print(f"{err}. Some devices may be missing.", file=sys.stderr)
+            self.devices = err.devices
         except BaseException:
             await self._shutdown()
             raise
@@ -206,6 +214,9 @@ class ExampleApp:
         except TimeoutError:
             print("Timeout receiving reply for command")
             return None
+        except RequestError as err:
+            # The commands print the replies, also the failed ones.
+            replies = err.replies
 
         if self.args.dump_json:
             for reply in replies:

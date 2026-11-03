@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
+import asyncio
+import contextlib
 import hashlib
 import ssl
 
@@ -32,6 +34,41 @@ def parse_fingerprint(fingerprint: str) -> bytes:
             "optionally separated by colons"
         )
     return digest
+
+
+def fingerprint_from_certificate(certificate: bytes) -> str:
+    """Return the SHA-256 fingerprint (hex) of a DER certificate.
+
+    Pass it as `fingerprint` to `GatewayClient` to pin the gateway.
+    """
+    return hashlib.sha256(certificate).hexdigest()
+
+
+async def fetch_certificate(host: str, port: int, timeout: float = 10) -> bytes:
+    """Return the DER certificate a gateway presents, without authenticating.
+
+    Needs no password, so a setup flow can learn the fingerprint to pin and the
+    hostname before it asks for one. The certificate is self-signed and not
+    verified: trust it on first use only.
+
+    Raises `TimeoutError` if the TLS handshake takes longer than `timeout`
+    seconds, `OSError` if the gateway cannot be reached, and
+    `ConnectionError` if it presents no certificate.
+    """
+    async with asyncio.timeout(timeout):
+        _, writer = await asyncio.open_connection(
+            host, port, ssl=no_verify_ssl_context()
+        )
+    try:
+        ssl_object = writer.get_extra_info("ssl_object")
+        certificate = ssl_object.getpeercert(binary_form=True) if ssl_object else None
+    finally:
+        writer.close()
+        with contextlib.suppress(OSError):
+            await writer.wait_closed()
+    if not certificate:
+        raise ConnectionError("The gateway did not present a certificate")
+    return certificate
 
 
 def hostname_from_certificate(certificate: bytes) -> str | None:

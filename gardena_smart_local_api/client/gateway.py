@@ -5,7 +5,6 @@
 import asyncio
 import base64
 import contextlib
-import hashlib
 import json
 import logging
 import ssl
@@ -19,6 +18,7 @@ from pydantic import TypeAdapter, ValidationError
 from ..devices import DeviceMap, build_discovery_obj, create_devices_from_messages
 from ..messages import EgressMessageList, ErrorMessage, Event, IngressMessageList, Reply
 from .certificate import (
+    fingerprint_from_certificate,
     hostname_from_certificate,
     no_verify_ssl_context,
     parse_fingerprint,
@@ -90,9 +90,18 @@ class GatewayClient:
     consumes it, the oldest are dropped.
 
     Use it as an async context manager, or call `connect()` and
-    `disconnect()` yourself:
+    `disconnect()` yourself. Without a `fingerprint` any certificate is
+    accepted, so the password goes to whoever answers. Learn the fingerprint
+    once, store it, and pass it on every later connection:
 
-        async with GatewayClient("GARDENA-123456", 8443, "password") as client:
+        # Once, at setup.
+        certificate = await fetch_certificate("GARDENA-123456", 8443)
+        fingerprint = fingerprint_from_certificate(certificate)
+
+        # From then on, only that gateway is talked to.
+        async with GatewayClient(
+            "GARDENA-123456", 8443, "password", fingerprint=fingerprint
+        ) as client:
             devices = await client.discover_devices()
 
     `connect()` raises if the first connection fails and leaves the client
@@ -190,7 +199,7 @@ class GatewayClient:
         """
         if self._certificate is None:
             return None
-        return hashlib.sha256(self._certificate).hexdigest()
+        return fingerprint_from_certificate(self._certificate)
 
     @property
     def certificate_hostname(self) -> str | None:

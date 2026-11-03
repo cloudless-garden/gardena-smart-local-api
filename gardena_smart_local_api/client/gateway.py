@@ -23,7 +23,7 @@ from .certificate import (
     no_verify_ssl_context,
     parse_fingerprint,
 )
-from .errors import AuthenticationError, DiscoveryError
+from .errors import AuthenticationError, DiscoveryError, RequestError
 from .replies import PendingReplies
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,6 +37,9 @@ MESSAGE_QUEUE_SIZE = 1000
 
 # How long discover_devices() waits for the gateway's discovery replies.
 DISCOVERY_TIMEOUT = 30
+
+# How long send_request() waits for the gateway's replies by default.
+REQUEST_TIMEOUT = 10
 
 # How long connect() waits for the first connection, including the
 # on_connect hook, before giving up. Leaves room for the handshake on top of
@@ -432,14 +435,21 @@ class GatewayClient:
     async def send_request(
         self,
         request: EgressMessageList,
-        timeout: float | None = None,
+        timeout: float | None = REQUEST_TIMEOUT,
     ) -> IngressMessageList:
-        """Send a request and, with a `timeout`, wait for its replies.
+        """Send a request and return its replies, or raise if it is not confirmed.
 
-        Without a `timeout` the request is sent and no reply is waited for.
-        With one, the replies are returned in the order of the messages in
-        the request, or `TimeoutError` is raised after `timeout` seconds.
-        Raises `ValueError` if `timeout` is not positive.
+        The replies are in the order of the messages in the request. Raises
+        `TimeoutError` if the gateway does not answer within `timeout`
+        seconds, `ConnectionError` if the connection is not open or drops, and
+        `RequestError` if the gateway answers with an error or reports a
+        failure, so a request that did not take effect is not mistaken for one
+        that did. The error carries all replies of the request. Raises
+        `ValueError` if `timeout` is not positive.
+
+        With `timeout=None` the request is only sent: no reply is waited for
+        and nothing is returned. `on_event` must use this, because it runs in
+        the read loop that delivers the replies.
         """
         if timeout is not None:
             _require_positive(timeout)
@@ -465,10 +475,16 @@ class GatewayClient:
         try:
             await self._ws.send_str(str(request))
             async with asyncio.timeout(timeout):
-                replies = await asyncio.gather(*futures.values())
-            return IngressMessageList(list(replies))
+                replies = IngressMessageList(
+                    list(await asyncio.gather(*futures.values()))
+                )
         finally:
             self._pending_replies.forget(request_ids)
+
+        failure = self._failure(replies)
+        if failure is not None:
+            raise RequestError(f"The request failed{failure}", replies)
+        return replies
 
     async def discover_devices(self, timeout: float = DISCOVERY_TIMEOUT) -> DeviceMap:
         """Ask the gateway for its devices and build them from the replies.
@@ -479,16 +495,19 @@ class GatewayClient:
         carries the devices of the discovery requests that succeeded. Raises
         `ValueError` if `timeout` is not positive.
         """
-        replies = await self.send_request(build_discovery_obj(), timeout=timeout)
-        failure = self._failure(replies)
-        if failure is None:
-            return await create_devices_from_messages(replies)
-        succeeded: list[Event | Reply | ErrorMessage] = []
-        for reply in replies:
-            if isinstance(reply, Reply) and reply.success:
-                succeeded.append(reply)
-        devices = await create_devices_from_messages(IngressMessageList(succeeded))
-        raise DiscoveryError(f"The discovery failed{failure}", replies, devices)
+        try:
+            replies = await self.send_request(build_discovery_obj(), timeout)
+        except RequestError as err:
+            succeeded: list[Event | Reply | ErrorMessage] = []
+            for reply in err.replies:
+                if isinstance(reply, Reply) and reply.success:
+                    succeeded.append(reply)
+            devices = await create_devices_from_messages(IngressMessageList(succeeded))
+            failure = self._failure(err.replies) or ""
+            raise DiscoveryError(
+                f"The discovery failed{failure}", err.replies, devices
+            ) from err
+        return await create_devices_from_messages(replies)
 
     @staticmethod
     def _failure(replies: IngressMessageList) -> str | None:

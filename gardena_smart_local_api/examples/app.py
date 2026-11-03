@@ -16,7 +16,11 @@ import aiohttp
 from rich.live import Live
 from rich.text import Text
 
-from gardena_smart_local_api.client import AuthenticationError, GatewayClient
+from gardena_smart_local_api.client import (
+    AuthenticationError,
+    GatewayClient,
+    RequestError,
+)
 from gardena_smart_local_api.devices import Device, DeviceMap
 from gardena_smart_local_api.messages import (
     EgressMessageList,
@@ -206,6 +210,9 @@ class ExampleApp:
         except TimeoutError:
             print("Timeout receiving reply for command")
             return None
+        except RequestError as err:
+            # The commands print the replies, also the failed ones.
+            replies = err.replies
 
         if self.args.dump_json:
             for reply in replies:

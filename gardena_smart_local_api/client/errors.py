@@ -7,5 +7,9 @@ class AuthenticationError(Exception):
     """The gateway rejected the configured password (HTTP 401)."""
 
 
-class DiscoveryError(Exception):
+class RequestError(Exception):
+    """The gateway answered a request with an error or reported it as failed."""
+
+
+class DiscoveryError(RequestError):
     """The gateway answered a discovery request with an error."""

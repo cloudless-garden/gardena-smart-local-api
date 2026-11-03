@@ -19,13 +19,14 @@ from .certificate import (
     fingerprint_from_certificate,
     hostname_from_certificate,
 )
-from .errors import AuthenticationError, DiscoveryError
+from .errors import AuthenticationError, DiscoveryError, RequestError
 from .gateway import GatewayClient
 
 __all__ = [
     "AuthenticationError",
     "DiscoveryError",
     "GatewayClient",
+    "RequestError",
     "fetch_certificate",
     "fingerprint_from_certificate",
     "hostname_from_certificate",

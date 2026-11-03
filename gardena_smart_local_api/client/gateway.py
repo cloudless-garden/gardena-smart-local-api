@@ -21,7 +21,7 @@ from .certificate import (
     no_verify_ssl_context,
     parse_fingerprint,
 )
-from .errors import AuthenticationError, DiscoveryError
+from .errors import AuthenticationError, DiscoveryError, RequestError
 from .replies import PendingReplies
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,6 +35,9 @@ EVENT_QUEUE_SIZE = 1000
 
 # How long discover_devices() waits for the gateway's discovery replies.
 DISCOVERY_TIMEOUT = 30
+
+# How long send_command() waits for the gateway to confirm a command.
+COMMAND_TIMEOUT = 10
 
 # How long connect() waits for the first connection, including the
 # on_connect hook, before giving up. Leaves room for the handshake on top of
@@ -416,9 +419,30 @@ class GatewayClient:
         replies = await self.send_request(
             build_discovery_obj(), wait_for_response_sec=timeout
         )
+        self._raise_for_failure(replies, "discovery", DiscoveryError)
+        return await create_devices_from_messages(replies)
+
+    async def send_command(
+        self, request: EgressMessageList, timeout: float = COMMAND_TIMEOUT
+    ) -> IngressMessageList:
+        """Send a request and return its replies, or raise if it is not confirmed.
+
+        Raises `TimeoutError` if the gateway does not answer within `timeout`
+        seconds, `ConnectionError` if the connection is not open or drops, and
+        `RequestError` if the gateway answers with an error or reports a
+        failure, so a command that did not take effect is not mistaken for one
+        that did.
+        """
+        replies = await self.send_request(request, wait_for_response_sec=timeout)
+        self._raise_for_failure(replies, "request", RequestError)
+        return replies
+
+    @staticmethod
+    def _raise_for_failure(
+        replies: IngressMessageList, what: str, error: type[RequestError]
+    ) -> None:
         for reply in replies:
             if isinstance(reply, ErrorMessage):
-                raise DiscoveryError(f"The discovery failed: {reply.error_message}")
+                raise error(f"The {what} failed: {reply.error_message}")
             if isinstance(reply, Reply) and not reply.success:
-                raise DiscoveryError("The discovery failed")
-        return await create_devices_from_messages(replies)
+                raise error(f"The {what} failed")

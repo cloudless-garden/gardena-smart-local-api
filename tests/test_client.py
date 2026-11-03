@@ -23,6 +23,7 @@ from gardena_smart_local_api.client import (
     AuthenticationError,
     DiscoveryError,
     GatewayClient,
+    RequestError,
     fetch_certificate,
     fingerprint_from_certificate,
     hostname_from_certificate,
@@ -1197,3 +1198,58 @@ def test_fingerprint_is_the_sha256_of_the_certificate() -> None:
         fingerprint_from_certificate(b"gateway-certificate")
         == hashlib.sha256(b"gateway-certificate").hexdigest()
     )
+
+
+@pytest.mark.asyncio
+async def test_send_command_returns_the_replies_once_confirmed(
+    connected_client,
+) -> None:
+    client, ws = connected_client
+
+    task = asyncio.ensure_future(client.send_command(_request("req-7"), timeout=1))
+    await asyncio.sleep(0)
+    ws.push('[{"request_id": "req-7", "success": true, "payload": {}}]')
+
+    replies = await task
+    assert [reply.request_id for reply in replies] == ["req-7"]
+
+
+@pytest.mark.asyncio
+async def test_send_command_raises_with_the_error_of_the_gateway(
+    connected_client,
+) -> None:
+    client, ws = connected_client
+
+    task = asyncio.ensure_future(client.send_command(_request("req-8"), timeout=1))
+    await asyncio.sleep(0)
+    ws.push(
+        '[{"request_id": "req-8", "success": false, '
+        '"metadata": {"error_source": "gateway"}, "payload": {"vs": "not allowed"}}]'
+    )
+
+    with pytest.raises(RequestError, match="not allowed"):
+        await task
+
+
+@pytest.mark.asyncio
+async def test_send_command_raises_on_an_unsuccessful_reply(connected_client) -> None:
+    client, ws = connected_client
+
+    task = asyncio.ensure_future(client.send_command(_request("req-9"), timeout=1))
+    await asyncio.sleep(0)
+    ws.push('[{"request_id": "req-9", "success": false, "payload": {}}]')
+
+    with pytest.raises(RequestError):
+        await task
+
+
+@pytest.mark.asyncio
+async def test_send_command_times_out_without_a_reply(connected_client) -> None:
+    client, _ = connected_client
+
+    with pytest.raises(TimeoutError):
+        await client.send_command(_request("req-10"), timeout=0.05)
+
+
+def test_discovery_error_is_a_request_error() -> None:
+    assert issubclass(DiscoveryError, RequestError)

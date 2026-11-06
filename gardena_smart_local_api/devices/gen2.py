@@ -11,6 +11,10 @@ from ..model_loader import Gen2ModelDefinition
 from ..resources import VALUE_TYPES, IpsoPath
 from .device import Device
 
+# Gen2 devices report the link quality as a level, not a percentage. The
+# percentages are the ones the GARDENA app shows for each level.
+_LINK_QUALITY_PERCENT = {0: 20, 1: 50, 2: 90}
+
 
 class _DeviceProtocol(Protocol):
     """Used to satisfy the type checker."""
@@ -93,6 +97,7 @@ class Gen2Device(Device):
 
     @property
     def rf_link_quality(self: _DeviceProtocol) -> int | None:
+        """Link quality in percent, like Gen1; unknown levels count as 0."""
         value = self.get_value(
             IpsoPath(
                 object_name="connectivity_monitoring",
@@ -100,7 +105,9 @@ class Gen2Device(Device):
                 resource_name="link_quality",
             )
         )
-        return value if isinstance(value, int) else None
+        if not isinstance(value, int):
+            return None
+        return _LINK_QUALITY_PERCENT.get(value, 0)
 
     def build_refresh_rf_link_quality_obj(self: _DeviceProtocol) -> EgressMessageList:
         return self.build_execute_obj(

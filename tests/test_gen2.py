@@ -45,7 +45,29 @@ def test_radio_signal_strength_and_link_quality_from_event(gen2_device):
     gen2_device.update_data(event.root[0])
 
     assert gen2_device.radio_signal_strength == -73
-    assert gen2_device.rf_link_quality == 2
+    assert gen2_device.rf_link_quality == 90
+
+
+@pytest.mark.parametrize(
+    ("level", "percent"), [(0, 20), (1, 50), (2, 90), (3, 0), (-1, 0)]
+)
+def test_rf_link_quality_maps_level_to_percent(gen2_device, level, percent):
+    event = IngressMessageList.model_validate_json(f"""
+        [
+          {{
+            "entity": {{
+              "device": "{gen2_device.id}",
+              "path": "connectivity_monitoring/0"
+            }},
+            "metadata": {{ "sequence": 1, "source": "lwm2mserver" }},
+            "op": "update",
+            "payload": {{ "link_quality": {{ "ts": 1786352015, "vi": {level} }} }}
+          }}
+        ]
+        """)
+    gen2_device.update_data(event.root[0])
+
+    assert gen2_device.rf_link_quality == percent
 
 
 def test_build_refresh_rf_link_quality_obj(gen2_device):

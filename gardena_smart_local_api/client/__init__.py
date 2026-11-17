@@ -19,13 +19,17 @@ from .certificate import (
     fingerprint_from_certificate,
     hostname_from_certificate,
 )
-from .errors import AuthenticationError, DiscoveryError, RequestError
+from .errors import AuthenticationError, DiscoveryError, InclusionError, RequestError
 from .gateway import GatewayClient
+from .manager import DeviceManager, IncludableDevice
 
 __all__ = [
     "AuthenticationError",
+    "DeviceManager",
     "DiscoveryError",
     "GatewayClient",
+    "IncludableDevice",
+    "InclusionError",
     "RequestError",
     "fetch_certificate",
     "fingerprint_from_certificate",

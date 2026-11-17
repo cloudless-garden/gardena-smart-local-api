@@ -15,6 +15,9 @@ from .device import Device
 # percentages are the ones the GARDENA app shows for each level.
 _LINK_QUALITY_PERCENT = {0: 20, 1: 50, 2: 90}
 
+# Temperature in °C below which the GARDENA app shows the frost warning.
+_FROST_WARNING_TEMPERATURE = 5.0
+
 
 class _DeviceProtocol(Protocol):
     """Used to satisfy the type checker."""
@@ -61,6 +64,25 @@ class Gen2TemperatureMixin:
             )
         )
         return value if isinstance(value, float) else None
+
+
+class _TemperatureProtocol(Protocol):
+    """Used to satisfy the type checker."""
+
+    @property
+    def temperature(self) -> float | None: ...
+
+
+class Gen2FrostWarningMixin:
+    @property
+    def has_frost_warning(self: _TemperatureProtocol) -> bool | None:
+        """
+        Gen2 devices do not report a frost warning, so it is derived from the
+        temperature the same way the GARDENA app does.
+        """
+        if (temperature := self.temperature) is None:
+            return None
+        return temperature < _FROST_WARNING_TEMPERATURE
 
 
 class Gen2IdentifyMixin:

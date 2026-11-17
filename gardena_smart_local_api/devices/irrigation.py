@@ -18,6 +18,7 @@ from .gen1 import (
 from .gen2 import (
     Gen2BatteryMixin,
     Gen2Device,
+    Gen2FrostWarningMixin,
     Gen2IdentifyMixin,
     Gen2TemperatureMixin,
 )
@@ -362,7 +363,11 @@ class _Gen2Irrigation(Gen2IdentifyMixin, Gen2Device):
 
 
 class Gen2WaterControl(
-    Gen2BatteryMixin, Gen2TemperatureMixin, ButtonTimeMixin, _Gen2Irrigation
+    Gen2BatteryMixin,
+    Gen2TemperatureMixin,
+    Gen2FrostWarningMixin,
+    ButtonTimeMixin,
+    _Gen2Irrigation,
 ):
     _button_time_ipso_names = ("actuator", "default_duration_seconds")
 

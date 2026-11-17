@@ -5,6 +5,7 @@
 import pytest
 
 from gardena_smart_local_api.devices.gen2 import Gen2Device
+from gardena_smart_local_api.devices.irrigation import Gen2WaterControl
 from gardena_smart_local_api.messages import IngressMessageList
 from gardena_smart_local_api.model_loader import Gen2ModelDefinition
 
@@ -80,3 +81,42 @@ def test_build_refresh_rf_link_quality_obj(gen2_device):
     assert request.entity.path.object_name == "sg_common"
     assert request.entity.path.object_instance_id == "0"
     assert request.entity.path.resource_name == "measure_rf_link"
+
+
+@pytest.fixture
+def gen2_water_control():
+    return Gen2WaterControl(
+        id="3034F8319C02BF00000033FF",
+        data={},
+        model_definition=Gen2ModelDefinition(
+            model_number="test-model", name="Test Gen2 Water Control"
+        ),
+    )
+
+
+def _temperature_event(device, value):
+    event = IngressMessageList.model_validate_json(f"""
+        [
+          {{
+            "entity": {{ "device": "{device.id}", "path": "temperature/0" }},
+            "metadata": {{ "sequence": 1, "source": "lwm2mserver" }},
+            "op": "update",
+            "payload": {{ "sensor_value": {{ "ts": 1786352015, "vf": {value} }} }}
+          }}
+        ]
+        """)
+    return event.root[0]
+
+
+def test_frost_warning_unset_without_temperature(gen2_water_control):
+    assert gen2_water_control.has_frost_warning is None
+
+
+@pytest.mark.parametrize(
+    ("temperature", "frost"),
+    [(-3.5, True), (3.62, True), (4.999, True), (5.0, False), (18.83, False)],
+)
+def test_frost_warning_derived_from_temperature(gen2_water_control, temperature, frost):
+    gen2_water_control.update_data(_temperature_event(gen2_water_control, temperature))
+
+    assert gen2_water_control.has_frost_warning is frost

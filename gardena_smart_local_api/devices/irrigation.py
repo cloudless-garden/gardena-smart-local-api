@@ -116,6 +116,40 @@ class Gen1IrrigationScheduleMixin:
         )
 
 
+class _Gen2ScheduleDeviceProtocol(Protocol):
+    """Used to satisfy the type checker."""
+
+    def get_object_instance_ids(self, object_name: str) -> list[str]: ...
+
+    def build_delete_obj(self, path: IpsoPath) -> EgressMessageList: ...
+
+
+class Gen2IrrigationScheduleMixin:
+    """Schedules of Gen2 irrigation devices, one `schedule` instance each."""
+
+    @property
+    def schedule_count(self: _Gen2ScheduleDeviceProtocol) -> int:
+        return len(self.get_object_instance_ids("schedule"))
+
+    def build_clear_schedules_obj(
+        self: _Gen2ScheduleDeviceProtocol,
+    ) -> EgressMessageList:
+        """Delete every schedule of the device.
+
+        Raises `ValueError` if the device has no schedules, as there is no
+        request to send then.
+        """
+        instance_ids = self.get_object_instance_ids("schedule")
+        if not instance_ids:
+            raise ValueError("The device has no schedules to clear")
+        request = EgressMessageList([])
+        for instance_id in instance_ids:
+            request += self.build_delete_obj(
+                IpsoPath(object_name="schedule", object_instance_id=instance_id)
+            )
+        return request
+
+
 class _ButtonTimeDeviceProtocol(Protocol):
     """Used to satisfy the type checker."""
 
@@ -284,7 +318,7 @@ class Gen1IrrigationControl(
         return self.build_command_obj(self.get_command("close_all_valves"))
 
 
-class _Gen2Irrigation(Gen2IdentifyMixin, Gen2Device):
+class _Gen2Irrigation(Gen2IdentifyMixin, Gen2IrrigationScheduleMixin, Gen2Device):
     @property
     def valve_count(self) -> int:
         return len(self.valve_ids)

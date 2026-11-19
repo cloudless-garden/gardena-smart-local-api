@@ -3,11 +3,16 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 import pytest
+import pytest_asyncio
 
 from gardena_smart_local_api.devices.gen2 import Gen2Device
-from gardena_smart_local_api.devices.irrigation import Gen2WaterControl
+from gardena_smart_local_api.devices.irrigation import (
+    Gen2IrrigationControl,
+    Gen2WaterControl,
+)
+from gardena_smart_local_api.devices.mowers import Gen2Mower
 from gardena_smart_local_api.messages import IngressMessageList
-from gardena_smart_local_api.model_loader import Gen2ModelDefinition
+from gardena_smart_local_api.model_loader import Gen2ModelDefinition, get_model_loader
 
 
 @pytest.fixture
@@ -120,3 +125,93 @@ def test_frost_warning_derived_from_temperature(gen2_water_control, temperature,
     gen2_water_control.update_data(_temperature_event(gen2_water_control, temperature))
 
     assert gen2_water_control.has_frost_warning is frost
+
+
+def _schedule_event(device, instance_id, op="update"):
+    payload = (
+        ""
+        if op == "delete"
+        else """,
+            "payload": {
+              "start_offset_from": { "ts": 1786352015, "vi": 0 },
+              "start_offset_seconds": { "ts": 1786352015, "vi": 21600 },
+              "end_offset_from": { "ts": 1786352015, "vi": 0 },
+              "end_offset_seconds": { "ts": 1786352015, "vi": 22200 },
+              "repetition_type": { "ts": 1786352015, "vi": 1 },
+              "repetition_value": { "ts": 1786352015, "vi": 127 },
+              "actuator": { "ts": 1786352015, "vi": 0 }
+            }"""
+    )
+    event = IngressMessageList.model_validate_json(f"""
+        [
+          {{
+            "entity": {{
+              "device": "{device.id}",
+              "path": "schedule/{instance_id}"
+            }},
+            "metadata": {{ "sequence": 1, "source": "lwm2mserver" }},
+            "op": "{op}"{payload}
+          }}
+        ]
+        """)
+    return event.root[0]
+
+
+@pytest_asyncio.fixture(
+    params=[("2812", Gen2WaterControl), ("469", Gen2IrrigationControl)],
+    ids=["water_control", "irrigation_control"],
+)
+async def gen2_irrigation_device(request):
+    model_number, device_class = request.param
+    model_definition = (await get_model_loader()).get_model(model_number)
+    return device_class(
+        id="3034F8319C02BF00000033FF", data={}, model_definition=model_definition
+    )
+
+
+def test_no_schedules(gen2_irrigation_device):
+    assert gen2_irrigation_device.schedule_count == 0
+    with pytest.raises(ValueError, match="no schedules"):
+        gen2_irrigation_device.build_clear_schedules_obj()
+
+
+def test_schedule_count(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+
+    assert gen2_irrigation_device.schedule_count == 2
+
+
+def test_deleted_object_instance_is_no_longer_listed(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+    assert gen2_irrigation_device.get_object_instance_ids("schedule") == ["0", "3"]
+
+    gen2_irrigation_device.update_data(
+        _schedule_event(gen2_irrigation_device, 0, op="delete")
+    )
+
+    assert gen2_irrigation_device.get_object_instance_ids("schedule") == ["3"]
+
+
+def test_build_clear_schedules_deletes_every_schedule(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+
+    requests = gen2_irrigation_device.build_clear_schedules_obj().root
+
+    assert [request.op for request in requests] == ["delete", "delete"]
+    assert [str(request.entity.path) for request in requests] == [
+        "schedule/0",
+        "schedule/3",
+    ]
+    for request in requests:
+        assert request.entity.device == gen2_irrigation_device.id
+        assert request.entity.service == "lwm2mserver"
+        assert request.payload is None
+    assert len({request.request_id for request in requests}) == 2
+
+
+def test_gen2_mower_has_no_schedule_support():
+    assert not hasattr(Gen2Mower, "schedule_count")
+    assert not hasattr(Gen2Mower, "build_clear_schedules_obj")

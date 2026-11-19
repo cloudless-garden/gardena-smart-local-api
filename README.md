@@ -50,6 +50,31 @@ uv sync --group examples
 uv run gardena_smart_local_api/examples/irrigation.py --help
 ```
 
+### Keeping track of the devices
+
+The `DeviceManager` connects to the gateway, discovers its devices, and
+keeps them up to date as the gateway pushes changes. It also notices devices
+that are put in inclusion mode, and includes and excludes devices:
+
+```python
+from gardena_smart_local_api.client import DeviceManager
+
+
+async def changed(device_ids: frozenset[str]) -> None:
+    print("Changed:", device_ids)
+
+
+async with DeviceManager(
+    "GARDENA-123456", 8443, "password", on_devices_changed=changed
+) as manager:
+    for device in manager.devices.values():
+        print(device.id)
+```
+
+Requests that change a device go through `manager.send_command()`. It holds
+the notifications for that device back until the command has settled, so the
+intermediate states of a command do not show up as changes.
+
 [examples]: https://github.com/cloudless-garden/gardena-smart-local-api/tree/main/gardena_smart_local_api/examples
 
 ## Contributing

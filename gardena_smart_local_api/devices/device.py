@@ -91,6 +91,9 @@ class Device(BaseModel):
     def update_data(self, event: Event) -> None:
         if event.op == "delete":
             delete_nested_key(self.data, event.entity.path)
+            # A deleted instance of a multi-instance object, e.g. a schedule,
+            # must not stay listed in the cached objects.
+            self.__dict__.pop("objects", None)
             return
 
         if not event.payload:

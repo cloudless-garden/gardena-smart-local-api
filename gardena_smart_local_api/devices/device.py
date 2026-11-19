@@ -172,6 +172,16 @@ class Device(BaseModel):
             ]
         )
 
+    def build_delete_obj(self, path: IpsoPath) -> EgressMessageList:
+        return EgressMessageList(
+            [
+                Request(
+                    op="delete",
+                    entity=Entity(device=self.id, path=path, service=self.service),
+                )
+            ]
+        )
+
     def build_execute_obj(
         self, path: IpsoPath, value: VALUE_TYPES | None
     ) -> EgressMessageList:

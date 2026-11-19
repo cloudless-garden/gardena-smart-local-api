@@ -10,6 +10,7 @@ from gardena_smart_local_api.devices.irrigation import (
     Gen2IrrigationControl,
     Gen2WaterControl,
 )
+from gardena_smart_local_api.devices.mowers import Gen2Mower
 from gardena_smart_local_api.messages import IngressMessageList
 from gardena_smart_local_api.model_loader import Gen2ModelDefinition, get_model_loader
 
@@ -168,6 +169,19 @@ async def gen2_irrigation_device(request):
     )
 
 
+def test_no_schedules(gen2_irrigation_device):
+    assert gen2_irrigation_device.schedule_count == 0
+    with pytest.raises(ValueError, match="no schedules"):
+        gen2_irrigation_device.build_clear_schedules_obj()
+
+
+def test_schedule_count(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+
+    assert gen2_irrigation_device.schedule_count == 2
+
+
 def test_deleted_object_instance_is_no_longer_listed(gen2_irrigation_device):
     gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
     gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
@@ -178,3 +192,26 @@ def test_deleted_object_instance_is_no_longer_listed(gen2_irrigation_device):
     )
 
     assert gen2_irrigation_device.get_object_instance_ids("schedule") == ["3"]
+
+
+def test_build_clear_schedules_deletes_every_schedule(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+
+    requests = gen2_irrigation_device.build_clear_schedules_obj().root
+
+    assert [request.op for request in requests] == ["delete", "delete"]
+    assert [str(request.entity.path) for request in requests] == [
+        "schedule/0",
+        "schedule/3",
+    ]
+    for request in requests:
+        assert request.entity.device == gen2_irrigation_device.id
+        assert request.entity.service == "lwm2mserver"
+        assert request.payload is None
+    assert len({request.request_id for request in requests}) == 2
+
+
+def test_gen2_mower_has_no_schedule_support():
+    assert not hasattr(Gen2Mower, "schedule_count")
+    assert not hasattr(Gen2Mower, "build_clear_schedules_obj")

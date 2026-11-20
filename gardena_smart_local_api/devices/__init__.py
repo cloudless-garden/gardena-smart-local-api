@@ -28,7 +28,13 @@ from .irrigation import (
     PumpState,
     TimeslotState,
 )
-from .mowers import Gen1Mower1, Gen1Mower2, Gen2Mower, MowerState
+from .mowers import (
+    Gen1Mower1,
+    Gen1Mower2,
+    Gen2Mower,
+    MowerNextStartSource,
+    MowerState,
+)
 from .power import PowerAdapter
 from .sensors import Sensor1, Sensor2
 
@@ -45,6 +51,7 @@ __all__ = [
     "Gen2IrrigationControl",
     "Gen2Mower",
     "Gen2WaterControl",
+    "MowerNextStartSource",
     "MowerState",
     "PowerAdapter",
     "Pump",

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 from base64 import b64encode
+from datetime import datetime
 
 import pytest
 
@@ -13,6 +14,7 @@ from gardena_smart_local_api.devices.mowers import (
     Gen1Mower2,
     Gen1MowerPosition,
     Gen2Mower,
+    MowerNextStartSource,
     MowerState,
 )
 from gardena_smart_local_api.model_loader import Gen1ModelDefinition
@@ -24,6 +26,16 @@ def _set_gen1_status(mower, status: int | None) -> None:
 
 def _set_gen1_position(mower, data: bytes) -> None:
     mower.data["lemonbeat"]["0"]["position"] = {"vo": b64encode(data).decode()}
+
+
+def _set_gen1_next_start_source(mower, source: int | None) -> None:
+    mower.data["lemonbeat"]["0"]["source_for_next_start"] = {"vi": source}
+
+
+def _set_gen1_next_start(mower, data: bytes) -> None:
+    mower.data["lemonbeat"]["0"]["timestamp_next_start"] = {
+        "vo": b64encode(data).decode()
+    }
 
 
 def _set_gen2_activity(mower, activity: int | None) -> None:
@@ -94,6 +106,45 @@ async def test_mower_gen1_lona_battery_level(mower_gen1_lona):
 async def test_mower_gen1_lona_state(mower_gen1_lona, status, expected):
     _set_gen1_status(mower_gen1_lona, status)
     assert mower_gen1_lona.state == expected
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("status", "source", "expected"),
+    [
+        (14, 4, MowerState.CHARGING),  # WAIT, CHARGING
+        (10, 4, MowerState.PAUSED),  # WAIT_STOP_PRESSED, CHARGING
+        (14, 6, MowerState.PAUSED),  # WAIT, FROST
+        (14, None, MowerState.PAUSED),  # WAIT, reported as null
+        (1, 4, MowerState.MOWING),  # OK_CUTTING_AUTO, CHARGING
+    ],
+)
+async def test_mower_gen1_lona_state_with_next_start_source(
+    mower_gen1_lona, status, source, expected
+):
+    _set_gen1_status(mower_gen1_lona, status)
+    _set_gen1_next_start_source(mower_gen1_lona, source)
+    assert mower_gen1_lona.state == expected
+
+
+@pytest.mark.asyncio
+async def test_mower_gen1_lona_next_start(mower_gen1_lona):
+    assert mower_gen1_lona.next_start_source == MowerNextStartSource.COUNTDOWN
+    assert mower_gen1_lona.next_start == datetime(2026, 7, 31, 12, 0)
+
+
+@pytest.mark.asyncio
+async def test_mower_gen1_lona_next_start_is_none_for_start_now(mower_gen1_lona):
+    _set_gen1_next_start(mower_gen1_lona, bytes(4))
+    assert mower_gen1_lona.next_start is None
+
+
+@pytest.mark.asyncio
+async def test_mower_gen1_lona_next_start_is_none_when_not_reported(mower_gen1_lona):
+    del mower_gen1_lona.data["lemonbeat"]["0"]["source_for_next_start"]
+    del mower_gen1_lona.data["lemonbeat"]["0"]["timestamp_next_start"]
+    assert mower_gen1_lona.next_start_source is None
+    assert mower_gen1_lona.next_start is None
 
 
 @pytest.mark.asyncio

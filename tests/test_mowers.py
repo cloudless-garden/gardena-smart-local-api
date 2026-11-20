@@ -97,6 +97,14 @@ async def test_mower_gen1_lona_state(mower_gen1_lona, status, expected):
 
 
 @pytest.mark.asyncio
+async def test_mower_gen1_lona_statistics(mower_gen1_lona):
+    assert mower_gen1_lona.running_time == 767
+    assert mower_gen1_lona.cutting_time == 716
+    assert mower_gen1_lona.charging_cycles == 499
+    assert mower_gen1_lona.collisions == 597
+
+
+@pytest.mark.asyncio
 async def test_mower_gen1_lona_state_is_unknown_when_not_reported(mower_gen1_lona):
     del mower_gen1_lona.data["lemonbeat"]["0"]["status"]
     assert mower_gen1_lona.state == MowerState.UNKNOWN

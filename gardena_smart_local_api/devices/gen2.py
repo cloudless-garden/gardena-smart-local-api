@@ -2,13 +2,13 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
-from typing import ClassVar, Protocol
+from typing import Any, ClassVar, Protocol
 
 from pydantic import Field
 
 from ..messages import EgressMessageList
 from ..model_loader import Gen2ModelDefinition
-from ..resources import VALUE_TYPES, IpsoPath
+from ..resources import VALUE_TYPES, IpsoObject, IpsoPath
 from .device import Device
 
 # Gen2 devices report the link quality as a level, not a percentage. The
@@ -19,7 +19,7 @@ _LINK_QUALITY_PERCENT = {0: 20, 1: 50, 2: 90}
 _FROST_WARNING_TEMPERATURE = 5.0
 
 
-class _DeviceProtocol(Protocol):
+class _Gen2DeviceProtocol(Protocol):
     """Used to satisfy the type checker."""
 
     def get_value(self, path: IpsoPath) -> VALUE_TYPES | None: ...
@@ -28,10 +28,26 @@ class _DeviceProtocol(Protocol):
         self, path: IpsoPath, value: VALUE_TYPES | None
     ) -> EgressMessageList: ...
 
+    def get_object(
+        self, object_name: str, instance_id: str = "0"
+    ) -> IpsoObject | None: ...
+
+    def get_object_instance_ids(self, object_name: str) -> list[str]: ...
+
+    def get_resource(
+        self, object_name: str, instance_id: str | int, resource_name: str
+    ) -> Any | None: ...
+
+    def build_write_object_obj(
+        self,
+        object_name: str,
+        instances: dict[str, dict[str, VALUE_TYPES]],
+    ) -> EgressMessageList: ...
+
 
 class Gen2BatteryMixin:
     @property
-    def battery_level(self: _DeviceProtocol) -> float | None:
+    def battery_level(self: _Gen2DeviceProtocol) -> float | None:
         value = self.get_value(
             IpsoPath(
                 object_name="device",
@@ -46,7 +62,7 @@ class Gen2BatteryMixin:
 
 class Gen2TemperatureMixin:
     @property
-    def temperature(self: _DeviceProtocol) -> float | None:
+    def temperature(self: _Gen2DeviceProtocol) -> float | None:
         """
         All battery driven Gen2 water controls have an ambient temperature entity.
 
@@ -86,7 +102,7 @@ class Gen2FrostWarningMixin:
 
 
 class Gen2IdentifyMixin:
-    def build_identify_obj(self: _DeviceProtocol) -> EgressMessageList:
+    def build_identify_obj(self: _Gen2DeviceProtocol) -> EgressMessageList:
         return self.build_execute_obj(
             IpsoPath(
                 object_name="sg_common",
@@ -103,7 +119,7 @@ class Gen2Device(Device):
     service: ClassVar[str] = "lwm2mserver"
 
     @property
-    def radio_signal_strength(self: _DeviceProtocol) -> int | None:
+    def radio_signal_strength(self: _Gen2DeviceProtocol) -> int | None:
         """Signal strength in dBm, from the standard LwM2M connectivity object.
 
         Also refreshed by build_refresh_rf_link_quality_obj().
@@ -118,7 +134,7 @@ class Gen2Device(Device):
         return value if isinstance(value, int) else None
 
     @property
-    def rf_link_quality(self: _DeviceProtocol) -> int | None:
+    def rf_link_quality(self: _Gen2DeviceProtocol) -> int | None:
         """Link quality in percent, like Gen1; unknown levels count as 0."""
         value = self.get_value(
             IpsoPath(
@@ -131,7 +147,9 @@ class Gen2Device(Device):
             return None
         return _LINK_QUALITY_PERCENT.get(value, 0)
 
-    def build_refresh_rf_link_quality_obj(self: _DeviceProtocol) -> EgressMessageList:
+    def build_refresh_rf_link_quality_obj(
+        self: _Gen2DeviceProtocol,
+    ) -> EgressMessageList:
         return self.build_execute_obj(
             IpsoPath(
                 object_name="sg_common",

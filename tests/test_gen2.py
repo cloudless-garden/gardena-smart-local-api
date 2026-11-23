@@ -3,11 +3,16 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 import pytest
+import pytest_asyncio
 
 from gardena_smart_local_api.devices.gen2 import Gen2Device
-from gardena_smart_local_api.devices.irrigation import Gen2WaterControl
+from gardena_smart_local_api.devices.irrigation import (
+    Gen2IrrigationControl,
+    Gen2WaterControl,
+)
+from gardena_smart_local_api.devices.mowers import Gen2Mower
 from gardena_smart_local_api.messages import IngressMessageList
-from gardena_smart_local_api.model_loader import Gen2ModelDefinition
+from gardena_smart_local_api.model_loader import Gen2ModelDefinition, get_model_loader
 
 
 @pytest.fixture
@@ -120,3 +125,134 @@ def test_frost_warning_derived_from_temperature(gen2_water_control, temperature,
     gen2_water_control.update_data(_temperature_event(gen2_water_control, temperature))
 
     assert gen2_water_control.has_frost_warning is frost
+
+
+SCHEDULE_RESOURCES = (
+    "start_offset_from",
+    "start_offset_seconds",
+    "end_offset_from",
+    "end_offset_seconds",
+    "repetition_type",
+    "repetition_value",
+    "actuator",
+    "pre_offset",
+)
+
+
+def _schedule_event(device, instance_id, free=False):
+    """A schedule slot as the gateway reports it, `free` as left by a delete."""
+    values = {
+        "start_offset_seconds": 32400,
+        "end_offset_seconds": 34200,
+        "repetition_type": 1,
+        "repetition_value": 129,
+    }
+    payload = {}
+    for resource_name in SCHEDULE_RESOURCES:
+        value = 0 if free else values.get(resource_name, 0)
+        payload[resource_name] = {"ts": 1795435725, "vi": value}
+    event = IngressMessageList.model_validate(
+        [
+            {
+                "entity": {"device": device.id, "path": f"schedule/{instance_id}"},
+                "metadata": {"sequence": 1, "source": "lwm2mserver"},
+                "op": "update",
+                "payload": payload,
+            }
+        ]
+    )
+    return event.root[0]
+
+
+@pytest_asyncio.fixture(
+    params=[("2812", Gen2WaterControl), ("469", Gen2IrrigationControl)],
+    ids=["water_control", "irrigation_control"],
+)
+async def gen2_irrigation_device(request):
+    model_number, device_class = request.param
+    model_definition = (await get_model_loader()).get_model(model_number)
+    return device_class(
+        id="3034F8319C02BF00000033FF", data={}, model_definition=model_definition
+    )
+
+
+def test_no_schedules(gen2_irrigation_device):
+    assert gen2_irrigation_device.schedule_count == 0
+    with pytest.raises(ValueError, match="no schedules"):
+        gen2_irrigation_device.build_clear_schedules_obj()
+
+
+def test_free_schedule_slots_are_not_counted(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(
+        _schedule_event(gen2_irrigation_device, 0, free=True)
+    )
+    gen2_irrigation_device.update_data(
+        _schedule_event(gen2_irrigation_device, 1, free=True)
+    )
+
+    assert gen2_irrigation_device.schedule_count == 0
+    with pytest.raises(ValueError, match="no schedules"):
+        gen2_irrigation_device.build_clear_schedules_obj()
+
+
+def test_schedule_count(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(
+        _schedule_event(gen2_irrigation_device, 1, free=True)
+    )
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+
+    assert gen2_irrigation_device.schedule_count == 2
+
+
+def test_build_clear_schedules_frees_every_used_slot(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    gen2_irrigation_device.update_data(
+        _schedule_event(gen2_irrigation_device, 1, free=True)
+    )
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 3))
+
+    requests = gen2_irrigation_device.build_clear_schedules_obj().root
+
+    free_slot = {}
+    for resource_name in SCHEDULE_RESOURCES:
+        free_slot[resource_name] = {"vi": 0}
+    assert len(requests) == 1
+    request = requests[0]
+    assert request.op == "write"
+    assert str(request.entity.path) == "schedule"
+    assert request.entity.device == gen2_irrigation_device.id
+    assert request.entity.service == "lwm2mserver"
+    assert request.payload == {"0": free_slot, "3": free_slot}
+
+
+def test_schedule_count_drops_once_a_slot_is_freed(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+    assert gen2_irrigation_device.schedule_count == 1
+
+    gen2_irrigation_device.update_data(
+        _schedule_event(gen2_irrigation_device, 0, free=True)
+    )
+
+    assert gen2_irrigation_device.schedule_count == 0
+
+
+def test_gen2_mower_has_no_schedule_support():
+    assert not hasattr(Gen2Mower, "schedule_count")
+    assert not hasattr(Gen2Mower, "build_clear_schedules_obj")
+
+
+def test_build_write_object_rejects_unknown_instance(gen2_irrigation_device):
+    with pytest.raises(ValueError, match="not found"):
+        gen2_irrigation_device.build_write_object_obj(
+            "schedule", {"0": {"repetition_type": 0}}
+        )
+
+
+def test_build_write_object_rejects_unknown_resource(gen2_irrigation_device):
+    gen2_irrigation_device.update_data(_schedule_event(gen2_irrigation_device, 0))
+
+    with pytest.raises(ValueError, match="not found"):
+        gen2_irrigation_device.build_write_object_obj(
+            "schedule", {"0": {"no_such_resource": 0}}
+        )

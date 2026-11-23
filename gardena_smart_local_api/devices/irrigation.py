@@ -21,6 +21,7 @@ from .gen2 import (
     Gen2FrostWarningMixin,
     Gen2IdentifyMixin,
     Gen2TemperatureMixin,
+    _Gen2DeviceProtocol,
 )
 
 # Used to indicate that the action was initiated through WebSocket API.
@@ -114,6 +115,53 @@ class Gen1IrrigationScheduleMixin:
             ),
             b"",
         )
+
+
+def _get_used_schedule_slots(device: _Gen2DeviceProtocol) -> list[str]:
+    used = []
+    for instance_id in device.get_object_instance_ids("schedule"):
+        schedule = device.get_object("schedule", instance_id)
+        if schedule is None:
+            continue
+        for resource_name in schedule.list_resources():
+            if device.get_resource("schedule", instance_id, resource_name):
+                used.append(instance_id)
+                break
+    return used
+
+
+class Gen2IrrigationScheduleMixin:
+    """Schedules of Gen2 irrigation devices, one `schedule` instance each.
+
+    The instances are slots that are never removed: deleting a schedule sets
+    every resource of its instance to 0, and the gateway refuses to delete an
+    instance.
+    """
+
+    @property
+    def schedule_count(self: _Gen2DeviceProtocol) -> int:
+        return len(_get_used_schedule_slots(self))
+
+    def build_clear_schedules_obj(
+        self: _Gen2DeviceProtocol,
+    ) -> EgressMessageList:
+        """Free every used schedule slot of the device, as the app does.
+
+        Raises `ValueError` if the device has no schedules, as there is no
+        request to send then.
+        """
+        used_slots = _get_used_schedule_slots(self)
+        if not used_slots:
+            raise ValueError("The device has no schedules to clear")
+        instances: dict[str, dict[str, VALUE_TYPES]] = {}
+        for instance_id in used_slots:
+            schedule = self.get_object("schedule", instance_id)
+            assert schedule is not None
+            values: dict[str, VALUE_TYPES] = {}
+            for resource_name in schedule.list_resources():
+                values[resource_name] = 0
+            instances[instance_id] = values
+        return self.build_write_object_obj("schedule", instances)
 
 
 class _ButtonTimeDeviceProtocol(Protocol):
@@ -284,7 +332,7 @@ class Gen1IrrigationControl(
         return self.build_command_obj(self.get_command("close_all_valves"))
 
 
-class _Gen2Irrigation(Gen2IdentifyMixin, Gen2Device):
+class _Gen2Irrigation(Gen2IdentifyMixin, Gen2IrrigationScheduleMixin, Gen2Device):
     @property
     def valve_count(self) -> int:
         return len(self.valve_ids)

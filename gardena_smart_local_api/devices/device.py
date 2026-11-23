@@ -278,6 +278,51 @@ class Device(BaseModel):
             ]
         )
 
+    def build_write_object_obj(
+        self,
+        object_name: str,
+        instances: dict[str, dict[str, VALUE_TYPES]],
+    ) -> EgressMessageList:
+        """Write resources of several instances of an object in one request.
+
+        The device is woken up once for all of them, instead of once per
+        resource.
+        """
+        payload: dict[str, dict[str, dict[str, VALUE_TYPES]]] = {}
+        for instance_id, values in instances.items():
+            obj = self.get_object(object_name, instance_id)
+            if not obj:
+                raise ValueError(f"Object {object_name}[{instance_id}] not found")
+            instance_payload: dict[str, dict[str, VALUE_TYPES]] = {}
+            for resource_name, value in values.items():
+                resource = obj.get_resource(resource_name)
+                if not resource:
+                    raise ValueError(
+                        f"Resource {resource_name} not found in "
+                        f"{object_name}[{instance_id}]"
+                    )
+                if not resource.is_writable:
+                    raise ValueError(
+                        f"Resource {object_name}/{instance_id}/{resource_name} "
+                        "is not writable"
+                    )
+                instance_payload[resource_name] = _value_to_payload(value)
+            payload[instance_id] = instance_payload
+
+        return EgressMessageList(
+            [
+                Request(
+                    op="write",
+                    entity=Entity(
+                        device=self.id,
+                        path=IpsoPath(object_name=object_name),
+                        service=self.service,
+                    ),
+                    payload=payload,
+                )
+            ]
+        )
+
     def build_exclusion_obj(self) -> EgressMessageList:
         return EgressMessageList(
             [

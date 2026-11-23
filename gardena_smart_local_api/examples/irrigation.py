@@ -15,7 +15,10 @@ from gardena_smart_local_api.devices import (
     Gen2WaterControl,
     TimeslotState,
 )
-from gardena_smart_local_api.devices.irrigation import Gen1IrrigationScheduleMixin
+from gardena_smart_local_api.devices.irrigation import (
+    Gen1IrrigationScheduleMixin,
+    Gen2IrrigationScheduleMixin,
+)
 from gardena_smart_local_api.examples import ExampleApp
 from gardena_smart_local_api.messages import ErrorMessage
 
@@ -130,9 +133,18 @@ async def main():
                     return 1
                 assert isinstance(irrigation_device, COMPATIBLE)
 
-                if not isinstance(irrigation_device, Gen1IrrigationScheduleMixin):
-                    print("clear-schedules only supported on Gen1 devices")
+                if not isinstance(
+                    irrigation_device,
+                    (Gen1IrrigationScheduleMixin, Gen2IrrigationScheduleMixin),
+                ):
+                    print("clear-schedules not supported on this device")
                     return 1
+                if (
+                    isinstance(irrigation_device, Gen2IrrigationScheduleMixin)
+                    and irrigation_device.schedule_count == 0
+                ):
+                    print("No schedules configured")
+                    return 0
 
                 result = await app.send_request(
                     irrigation_device.build_clear_schedules_obj()

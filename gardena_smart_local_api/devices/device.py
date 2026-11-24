@@ -352,6 +352,20 @@ class Device(BaseModel):
         return str(value) if value else None
 
     @property
+    def installed_software_version(self) -> str | None:
+        """Version of :attr:`software_version`, as :attr:`available_software_version`.
+
+        Gen2 mowers report a build name in front of the version, for example
+        ``36.12_Com-App-T11_82.4``. The pending version has none, so the two
+        can only be compared without it.
+        """
+        software_version = self.software_version
+        if not software_version:
+            return None
+        match = re.fullmatch(r".+_(\d+\.\d+)", software_version)
+        return match.group(1) if match else software_version
+
+    @property
     def hardware_version(self) -> str | None:
         value = self.get_value(
             IpsoPath(

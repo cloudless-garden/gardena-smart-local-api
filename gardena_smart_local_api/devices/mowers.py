@@ -97,10 +97,12 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
 
     @property
     def charging_cycles(self) -> int | None:
+        """Number of completed charging cycles."""
         return self._get_int("charging_cycles")
 
     @property
     def collisions(self) -> int | None:
+        """Total number of collisions."""
         return self._get_int("collisions")
 
     @property

@@ -63,6 +63,15 @@ class IncludableDevice:
     device_class: type[Device]
 
 
+class _WaitingDiscovery:
+    """A discovery that waits for the answer of the gateway."""
+
+    def __init__(self) -> None:
+        # The devices excluded in the meantime. The answer can describe the
+        # devices from before their reset and still list them.
+        self.excluded: set[str] = set()
+
+
 class DeviceManager:
     """Keep the devices of a GARDENA smart Gateway up to date.
 
@@ -125,6 +134,7 @@ class DeviceManager:
         # the gateway answers, so that neither an event nor a discovery brings
         # them back in the meantime.
         self._excluding: dict[str, Device] = {}
+        self._waiting_discoveries: list[_WaitingDiscovery] = []
         # Devices with a command in flight, and how many.
         self._commands: dict[str, int] = {}
         self._rediscovery_timer: asyncio.TimerHandle | None = None
@@ -192,7 +202,14 @@ class DeviceManager:
         not answer in time. With `notify=False` `on_devices_changed` is not
         called, and the caller is expected to publish the change.
         """
-        devices = await self.client.discover_devices(DISCOVERY_TIMEOUT)
+        discovery = _WaitingDiscovery()
+        self._waiting_discoveries.append(discovery)
+        try:
+            devices = await self.client.discover_devices(DISCOVERY_TIMEOUT)
+        finally:
+            self._waiting_discoveries.remove(discovery)
+        for device_id in discovery.excluded:
+            devices.pop(device_id, None)
         changed = self._replace_devices(devices)
         _LOGGER.info("Discovery complete, found %d device(s)", len(self._devices))
         if notify:
@@ -282,6 +299,8 @@ class DeviceManager:
             raise
         finally:
             self._excluding.pop(device_id, None)
+        for discovery in self._waiting_discoveries:
+            discovery.excluded.add(device_id)
         _LOGGER.info("Device %s excluded successfully", device_id)
 
     async def refresh_firmware(self, device_id: str) -> None:

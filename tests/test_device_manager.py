@@ -792,6 +792,99 @@ async def test_a_discovery_during_an_exclusion_does_not_bring_the_device_back(
     assert water_control.id not in manager.devices
 
 
+async def test_a_discovery_started_before_an_exclusion_does_not_bring_the_device_back(
+    manager: DeviceManager, changed: list[frozenset[str]], water_control
+) -> None:
+    # A snapshot taken before the reset still lists the excluded device.
+    await _know(manager, changed, water_control)
+    release = asyncio.Event()
+
+    async def _discover(timeout: float) -> DeviceMap:
+        await release.wait()
+        return DeviceMap({water_control.id: water_control})
+
+    with patch.object(manager.client, "discover_devices", _discover):
+        discovery = asyncio.create_task(manager.discover())
+        await asyncio.sleep(0)
+        with patch.object(manager.client, "send_request", AsyncMock()):
+            await manager.exclude_device(water_control.id)
+        release.set()
+        await discovery
+
+    assert water_control.id not in manager.devices
+
+
+async def test_a_discovery_started_after_an_exclusion_sees_the_device_again(
+    manager: DeviceManager, changed: list[frozenset[str]], water_control
+) -> None:
+    # A device that is included again after its exclusion comes back.
+    await _know(manager, changed, water_control)
+    with patch.object(manager.client, "send_request", AsyncMock()):
+        await manager.exclude_device(water_control.id)
+
+    await _know(manager, changed, water_control)
+
+    assert manager.devices[water_control.id] is water_control
+
+
+async def test_discoveries_at_the_same_time_each_keep_their_exclusions(
+    manager: DeviceManager, changed: list[frozenset[str]], water_control
+) -> None:
+    # The second discovery started after the exclusion, so its answer counts.
+    await _know(manager, changed, water_control)
+    first_answer, second_answer = asyncio.Event(), asyncio.Event()
+    answers = [first_answer, second_answer]
+
+    async def _discover(timeout: float) -> DeviceMap:
+        await answers.pop(0).wait()
+        return DeviceMap({water_control.id: water_control})
+
+    with patch.object(manager.client, "discover_devices", _discover):
+        first = asyncio.create_task(manager.discover())
+        await asyncio.sleep(0)
+        with patch.object(manager.client, "send_request", AsyncMock()):
+            await manager.exclude_device(water_control.id)
+        second = asyncio.create_task(manager.discover())
+        await asyncio.sleep(0)
+        second_answer.set()
+        await second
+        assert water_control.id in manager.devices
+        first_answer.set()
+        await first
+
+    assert water_control.id not in manager.devices
+    assert not manager._waiting_discoveries
+
+
+async def test_a_discovery_that_ends_first_leaves_the_other_one_waiting(
+    manager: DeviceManager, changed: list[frozenset[str]], water_control
+) -> None:
+    # Both discoveries wait with nothing excluded yet. The one that started
+    # second gets its answer first, then the device is excluded while the
+    # first one still waits.
+    await _know(manager, changed, water_control)
+    first_answer, second_answer = asyncio.Event(), asyncio.Event()
+    answers = [first_answer, second_answer]
+
+    async def _discover(timeout: float) -> DeviceMap:
+        await answers.pop(0).wait()
+        return DeviceMap({water_control.id: water_control})
+
+    with patch.object(manager.client, "discover_devices", _discover):
+        first = asyncio.create_task(manager.discover())
+        second = asyncio.create_task(manager.discover())
+        await asyncio.sleep(0)
+        second_answer.set()
+        await second
+        with patch.object(manager.client, "send_request", AsyncMock()):
+            await manager.exclude_device(water_control.id)
+        first_answer.set()
+        await first
+
+    assert water_control.id not in manager.devices
+    assert not manager._waiting_discoveries
+
+
 # --- firmware ---
 
 

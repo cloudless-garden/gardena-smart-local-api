@@ -75,6 +75,34 @@ class _Gen2MowerActivity(_LowerNameEnum):
 class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
     """Robotic lawn mower base class"""
 
+    def _get_int(self, resource_name: str) -> int | None:
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name=resource_name,
+            )
+        )
+        return value if isinstance(value, int) else None
+
+    @property
+    def running_time(self) -> int | None:
+        """Hours the wheel motors have been running."""
+        return self._get_int("running_time")
+
+    @property
+    def cutting_time(self) -> int | None:
+        """Hours the cutting disc has been running."""
+        return self._get_int("cutting_time")
+
+    @property
+    def charging_cycles(self) -> int | None:
+        return self._get_int("charging_cycles")
+
+    @property
+    def collisions(self) -> int | None:
+        return self._get_int("collisions")
+
     @property
     def _status(self) -> _Gen1MowerStatus | None:
         value = self.get_value(

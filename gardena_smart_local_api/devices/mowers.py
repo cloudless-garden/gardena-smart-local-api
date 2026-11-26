@@ -26,6 +26,8 @@ class MowerState(_LowerNameEnum):
     RETURNING = 5
     CHARGING = 6
     ERROR = 7
+    STOPPED = 8
+    OFF = 9
 
 
 class _Gen1MowerStatus(_LowerNameEnum):
@@ -141,10 +143,12 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
                 | _Gen1MowerStatus.WAIT
                 | _Gen1MowerStatus.WAIT_POWER_UP
                 | _Gen1MowerStatus.WAIT_SOFTWARE_DOWNLOAD
-                | _Gen1MowerStatus.WAIT_STOP_PRESSED
-                | _Gen1MowerStatus.OFF_MAIN_SWITCH
             ):
                 return MowerState.PAUSED
+            case _Gen1MowerStatus.WAIT_STOP_PRESSED:
+                return MowerState.STOPPED
+            case _Gen1MowerStatus.OFF_MAIN_SWITCH:
+                return MowerState.OFF
             case _Gen1MowerStatus.OK_SEARCHING_CS:
                 return MowerState.RETURNING
             case _Gen1MowerStatus.OK_CHARGING:
@@ -373,6 +377,12 @@ class Gen2Mower(Gen2BatteryMixin, Gen2Device):
 
     @property
     def state(self) -> MowerState:
+        # The mower needs attention on the device, whatever it was doing.
+        match self._state:
+            case _Gen2MowerState.WAIT_FOR_SAFETYPIN | _Gen2MowerState.STOPPED:
+                return MowerState.STOPPED
+            case _Gen2MowerState.OFF:
+                return MowerState.OFF
         match self._activity:
             case _Gen2MowerActivity.PARKED:
                 return MowerState.PARKED

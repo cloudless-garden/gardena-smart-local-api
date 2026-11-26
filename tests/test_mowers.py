@@ -77,8 +77,8 @@ async def test_mower_gen1_lona_battery_level(mower_gen1_lona):
         (6, MowerState.PAUSED),  # WAIT_POWER_UP
         (7, MowerState.PARKED),  # PARKED_WEEK_TIMER
         (8, MowerState.PARKED),  # PARKED_BY_USER
-        (9, MowerState.PAUSED),  # OFF_MAIN_SWITCH
-        (10, MowerState.PAUSED),  # WAIT_STOP_PRESSED
+        (9, MowerState.OFF),  # OFF_MAIN_SWITCH
+        (10, MowerState.STOPPED),  # WAIT_STOP_PRESSED
         (11, MowerState.UNKNOWN),  # UNKNOWN
         (12, MowerState.ERROR),  # ERROR
         (13, MowerState.ERROR),  # ERROR_POWER_UP
@@ -276,7 +276,9 @@ async def test_mower_gen2_state(mower_gen2, activity, expected):
 @pytest.mark.parametrize(
     ("state", "expected"),
     [
-        (2, MowerState.UNKNOWN),  # STOPPED
+        (0, MowerState.OFF),  # OFF
+        (1, MowerState.STOPPED),  # WAIT_FOR_SAFETYPIN
+        (2, MowerState.STOPPED),  # STOPPED
         (3, MowerState.ERROR),  # FATAL_ERROR
         (5, MowerState.PAUSED),  # PAUSED
         (8, MowerState.ERROR),  # ERROR
@@ -286,6 +288,13 @@ async def test_mower_gen2_state_without_activity(mower_gen2, state, expected):
     _set_gen2_activity(mower_gen2, 0)  # NONE
     _set_gen2_state(mower_gen2, state)
     assert mower_gen2.state == expected
+
+
+@pytest.mark.asyncio
+async def test_mower_gen2_stopped_while_charging(mower_gen2):
+    _set_gen2_activity(mower_gen2, 1)  # CHARGING
+    _set_gen2_state(mower_gen2, 2)  # STOPPED
+    assert mower_gen2.state == MowerState.STOPPED
 
 
 @pytest.mark.asyncio

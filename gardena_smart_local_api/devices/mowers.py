@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 import struct
+from datetime import UTC, datetime
 from typing import Any
 
 from pydantic import BaseModel, model_validator
@@ -48,6 +49,16 @@ class _Gen1MowerStatus(_LowerNameEnum):
     PARKED_AUTOTIMER = 16
     PARKED_DAY_LIMIT = 17
     PARKED_FROST = 18
+
+
+class MowerNextStartSource(_LowerNameEnum):
+    NO_SOURCE = 0
+    DAILY_LIMIT = 1
+    WEEK_TIMER = 2
+    COUNTDOWN = 3
+    CHARGING = 4
+    AUTO_TIMER = 5
+    FROST = 6
 
 
 class _Gen2MowerState(_LowerNameEnum):
@@ -122,6 +133,43 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
         return None
 
     @property
+    def next_start_source(self) -> MowerNextStartSource | None:
+        """What the mower waits for until its next automatic start."""
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="source_for_next_start",
+            )
+        )
+        if isinstance(value, int):
+            try:
+                return MowerNextStartSource(value)
+            except ValueError:
+                pass
+        return None
+
+    @property
+    def next_start(self) -> datetime | None:
+        """Estimated time of the next automatic start.
+
+        Naive, in the mower's local time. None when not reported or when the
+        mower starts right away.
+        """
+        value = self.get_value(
+            IpsoPath(
+                object_name="lemonbeat",
+                object_instance_id="0",
+                resource_name="timestamp_next_start",
+            )
+        )
+        if isinstance(value, bytes) and len(value) == 4:
+            seconds = int.from_bytes(value, "big")
+            if seconds:
+                return datetime.fromtimestamp(seconds, UTC).replace(tzinfo=None)
+        return None
+
+    @property
     def state(self) -> MowerState:
         match self._status:
             case (
@@ -141,9 +189,13 @@ class _Gen1Mower(Gen1BatteryMixin, Gen1Device):
                 | _Gen1MowerStatus.WAIT
                 | _Gen1MowerStatus.WAIT_POWER_UP
                 | _Gen1MowerStatus.WAIT_SOFTWARE_DOWNLOAD
-                | _Gen1MowerStatus.WAIT_STOP_PRESSED
-                | _Gen1MowerStatus.OFF_MAIN_SWITCH
             ):
+                # These do not tell where the mower is, but it only charges in
+                # the charging station.
+                if self.next_start_source == MowerNextStartSource.CHARGING:
+                    return MowerState.CHARGING
+                return MowerState.PAUSED
+            case _Gen1MowerStatus.WAIT_STOP_PRESSED | _Gen1MowerStatus.OFF_MAIN_SWITCH:
                 return MowerState.PAUSED
             case _Gen1MowerStatus.OK_SEARCHING_CS:
                 return MowerState.RETURNING

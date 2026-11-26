@@ -8,7 +8,7 @@ import hashlib
 import json
 import ssl
 from typing import cast
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiohttp
 import pytest
@@ -23,10 +23,12 @@ from gardena_smart_local_api.client import (
     AuthenticationError,
     DiscoveryError,
     GatewayClient,
+    GatewayIdentity,
     RequestError,
     fetch_certificate,
     fingerprint_from_certificate,
     hostname_from_certificate,
+    probe_gateway,
 )
 from gardena_smart_local_api.devices import build_discovery_obj
 from gardena_smart_local_api.messages import (
@@ -1494,6 +1496,54 @@ async def test_fetch_certificate_times_out_without_a_handshake() -> None:
     finally:
         server.close()
         await server.wait_closed()
+
+
+@pytest.mark.asyncio
+async def test_probe_identifies_the_gateway(tls_server) -> None:
+    port, der = tls_server
+
+    identity = await probe_gateway("127.0.0.1", port)
+
+    assert identity == GatewayIdentity(
+        fingerprint=fingerprint_from_certificate(der), hostname="GARDENA-1a2b3c"
+    )
+
+
+@pytest.mark.asyncio
+async def test_probe_of_old_firmware_has_no_hostname() -> None:
+    certificate = _certificate("localhost")
+
+    with patch(
+        "gardena_smart_local_api.client.certificate.fetch_certificate",
+        AsyncMock(return_value=certificate),
+    ):
+        identity = await probe_gateway("gateway.local", 8443)
+
+    assert identity.hostname is None
+    assert identity.fingerprint == fingerprint_from_certificate(certificate)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("host", ["", "bad host", "gateway\n"])
+async def test_probe_rejects_a_host_that_is_not_valid(host: str) -> None:
+    with patch(
+        "gardena_smart_local_api.client.certificate.fetch_certificate", AsyncMock()
+    ) as fetch:
+        with pytest.raises(ValueError):
+            await probe_gateway(host, 8443)
+
+    fetch.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+async def test_probe_raises_when_the_gateway_is_unreachable() -> None:
+    server = await asyncio.start_server(lambda r, w: None, "127.0.0.1", 0)
+    port = server.sockets[0].getsockname()[1]
+    server.close()
+    await server.wait_closed()
+
+    with pytest.raises(OSError):
+        await probe_gateway("127.0.0.1", port)
 
 
 def test_fingerprint_is_the_sha256_of_the_certificate() -> None:

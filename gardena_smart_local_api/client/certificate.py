@@ -6,8 +6,10 @@ import asyncio
 import contextlib
 import hashlib
 import ssl
+from dataclasses import dataclass
 
 from cryptography import x509
+from yarl import URL
 
 
 def no_verify_ssl_context() -> ssl.SSLContext:
@@ -92,3 +94,34 @@ def hostname_from_certificate(certificate: bytes) -> str | None:
         if dns_name.endswith(".local"):
             return dns_name.removesuffix(".local")
     return None
+
+
+@dataclass(frozen=True)
+class GatewayIdentity:
+    """What a gateway shows of itself before it is asked for the password."""
+
+    # SHA-256 fingerprint (hex) of the certificate, to pin the gateway with.
+    fingerprint: str
+    # The mDNS hostname (``GARDENA-xxxxxx``) from the certificate, or None for
+    # firmware whose certificate has no such name.
+    hostname: str | None
+
+
+async def probe_gateway(host: str, port: int, timeout: float = 10) -> GatewayIdentity:
+    """Return the identity of the gateway at host and port, without a password.
+
+    A setup flow uses it to learn which gateway answers, and to pin it, before
+    it asks for the password. The certificate is self-signed and not verified:
+    trust it on first use only.
+
+    Raises `ValueError` for a host that cannot be part of the gateway's URL,
+    for example an empty one or one with spaces, `TimeoutError` if the TLS
+    handshake takes longer than `timeout` seconds, and `OSError` if the gateway
+    cannot be reached or presents no certificate.
+    """
+    URL.build(scheme="wss", host=host, port=port)
+    certificate = await fetch_certificate(host, port, timeout)
+    return GatewayIdentity(
+        fingerprint=fingerprint_from_certificate(certificate),
+        hostname=hostname_from_certificate(certificate),
+    )

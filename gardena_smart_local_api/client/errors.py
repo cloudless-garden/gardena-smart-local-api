@@ -10,6 +10,10 @@ class AuthenticationError(Exception):
     """The gateway rejected the configured password (HTTP 401)."""
 
 
+class ConfigApiError(Exception):
+    """The configuration API of the gateway could not be used."""
+
+
 class InclusionError(Exception):
     """A device could not be associated with the gateway."""
 

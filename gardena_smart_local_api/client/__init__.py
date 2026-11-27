@@ -15,9 +15,11 @@ session.
 """
 
 from .certificate import (
+    GatewayIdentity,
     fetch_certificate,
     fingerprint_from_certificate,
     hostname_from_certificate,
+    probe_gateway,
 )
 from .errors import AuthenticationError, DiscoveryError, InclusionError, RequestError
 from .gateway import GatewayClient
@@ -28,10 +30,12 @@ __all__ = [
     "DeviceManager",
     "DiscoveryError",
     "GatewayClient",
+    "GatewayIdentity",
     "IncludableDevice",
     "InclusionError",
     "RequestError",
     "fetch_certificate",
     "fingerprint_from_certificate",
     "hostname_from_certificate",
+    "probe_gateway",
 ]
